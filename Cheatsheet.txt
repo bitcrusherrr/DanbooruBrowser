@@ -1,0 +1,2 @@
+Default DARK colour is: 
+"{StaticResource MetroBackground}"

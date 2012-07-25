@@ -1,0 +1,122 @@
+﻿<Window x:Class="booruReader.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:Local="clr-namespace:booruReader"
+        TextOptions.TextFormattingMode="Display"
+        TextOptions.TextRenderingMode="ClearType"
+        AllowsTransparency="True"
+        Background="{x:Null}"
+        BorderBrush="#FF3F3F3F"
+        WindowStyle="None"
+        ResizeMode="CanResizeWithGrip"
+        Title="booruBrowser" Height="300" Width="525" MinHeight="200" MinWidth="400" Loaded="Window_Loaded">
+    <Grid>
+        <Grid.Resources>
+
+        </Grid.Resources>
+        <Border
+             x:Name="m_edgeBorder"
+             x:FieldModifier="private"
+             Margin="0"
+             Background="{StaticResource MetroBackground}"
+             IsHitTestVisible="False"
+             IsEnabled="True">
+            <Border.Effect>
+                <DropShadowEffect
+                   Opacity="0.999"
+                   BlurRadius="16"
+                   ShadowDepth="0" />
+            </Border.Effect>
+        </Border>
+        
+        <Rectangle
+             Height="38"
+             VerticalAlignment="Top"
+             Fill="{StaticResource MetroBackground}"
+             PreviewMouseDown="HandleHeaderPreviewMouseDown" />
+        <Rectangle Height="3" VerticalAlignment="Top" PreviewMouseDown="HandleHeaderPreviewMouseDown" Fill="{StaticResource DatazbytesGreen}" />
+
+        <Button
+             HorizontalAlignment="Right"
+             Margin="0,8,8,0"
+             VerticalAlignment="Top"
+             ToolTip="Exit"
+             Style="{StaticResource Metro}"
+             Click="ExitButtonClick" Height="16" Width="16">
+            <Image Source="Images\Toolbar\exit.png" Height="12" Width="12"/>
+        </Button>
+
+        <Button
+             VerticalAlignment="Top"
+             HorizontalAlignment="Right"
+             Margin="0,8,28,0"
+             Style="{StaticResource Metro}"
+             ToolTip="Maximise"
+             Click="MaximiseButtonClick"  Height="16" Width="16">
+            <Image Source="Images\Toolbar\maximise.png" Height="12" Width="12" />
+        </Button>
+
+        <Button
+             HorizontalAlignment="Right"
+             Margin="0,8,48,0"
+             VerticalAlignment="Top"
+             Style="{StaticResource Metro}"
+             ToolTip="Minimize"
+             Click="MinimiseButtonClick" Height="16" Width="16">
+            <Image Source="Images\Toolbar\minimise.png" Height="12" Width="12"/>
+        </Button>
+
+        <Button
+             HorizontalAlignment="Left"
+             Margin="0,3,48,0"
+             VerticalAlignment="Top"
+             Style="{StaticResource Metro}"
+             Opacity="1"
+             BorderThickness="0"
+             Background="{StaticResource DatazbytesGreen}"
+             ToolTip="Settings"
+             Click="MinimiseButtonClick" Width="80">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Image Source="Images\Toolbar\settings.png" Height="20" Width="16" Margin="6,1,0,0"/>
+                <TextBlock FontWeight="Bold" FontSize="12" Height="14" Width="60">SETTINGS</TextBlock>
+            </StackPanel>
+        </Button>
+
+        <TextBox Height="25" Width="155" Margin="86,7,0,0" Style="{StaticResource MetroTextBox}" 
+                 ToolTip="Enter tags to search for."
+                 VerticalAlignment="Top" HorizontalAlignment="Left"></TextBox>
+
+        <ListBox Name="ImageList" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Background="{StaticResource MetroBackground}" 
+                 BorderBrush="{StaticResource MetroBackground}" SelectionMode="Multiple" Style="{StaticResource MetroListBox}" 
+                 ItemsSource="{Binding MainImageList}"
+                 Margin="8,38,8,8">
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel />
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Margin="2">
+                        <Border Width="140" Height="140" BorderThickness="2" BorderBrush="#52524B">
+                            <Image Source="{Binding Path=PreviewURL}" Stretch="UniformToFill" />
+                        </Border>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <Button Margin="250,8,0,0" Height="23" Width="23" VerticalAlignment="Top" HorizontalAlignment="Left" Style="{StaticResource Metro}">
+            <Image Source="Images\Toolbar\search.png"/>
+        </Button>
+
+        <ProgressBar Visibility="Hidden" Name="MainScreenProgressBar" Height="3" VerticalAlignment="Top" Template="{StaticResource CustomProgressBar}" 
+                     IsIndeterminate="True" />
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="0*"/>
+        </Grid.ColumnDefinitions>
+
+    </Grid>
+</Window>
