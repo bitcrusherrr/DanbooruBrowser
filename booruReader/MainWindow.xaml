@@ -75,7 +75,7 @@
              BorderThickness="0"
              Background="{StaticResource DatazbytesGreen}"
              ToolTip="Settings"
-             Click="MinimiseButtonClick" Width="80">
+             Width="80">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <Image Source="Images\Toolbar\settings.png" Height="20" Width="16" Margin="6,1,0,0"/>
                 <TextBlock FontWeight="Bold" FontSize="12" Height="14" Width="60">SETTINGS</TextBlock>
@@ -106,9 +106,23 @@
             </ListBox.ItemTemplate>
         </ListBox>
 
-        <Button Margin="250,8,0,0" Height="23" Width="23" VerticalAlignment="Top" HorizontalAlignment="Left" Style="{StaticResource Metro}">
+        <Button ToolTip="Fetch Posts" Margin="250,8,0,0" Height="23" Width="23" VerticalAlignment="Top" 
+                HorizontalAlignment="Left" Style="{StaticResource Metro}">
             <Image Source="Images\Toolbar\search.png"/>
         </Button>
+        
+        <Button ToolTip="Download Selected" Margin="280,8,0,0" Height="23" Width="23" VerticalAlignment="Top" 
+                HorizontalAlignment="Left" Style="{StaticResource Metro}">
+            <Image Source="Images\Toolbar\download.png"/>
+        </Button>
+        
+        <Button ToolTip="Remove Selection" Margin="310,8,0,0" Height="23" Width="23" VerticalAlignment="Top" 
+                HorizontalAlignment="Left" Style="{StaticResource Metro}">
+            <Image Source="Images\Toolbar\cancel.png"/>
+        </Button>
+
+
+        
 
         <ProgressBar Visibility="Hidden" Name="MainScreenProgressBar" Height="3" VerticalAlignment="Top" Template="{StaticResource CustomProgressBar}" 
                      IsIndeterminate="True" />

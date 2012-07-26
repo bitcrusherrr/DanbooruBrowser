@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using booruReader.Helpers;
 
 namespace booruReader.Model
 {
-    class BaseImage
+    class BasePost
     {
         #region Private Fields
 
@@ -15,6 +16,8 @@ namespace booruReader.Model
         #endregion
 
         #region Public 
+        public PostRating ImageRating;
+
         public List<string> Tags
         {
             get { return _tags; }
@@ -33,15 +36,31 @@ namespace booruReader.Model
         }
         #endregion
 
-        public BaseImage(string previewURL, string fullPictureURL, List<string> tags = null)
+        public BasePost(string previewURL, string fullPictureURL, PostRating rating,List<string> tags = null)
         {
             FullPictureURL = fullPictureURL;
             PreviewURL = previewURL;
+            ImageRating = rating;
 
             if (tags != null && tags.Count > 0)
                 _tags = new List<string>(tags);
             else
                 _tags = null;
+        }
+
+        public BasePost(BasePost post)
+        {
+            ImageRating = post.ImageRating;
+            FullPictureURL = post.FullPictureURL;
+            PreviewURL = post.PreviewURL;
+            _tags = null;
+        }
+
+        public BasePost()
+        {
+            FullPictureURL = string.Empty;
+            PreviewURL = string.Empty;
+            _tags = null;
         }
     }
 }

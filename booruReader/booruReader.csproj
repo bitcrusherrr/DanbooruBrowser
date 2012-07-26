@@ -67,6 +67,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Helpers\Enums.cs" />
     <Compile Include="Helpers\DelegateCommand.cs" />
     <Compile Include="MainScreenVM.cs" />
     <Compile Include="MainWindow.xaml.cs">
@@ -123,9 +124,14 @@
     <Resource Include="Images\Toolbar\settings.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\Toolbar\progress.gif">
+    <Content Include="3rd Party Libs\System.Windows.Interactivity.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
+    </Content>
+    <Content Include="3rd Party Libs\Caliburn.Micro.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Resource Include="Images\Toolbar\download.png" />
+    <Resource Include="Images\Toolbar\cancel.png" />
     <Content Include="Images\TestImages\Aliens.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

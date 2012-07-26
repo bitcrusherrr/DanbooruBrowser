@@ -1,2 +1,6 @@
 Default DARK colour is: 
 "{StaticResource MetroBackground}"
+
+siteur/post/index.xml?page=2 <- for next page etc
+siteur/post/index.xml?page=2?tags=miku <- for tags
+siteur/post/index?tags=miku+reimu&page=2  <- multiple tags + page

@@ -1,11 +1,12 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "booruReader", "booruReader\booruReader.csproj", "{34B9283D-2FA6-4001-8737-DCEE5F262992}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8687B369-7D37-477E-8CF3-3E633F8732BB}"
 	ProjectSection(SolutionItems) = preProject
 		Cheatsheet.txt = Cheatsheet.txt
+		Responce Examples\index.xml = Responce Examples\index.xml
 	EndProjectSection
 EndProject
 Global

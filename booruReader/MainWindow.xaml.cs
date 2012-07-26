@@ -29,11 +29,6 @@ namespace booruReader
             viewModel = new MainScreenVM();
             DataContext = viewModel;
 
-            //ImageList.ItemsSource = testcollection;
-
-            //for (int i= 0; i < 200; i++ )
-            //   testcollection.Add("Test");
-
             ImageList.SelectedItem = null;
             //this.LostFocus += new System.EventHandler(WindowLostFocus);
         }

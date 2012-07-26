@@ -11,12 +11,12 @@ namespace booruReader
     class MainScreenVM
     {
         #region Private variables
-        private ObservableCollection<BaseImage> _imageList;
+        private ObservableCollection<BasePost> _imageList;
         #endregion
 
         #region Public variables
         //UI list for the images
-        public ObservableCollection<BaseImage> MainImageList
+        public ObservableCollection<BasePost> MainImageList
         {
             get { return _imageList; }
         }
@@ -27,12 +27,23 @@ namespace booruReader
         /// </summary>
         public MainScreenVM()
         {
-            _imageList = new ObservableCollection<BaseImage>();
+            _imageList = new ObservableCollection<BasePost>();
 
-            PostsFetcher postFetcher = new PostsFetcher("","");
+            //PostsFetcher postFetcher = new PostsFetcher();
 
-            for (int i = 0; i < 200; i++)
-                MainImageList.Add(new BaseImage(@"Images\TestImages\Aliens.jpg",@"Images\TestImages\Aliens.jpg"));
+            for (int i = 0; i < 10; i++)
+                _imageList.Add(new BasePost("Images\\TestImages\\Aliens.jpg", "Images\\TestImages\\Aliens.jpg", PostRating.Safe));
+
+            for (int i = 0; i < 10; i++)
+                _imageList.Add(new BasePost("Images\\TestImages\\Aliens.jpg", "Images\\TestImages\\Aliens.jpg", PostRating.Questionable));
+
+            //for (int i = 0; i < 1; i++)
+            //{
+            //    foreach (BasePost post in postFetcher.GetImages())
+            //    {
+            //        _imageList.Add(new BasePost(post));
+            //    }
+            //}
             //Invoke settings class here
         }
 
