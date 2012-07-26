@@ -25,21 +25,15 @@ namespace booruReader.Model
         public List<BasePost> GetImages(String tags = null)
         {
             string finalURL = GlobalSettings.Instance.CurrentBooruURL; //+ tags from searchfield
-            if (GlobalSettings.Instance.CurrentPage == 0)
-            {
-                //Loading first page
-                GlobalSettings.Instance.CurrentPage = 1;
-            }
-            else
-            {
-                GlobalSettings.Instance.CurrentPage++;
-                finalURL = string.Format(finalURL + "?page=" + GlobalSettings.Instance.CurrentPage);
 
-                if (tags != null)
-                {
-                    finalURL = string.Format(finalURL + "?page=" + GlobalSettings.Instance.CurrentPage + "&tags=" + tags);
-                }
+            finalURL = string.Format(finalURL + "?page=" + GlobalSettings.Instance.CurrentPage);
+
+            if (tags != null)
+            {
+                finalURL = string.Format(finalURL + "?page=" + GlobalSettings.Instance.CurrentPage + "&tags=" + tags);
             }
+            
+            GlobalSettings.Instance.CurrentPage++;
 
             XmlTextReader reader = new XmlTextReader(finalURL);
             
