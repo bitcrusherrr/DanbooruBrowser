@@ -35,7 +35,7 @@ namespace booruReader.Model
             //CurrentBooruURL = "http://booru.datazbytes.net/post/index.xml";
             CurrentBooruURL = "https://yande.re/post/index.xml";
             IsSafeMode = false; 
-            CurrentPage = 0;
+            CurrentPage = 1;
         }
 
         public static GlobalSettings Instance
