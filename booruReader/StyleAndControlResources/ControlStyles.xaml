@@ -104,6 +104,13 @@
         </Grid>
     </ControlTemplate>
 
+    <!--Checkbox style-->
+    <Style x:Key="MetroCheckbox" TargetType="{x:Type CheckBox}">
+        <Style.Resources>
+            <Style BasedOn="{StaticResource MetroTooltip}" TargetType="{x:Type ToolTip}" />
+        </Style.Resources>
+    </Style>
+    
     <!--ScrollBar Styles & Templates-->
     <ControlTemplate x:Key="HorizontalScrollBarTemplate" TargetType="{x:Type ScrollBar}">
         <Grid x:Name="Root">

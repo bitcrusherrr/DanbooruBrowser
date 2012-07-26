@@ -59,6 +59,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Settings Screen\ObservableColletion.cs" />
+    <Compile Include="Settings Screen\SettingsUserControl.xaml.cs">
+      <DependentUpon>SettingsUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Settings Screen\SettingsVM.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -74,6 +79,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Settings Screen\SettingsUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="StyleAndControlResources\Brushes.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -130,6 +139,8 @@
     <Content Include="3rd Party Libs\Caliburn.Micro.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Settings Screen\Images\settings.png" />
+    <Resource Include="Settings Screen\Images\back.png" />
     <Resource Include="Images\Toolbar\download.png" />
     <Resource Include="Images\Toolbar\cancel.png" />
     <Content Include="Images\TestImages\Aliens.jpg">
@@ -137,9 +148,7 @@
     </Content>
     <Resource Include="Images\Toolbar\search.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Settings Screen\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

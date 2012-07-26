@@ -24,7 +24,7 @@ namespace booruReader.Model
 
         public List<BasePost> GetImages(String tags = null)
         {
-            string finalURL = GlobalSettings.Instance.CurrentBooruURL; //+ tags from searchfield
+            string finalURL = GlobalSettings.Instance.CurrentBooru.URL; //+ tags from searchfield
 
             finalURL = string.Format(finalURL + "?page=" + GlobalSettings.Instance.CurrentPage);
 

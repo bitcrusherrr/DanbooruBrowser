@@ -11,7 +11,7 @@ namespace booruReader.Model
         private static GlobalSettings instance;
 
         #region Global Variables
-        public string CurrentBooruURL
+        public BooruBoard CurrentBooru
         {
             get;
             set;
@@ -33,7 +33,8 @@ namespace booruReader.Model
              */
 
             //CurrentBooruURL = "http://booru.datazbytes.net/post/index.xml";
-            CurrentBooruURL = "https://yande.re/post/index.xml";
+            //This should load default board or whatever was used last
+            CurrentBooru = new BooruBoard("https://yande.re/post/index.xml", "Yandere", ProviderAccessType.XML);
             IsSafeMode = false; 
             CurrentPage = 1;
         }
@@ -48,6 +49,22 @@ namespace booruReader.Model
                 }
                 return instance;
             }
+        }
+
+        /// <summary>
+        /// This function writes out current values 
+        /// </summary>
+        public void SaveSettings()
+        {
+
+        }
+
+        /// <summary>
+        /// This function reads initial settings on the class initilisation
+        /// </summary>
+        private void LoadSettings()
+        {
+
         }
     }
 }

@@ -12,6 +12,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Windows.Controls.Primitives;
 
 namespace booruReader
 {
@@ -30,7 +32,6 @@ namespace booruReader
             DataContext = viewModel;
 
             ImageList.SelectedItem = null;
-            //this.LostFocus += new System.EventHandler(WindowLostFocus);
         }
 
         private DateTime m_headerLastClicked;
@@ -69,7 +70,10 @@ namespace booruReader
         private void MaximiseButtonClick(object sender, RoutedEventArgs e)
         {
             if (this.WindowState != System.Windows.WindowState.Maximized)
+            {
                 this.WindowState = System.Windows.WindowState.Maximized;
+                LoadMoreImages();
+            }
             else
                 this.WindowState = System.Windows.WindowState.Normal;
         }
@@ -84,101 +88,33 @@ namespace booruReader
 
         }
 
-        //#region Resize procedures
+        private void LoadMoreImages()
+        {
+            int offset = 0;
+            if (ImageList.Items.Count > 5)
+                offset = ImageList.Items.Count - 4;
 
-        //#region Sides
+            //this.LostFocus += new System.EventHandler(WindowLostFocus);
+            for (int index = offset; index < ImageList.Items.Count; index++)
+            {
+                ListBoxItem listitem = ImageList.ItemContainerGenerator.ContainerFromItem(ImageList.Items[index]) as ListBoxItem;
+                if (listitem != null)
+                {
+                    GeneralTransform transform = listitem.TransformToVisual(ImageList);
+                    Point childToParentCoordinates = transform.Transform(new Point(0, 0));
+                    if (childToParentCoordinates.Y >= 0 &&
+                        childToParentCoordinates.Y + (listitem.ActualHeight / 4) <= ImageList.ActualHeight)
+                    {
+                        viewModel.TriggerImageLoading();
+                        break;
+                    }
+                }
+            } 
+        }
 
-        //private void ResizeTop(object sender, MouseButtonEventArgs e)
-        //{
-        //    this.Cursor = Cursors.SizeNS;
-
-        //    m_headerLastClicked = DateTime.Now;
-        //    if (Mouse.LeftButton == MouseButtonState.Pressed)
-        //    {
-        //        DragMove();
-        //    }
-        //}
-
-        //private void ResizeBottom(object sender, MouseButtonEventArgs e)
-        //{
-        //    this.Cursor = Cursors.SizeNS;
-
-        //    m_headerLastClicked = DateTime.Now;
-        //    if (Mouse.LeftButton == MouseButtonState.Pressed)
-        //    {
-        //        DragMove();
-        //    }
-        //}
-
-        //private void ResizeLeft(object sender, MouseButtonEventArgs e)
-        //{
-        //    this.Cursor = Cursors.SizeWE;
-
-        //    m_headerLastClicked = DateTime.Now;
-        //    if (Mouse.LeftButton == MouseButtonState.Pressed)
-        //    {
-        //        DragMove();
-        //    }
-        //}
-
-        //private void ResizeRight(object sender, MouseButtonEventArgs e)
-        //{
-        //    this.Cursor = Cursors.SizeWE;
-
-        //    m_headerLastClicked = DateTime.Now;
-        //    if (Mouse.LeftButton == MouseButtonState.Pressed)
-        //    {
-        //        DragMove();
-        //    }
-        //}
-
-        //#endregion
-
-        //#region Corners
-
-        //private void ResizeTopRight(object sender, MouseButtonEventArgs e)
-        //{
-        //    m_headerLastClicked = DateTime.Now;
-        //    this.Cursor = Cursors.SizeNESW;
-        //    if (Mouse.LeftButton == MouseButtonState.Pressed)
-        //    {
-        //        DragMove();
-        //    }
-        //}
-
-        //private void ResizeTopLeft(object sender, MouseButtonEventArgs e)
-        //{
-        //    m_headerLastClicked = DateTime.Now;
-        //    this.Cursor = Cursors.SizeNWSE;
-        //    if (Mouse.LeftButton == MouseButtonState.Pressed)
-        //    {
-        //        DragMove();
-        //    }
-        //}
-
-        //private void ResizeBottomRight(object sender, MouseButtonEventArgs e)
-        //{
-        //    m_headerLastClicked = DateTime.Now;
-        //    this.Cursor = Cursors.SizeNWSE;
-        //    if (Mouse.LeftButton == MouseButtonState.Pressed)
-        //    {
-        //        DragMove();
-        //    }
-        //}
-
-        //private void ResizeBottomLeft(object sender, MouseButtonEventArgs e)
-        //{
-        //    m_headerLastClicked = DateTime.Now;
-        //    this.Cursor = Cursors.SizeNESW;
-        //    if (Mouse.LeftButton == MouseButtonState.Pressed)
-        //    {
-        //        DragMove();
-        //    }
-        //}
-
-        //#endregion
-
-
-        //#endregion
+        private void ImageList_ScrollChanged_1(object sender, ScrollChangedEventArgs e)
+        {
+            LoadMoreImages();
+        }
     }
 }

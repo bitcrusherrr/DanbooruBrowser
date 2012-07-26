@@ -5,13 +5,15 @@ using System.Text;
 using System.Collections.ObjectModel;
 using booruReader.Helpers;
 using booruReader.Model;
+using System.ComponentModel;
 
 namespace booruReader
 {
-    class MainScreenVM
+    class MainScreenVM : INotifyPropertyChanged
     {
         #region Private variables
         private ObservableCollection<BasePost> _imageList;
+        PostsFetcher _postFetcher;
         #endregion
 
         #region Public variables
@@ -29,13 +31,16 @@ namespace booruReader
         {
             _imageList = new ObservableCollection<BasePost>();
 
-            //PostsFetcher postFetcher = new PostsFetcher();
+            _postFetcher = new PostsFetcher();
+            foreach (BasePost post in _postFetcher.GetImages())
+            {
+                _imageList.Add(new BasePost(post));
+            }
+            //for (int i = 0; i < 10; i++)
+            //    _imageList.Add(new BasePost("Images\\TestImages\\Aliens.jpg", "Images\\TestImages\\Aliens.jpg", PostRating.Safe));
 
-            for (int i = 0; i < 10; i++)
-                _imageList.Add(new BasePost("Images\\TestImages\\Aliens.jpg", "Images\\TestImages\\Aliens.jpg", PostRating.Safe));
-
-            for (int i = 0; i < 10; i++)
-                _imageList.Add(new BasePost("Images\\TestImages\\Aliens.jpg", "Images\\TestImages\\Aliens.jpg", PostRating.Questionable));
+            //for (int i = 0; i < 10; i++)
+            //    _imageList.Add(new BasePost("Images\\TestImages\\Aliens.jpg", "Images\\TestImages\\Aliens.jpg", PostRating.Questionable));
 
             //for (int i = 0; i < 1; i++)
             //{
@@ -45,6 +50,14 @@ namespace booruReader
             //    }
             //}
             //Invoke settings class here
+        }
+
+        public void TriggerImageLoading()
+        {
+            foreach (BasePost post in _postFetcher.GetImages())
+            {
+                _imageList.Add(new BasePost(post));
+            }
         }
 
         #region Commands
@@ -58,6 +71,20 @@ namespace booruReader
             //Do saving n shit
         }
         #endregion
+
+        #endregion
+
+        #region INotifyPropertyChanged Members
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void RaisePropertyChanged(string property)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(property));
+            }
+        }
 
         #endregion
     }

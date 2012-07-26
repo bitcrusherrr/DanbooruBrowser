@@ -11,4 +11,10 @@ namespace booruReader.Helpers
         Questionable,
         Explicit
     };
+
+    public enum ProviderAccessType
+    {
+        XML,
+        JSON
+    };
 }
