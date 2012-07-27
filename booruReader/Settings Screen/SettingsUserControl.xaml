@@ -6,26 +6,22 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid Background="{StaticResource MetroBackground}">
-        <Rectangle
-             Height="38"
-             VerticalAlignment="Top"
-             Fill="{StaticResource MetroBackground}" />
-        <Rectangle Height="3" VerticalAlignment="Top" Fill="{StaticResource DatazbytesGreen}" />
-        <TextBlock Height="18" Width="80" Background="{StaticResource DatazbytesGreen}" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Top" Text="SETTINGS" Margin="0,3,48,0">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Image Source="Images\settings.png" Height="20" Width="16" Margin="6,1,0,0"/>
-                <TextBlock FontWeight="Bold" FontSize="12" Height="14" Width="60">SETTINGS</TextBlock>
-            </StackPanel>
-        </TextBlock>
-        
+
         <Button ToolTip="Return" Style="{StaticResource Metro}" Width="23" Height="23" Margin="0,8,8,0" VerticalAlignment="Top" HorizontalAlignment="Right">
             <Image Source="Images\back.png"/>
         </Button>
         
-    <CheckBox Background="Transparent" Style="{StaticResource MetroCheckbox}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="8,40,0,0" Foreground="White"
+    <CheckBox Background="Transparent" Style="{StaticResource MetroCheckbox}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="8,9,0,0" Foreground="White"
           Width="80" Content="Safe Mode" ToolTip="All images with non safe rating will be ignored." FlowDirection="RightToLeft" IsChecked="{Binding SafeModeBrowsing}" />
     
-    <ComboBox Width="140" Height="20" Margin="8,60,0,0" VerticalAlignment="Top" Background="{x:Null}"  ItemsSource="{Binding ProviderList}"
-                     SelectedItem="{Binding CurrentSelectedBoard}" Foreground="{DynamicResource WhiteBrush}" BorderBrush="{x:Null}" HorizontalAlignment="Left" />
+    <ComboBox Width="140" Height="20" Margin="8,29,0,0" VerticalAlignment="Top" Background="{x:Null}"  ItemsSource="{Binding ProviderList}"
+                     SelectedItem="{Binding CurrentSelectedBoard}" Text="{Binding Path=CurrentSelectedBoard.Name}" Foreground="{DynamicResource WhiteBrush}" BorderBrush="{x:Null}" HorizontalAlignment="Left" />
+    
+    <Button ToolTip="Return" Style="{StaticResource Metro}" Width="23" Height="23" Margin="8,55,0,0" VerticalAlignment="Top" HorizontalAlignment="Left">
+            <Image Source="Images\folder.png"/>
+        </Button>
+        
+    <TextBox Height="23" Margin="40,55,0,00" VerticalAlignment="Top" HorizontalAlignment="Left" Width="150"  Style="{StaticResource MetroTextBox}" 
+                 ToolTip="Directory to save files." Text="{Binding FolderPath}"></TextBox>
     </Grid>
 </UserControl>

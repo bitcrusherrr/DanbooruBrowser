@@ -23,6 +23,18 @@
         <Setter Property="BorderThickness" Value="1"/>
     </Style>
     
+    <Style x:Key="StackStyle" TargetType="StackPanel">
+        <Setter Property="Visibility" Value="Collapsed" />
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="True">
+                <Setter Property="Visibility" Value="Visible" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Visibility" Value="Collapsed" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    
     <!--Button styles-->
     <Style x:Key="Metro" TargetType="{x:Type Button}" BasedOn="{x:Null}">
         <Style.Resources>

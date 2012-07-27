@@ -17,9 +17,15 @@ namespace booruReader.Model
             set;
         }
 
+        public string SavePath = @"C:\TestFolder\";
+
         public bool IsSafeMode;
 
         public int CurrentPage;
+
+        public int TotalPosts;
+
+        public int PostsOffset;
         #endregion
 
         private GlobalSettings() 
@@ -35,8 +41,11 @@ namespace booruReader.Model
             //CurrentBooruURL = "http://booru.datazbytes.net/post/index.xml";
             //This should load default board or whatever was used last
             CurrentBooru = new BooruBoard("https://yande.re/post/index.xml", "Yandere", ProviderAccessType.XML);
+            //CurrentBooru = new BooruBoard("http://booru.datazbytes.net/post/index.xml", "Yandere", ProviderAccessType.XML);
             IsSafeMode = false; 
             CurrentPage = 1;
+            TotalPosts = 0;
+            PostsOffset = 0;
         }
 
         public static GlobalSettings Instance

@@ -14,6 +14,8 @@ using System.Windows.Shapes;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Windows.Controls.Primitives;
+using booruReader.Helpers;
+using booruReader.Model;
 
 namespace booruReader
 {
@@ -90,31 +92,42 @@ namespace booruReader
 
         private void LoadMoreImages()
         {
-            int offset = 0;
-            if (ImageList.Items.Count > 5)
-                offset = ImageList.Items.Count - 4;
-
-            //this.LostFocus += new System.EventHandler(WindowLostFocus);
-            for (int index = offset; index < ImageList.Items.Count; index++)
+            if (GlobalSettings.Instance.TotalPosts > GlobalSettings.Instance.PostsOffset)
             {
-                ListBoxItem listitem = ImageList.ItemContainerGenerator.ContainerFromItem(ImageList.Items[index]) as ListBoxItem;
-                if (listitem != null)
+                int offset = 0;
+                if (ImageList.Items.Count > 5)
+                    offset = ImageList.Items.Count - 4;
+
+                for (int index = offset; index < ImageList.Items.Count; index++)
                 {
-                    GeneralTransform transform = listitem.TransformToVisual(ImageList);
-                    Point childToParentCoordinates = transform.Transform(new Point(0, 0));
-                    if (childToParentCoordinates.Y >= 0 &&
-                        childToParentCoordinates.Y + (listitem.ActualHeight / 4) <= ImageList.ActualHeight)
+                    ListBoxItem listitem = ImageList.ItemContainerGenerator.ContainerFromItem(ImageList.Items[index]) as ListBoxItem;
+                    if (listitem != null)
                     {
-                        viewModel.TriggerImageLoading();
-                        break;
+                        GeneralTransform transform = listitem.TransformToVisual(ImageList);
+                        Point childToParentCoordinates = transform.Transform(new Point(0, 0));
+                        if (childToParentCoordinates.Y >= 0 &&
+                            childToParentCoordinates.Y + (listitem.ActualHeight / 4) <= ImageList.ActualHeight)
+                        {
+                            viewModel.TriggerImageLoading();
+                            break;
+                        }
                     }
                 }
-            } 
+            }
         }
 
         private void ImageList_ScrollChanged_1(object sender, ScrollChangedEventArgs e)
         {
             LoadMoreImages();
+        }
+
+        private void TextboxKeypres(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Return)
+            {
+                viewModel.TagsBox = (sender as TextBox).Text;
+                viewModel.PerformFetchCommand.Execute(true);
+            }
         }
     }
 }

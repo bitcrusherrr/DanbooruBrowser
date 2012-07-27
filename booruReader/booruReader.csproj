@@ -59,11 +59,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Helpers\MetroMessagebox.xaml.cs">
+      <DependentUpon>MetroMessagebox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Helpers\MetroMessageBoxVM.cs" />
     <Compile Include="Settings Screen\ObservableColletion.cs" />
     <Compile Include="Settings Screen\SettingsUserControl.xaml.cs">
       <DependentUpon>SettingsUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Settings Screen\SettingsVM.cs" />
+    <Page Include="Helpers\MetroMessagebox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -139,10 +147,12 @@
     <Content Include="3rd Party Libs\Caliburn.Micro.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Settings Screen\Images\folder.png" />
     <Resource Include="Settings Screen\Images\settings.png" />
     <Resource Include="Settings Screen\Images\back.png" />
     <Resource Include="Images\Toolbar\download.png" />
     <Resource Include="Images\Toolbar\cancel.png" />
+    <Resource Include="Helpers\Images\exit.png" />
     <Content Include="Images\TestImages\Aliens.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

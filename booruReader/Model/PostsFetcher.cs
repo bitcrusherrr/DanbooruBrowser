@@ -26,11 +26,12 @@ namespace booruReader.Model
         {
             string finalURL = GlobalSettings.Instance.CurrentBooru.URL; //+ tags from searchfield
 
-            finalURL = string.Format(finalURL + "?page=" + GlobalSettings.Instance.CurrentPage);
+            if (GlobalSettings.Instance.CurrentPage > 1)
+                finalURL = string.Format(finalURL + "?page=" + GlobalSettings.Instance.CurrentPage);
 
             if (tags != null)
             {
-                finalURL = string.Format(finalURL + "?page=" + GlobalSettings.Instance.CurrentPage + "&tags=" + tags);
+                finalURL = string.Format(finalURL + "?page=" + GlobalSettings.Instance.CurrentPage + "&tags=" + FormTags(tags));
             }
             
             GlobalSettings.Instance.CurrentPage++;
@@ -53,7 +54,13 @@ namespace booruReader.Model
                                     {
                                         if (reader.Name.ToLowerInvariant().Equals("count")) // Posts Count
                                         {
-                                            //postCount = int.Parse(reader.Value);
+                                            GlobalSettings.Instance.TotalPosts = int.Parse(reader.Value);
+                                            //RawData += "postCount:" + postCount;
+                                        }
+
+                                        if (reader.Name.ToLowerInvariant().Equals("offset")) // Posts Count
+                                        {
+                                            GlobalSettings.Instance.PostsOffset = int.Parse(reader.Value);
                                             //RawData += "postCount:" + postCount;
                                         }
                                     }
@@ -68,6 +75,7 @@ namespace booruReader.Model
                                         {
                                             case "file_url": post.FullPictureURL = reader.Value; break;
                                             case "preview_url": post.PreviewURL = reader.Value; break;
+                                            case "md5": post.FileMD = reader.Value; break;
                                             case "rating":
                                                 {
                                                     if (reader.Value.Contains("s"))
@@ -101,7 +109,24 @@ namespace booruReader.Model
                 exception.ToString();
             }
 
+            if (GlobalSettings.Instance.PostsOffset > GlobalSettings.Instance.TotalPosts)
+            {
+                new MetroMessagebox("Fetch Error", "End of posts.").ShowDialog();
+            }
+
             return _PostFetcherImnageList;
+        }
+
+        private string FormTags(string tags)
+        {
+            string returnTags = tags;
+
+            if(!string.IsNullOrEmpty(tags))
+            {
+                returnTags = tags.Replace(" ", "+");
+            }
+
+            return returnTags;
         }
     }
 }

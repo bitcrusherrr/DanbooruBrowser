@@ -6,6 +6,7 @@ using booruReader.Model;
 using booruReader.Helpers;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 
 namespace booruReader.Settings_Screen
 {
@@ -17,6 +18,7 @@ namespace booruReader.Settings_Screen
         private bool _safeModeBrowsing;
         private ObservableCollection<BooruBoard> _providerList;
         private BooruBoard _currentSelectedBoard;
+        private string _folderPath;
         #endregion
         #region Public Variables
 
@@ -27,7 +29,7 @@ namespace booruReader.Settings_Screen
             {
                 _safeModeBrowsing = value;
                 _beenChanges = true;
-
+                GlobalSettings.Instance.IsSafeMode = value;
                 RaisePropertyChanged("SafeModeBrowsing");
             }
         }
@@ -42,8 +44,23 @@ namespace booruReader.Settings_Screen
 
                 //reset our current page as we changing provider
                 GlobalSettings.Instance.CurrentPage = 1;
-
+                GlobalSettings.Instance.CurrentBooru = value;
                 RaisePropertyChanged("CurrentSelectedBoard");
+            }
+        }
+
+        public string FolderPath
+        {
+            get { return _folderPath; }
+            set
+            {
+                if (ValidatePath(value))
+                {
+                    _folderPath = string.Format(value + "\\");
+                    GlobalSettings.Instance.SavePath = string.Format(value + "\\");
+                }
+
+                RaisePropertyChanged("FolderPath");
             }
         }
 
@@ -99,6 +116,22 @@ namespace booruReader.Settings_Screen
             {
                 GlobalSettings.Instance.SaveSettings();
             }
+        }
+
+        private bool ValidatePath(string path)
+        {
+            bool retVal = false;
+
+            if (Directory.Exists(path))
+                retVal = true;
+            else
+            {
+                Directory.CreateDirectory(path);
+                if (Directory.Exists(path))
+                    retVal = true;
+            }
+
+            return retVal;
         }
 
         #region INotifyPropertyChanged Members

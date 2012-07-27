@@ -6,6 +6,8 @@ using System.Collections.ObjectModel;
 using booruReader.Helpers;
 using booruReader.Model;
 using System.ComponentModel;
+using System.Windows;
+using System.Threading;
 
 namespace booruReader
 {
@@ -14,6 +16,16 @@ namespace booruReader
         #region Private variables
         private ObservableCollection<BasePost> _imageList;
         PostsFetcher _postFetcher;
+        private string _tagsBox;
+        private DelegateCommand _performFetchCommand;
+        private DelegateCommand _performSelectedImagesDownloadCommand; 
+        private DelegateCommand _clearSelectionCommand;
+        private DelegateCommand _openSettingsCommand;
+        private BackgroundWorker _imageLoader;
+        private Visibility _progressBarVisibility;
+        //private bool _tagsChanged = false;
+        private List<BasePost> _threadList;
+        private bool _settingsOpen;
         #endregion
 
         #region Public variables
@@ -21,6 +33,39 @@ namespace booruReader
         public ObservableCollection<BasePost> MainImageList
         {
             get { return _imageList; }
+        }
+
+        public string TagsBox
+        {
+            get { return _tagsBox; }
+            set
+            {
+                _tagsBox = value;
+                RaisePropertyChanged("TagsBox");
+            }
+        }
+
+        public Visibility ProgressBarVisibility
+        {
+            get
+            {
+                return _progressBarVisibility;
+            }
+            set
+            {
+                _progressBarVisibility = value;
+                RaisePropertyChanged("ProgressBarVisibility");
+            }
+        }
+
+        public bool SettingsOpen
+        {
+            get { return _settingsOpen; }
+            set
+            {
+                _settingsOpen = value;
+                RaisePropertyChanged("SettingsOpen");
+            }
         }
         #endregion
 
@@ -30,37 +75,139 @@ namespace booruReader
         public MainScreenVM()
         {
             _imageList = new ObservableCollection<BasePost>();
-
             _postFetcher = new PostsFetcher();
-            foreach (BasePost post in _postFetcher.GetImages())
+            _threadList = new List<BasePost>();
+            _imageLoader = new BackgroundWorker();
+            _imageLoader.DoWork += BackgroundLoaderWork;
+            _imageLoader.RunWorkerCompleted += ServerListLoadWorkerCompleted;
+            _imageLoader.WorkerSupportsCancellation = true;
+            SettingsOpen = false;
+
+            ProgressBarVisibility = Visibility.Hidden;
+
+            _performFetchCommand = new DelegateCommand
             {
-                _imageList.Add(new BasePost(post));
-            }
-            //for (int i = 0; i < 10; i++)
-            //    _imageList.Add(new BasePost("Images\\TestImages\\Aliens.jpg", "Images\\TestImages\\Aliens.jpg", PostRating.Safe));
+                CanExecuteDelegate = x => true,
+                ExecuteDelegate = x => FetchImages()
+            };
 
-            //for (int i = 0; i < 10; i++)
-            //    _imageList.Add(new BasePost("Images\\TestImages\\Aliens.jpg", "Images\\TestImages\\Aliens.jpg", PostRating.Questionable));
+            _performSelectedImagesDownloadCommand = new DelegateCommand
+            {
+                CanExecuteDelegate = x => true,
+                ExecuteDelegate = x => SaveImages()
+            };
 
-            //for (int i = 0; i < 1; i++)
-            //{
-            //    foreach (BasePost post in postFetcher.GetImages())
-            //    {
-            //        _imageList.Add(new BasePost(post));
-            //    }
-            //}
-            //Invoke settings class here
+            _clearSelectionCommand = new DelegateCommand
+            {
+                CanExecuteDelegate = x => true,
+                ExecuteDelegate = x => RemoveSelection()
+            };
+
+            _openSettingsCommand = new DelegateCommand
+            {
+                CanExecuteDelegate = x => true,
+                ExecuteDelegate = x => OpenSettings()
+            };
         }
 
         public void TriggerImageLoading()
         {
-            foreach (BasePost post in _postFetcher.GetImages())
+            if (!_imageLoader.IsBusy && !_imageLoader.CancellationPending)
             {
-                _imageList.Add(new BasePost(post));
+                ProgressBarVisibility = Visibility.Visible;
+                _threadList.Clear();
+                _imageLoader.RunWorkerAsync();
             }
         }
 
+        private void BackgroundLoaderWork(object sender, DoWorkEventArgs e)
+        {
+            foreach (BasePost post in _postFetcher.GetImages(TagsBox))
+            {
+                _threadList.Add(new BasePost(post));
+            }
+
+            if (_imageLoader.CancellationPending == true)
+            {
+                _threadList.Clear();
+            }
+        }
+
+        private void ServerListLoadWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            foreach (BasePost post in _threadList)
+            {
+                _imageList.Add(new BasePost(post));
+            }
+            _threadList.Clear();
+
+            if (GlobalSettings.Instance.TotalPosts == 0)
+            {
+                new MetroMessagebox("Fetch Error", "No posts for this tag/tags.").ShowDialog();
+            }
+
+            ProgressBarVisibility = Visibility.Hidden;
+        }
+
         #region Commands
+
+        public DelegateCommand PerformFetchCommand { get { return _performFetchCommand; } }
+
+        private void FetchImages()
+        {
+            ProgressBarVisibility = Visibility.Visible;
+            //Clear image list 
+            _imageList.Clear();
+            RaisePropertyChanged("MainImageList");
+            _imageList.Add(new BasePost());
+            _imageList[0].IsSelected = true;
+            _imageList.Clear();
+            GlobalSettings.Instance.CurrentPage = 1;
+
+            if (_imageLoader.IsBusy)
+            {
+                _imageLoader.CancelAsync();
+                //new MetroMessagebox("Note","Bacground loading is cancelled, press search again.");
+            }
+            else
+            {
+                _imageLoader.RunWorkerAsync();
+            }
+        }
+
+        public DelegateCommand PerformSelectedImagesDownloadCommand { get { return _performSelectedImagesDownloadCommand; } }
+
+        private void SaveImages()
+        {
+            foreach (BasePost post in MainImageList)
+            {
+                if (post.IsSelected)
+                {
+                    post.SaveImage();
+                }
+            }
+        }
+
+        public DelegateCommand ClearSelectionCommand { get { return _clearSelectionCommand; } }
+
+        private void RemoveSelection()
+        {
+            foreach (BasePost post in MainImageList)
+            {
+                if (post.IsSelected)
+                    post.IsSelected = false;
+            }
+        }
+
+        public DelegateCommand OpenSettingsCommand { get { return _openSettingsCommand; } }
+
+        private void OpenSettings()
+        {
+            if (!SettingsOpen)
+                SettingsOpen = true;
+            else
+                SettingsOpen = false;
+        }
 
         #region Close Command
         /// <summary>
