@@ -6,11 +6,12 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Windows;
 using booruReader.Helpers;
 
 namespace booruReader.Model
 {
-    class BasePost : INotifyPropertyChanged  
+    public class BasePost : INotifyPropertyChanged  
     {
         #region Private Fields
 
@@ -20,7 +21,8 @@ namespace booruReader.Model
         private string _saveLocation;
         private List<string> _tags;
         private bool _isSelected = false;
-        private BackgroundWorker imageSaver;
+        private Visibility _progressBarVisibility;
+        private int _downloadProgress = 0;
         #endregion
 
         #region Public 
@@ -36,6 +38,19 @@ namespace booruReader.Model
             {
                 _isSelected = value;
                 RaisePropertyChanged("IsSelected");
+            }
+        }
+
+        public int DownloadProgress
+        {
+            get
+            {
+                return _downloadProgress;
+            }
+            set
+            {
+                _downloadProgress = value;
+                RaisePropertyChanged("DownloadProgress");
             }
         } 
 
@@ -61,10 +76,24 @@ namespace booruReader.Model
             get { return _fileMD; }
             set { _fileMD = value; }
         }
+
+        public Visibility ProgressBarVisible
+        {
+            get
+            {
+                return _progressBarVisibility;
+            }
+            set
+            {
+                _progressBarVisibility = value;
+                RaisePropertyChanged("ProgressBarVisible");
+            }
+        }
         #endregion
 
         public BasePost(string previewURL, string fullPictureURL, PostRating rating, string fileMD, List<string> tags = null)
         {
+            ProgressBarVisible = Visibility.Hidden;
             FullPictureURL = fullPictureURL;
             PreviewURL = previewURL;
             ImageRating = rating;
@@ -82,6 +111,7 @@ namespace booruReader.Model
             FullPictureURL = post.FullPictureURL;
             PreviewURL = post.PreviewURL;
             FileMD = post.FileMD;
+
             _tags = null;
         }
 
@@ -90,9 +120,11 @@ namespace booruReader.Model
             FullPictureURL = string.Empty;
             PreviewURL = string.Empty;
             FileMD = string.Empty;
+
             _tags = null;
         }
 
+        #region Image saving stuff
         public void SaveImage()
         {
             string extension;
@@ -110,43 +142,36 @@ namespace booruReader.Model
 
                 if (!File.Exists(_saveLocation) && Directory.Exists(GlobalSettings.Instance.SavePath))
                 {
-                    imageSaver = new BackgroundWorker();
-                    imageSaver.DoWork += new DoWorkEventHandler(SaveTask);
-                    imageSaver.RunWorkerAsync();
+                    ProgressBarVisible = Visibility.Visible;
+                    WebClient client = new WebClient();
+                    client.DownloadProgressChanged += new DownloadProgressChangedEventHandler(client_DownloadProgressChanged);
+                    client.DownloadFileCompleted += new AsyncCompletedEventHandler(client_DownloadFileCompleted);
+                    client.DownloadFileAsync(new Uri(FullPictureURL), _saveLocation);
+                }
+                else if (File.Exists(_saveLocation))
+                {
+                    //File already exists set the bar to visible and full
+                    ProgressBarVisible = Visibility.Visible;
+                    DownloadProgress = 100;
                 }
 
             }
         }
 
-        private void SaveTask(object sender, DoWorkEventArgs e)
+        void client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
-            byte[] imageBytes;
-            HttpWebRequest imageRequest = (HttpWebRequest)WebRequest.Create(FullPictureURL);
-            WebResponse imageResponse = imageRequest.GetResponse();
+            double bytesIn = double.Parse(e.BytesReceived.ToString());
+            double totalBytes = double.Parse(e.TotalBytesToReceive.ToString());
+            double percentage = bytesIn / totalBytes * 100;
 
-            Stream responseStream = imageResponse.GetResponseStream();
-
-            using (BinaryReader br = new BinaryReader(responseStream))
-            {
-                imageBytes = br.ReadBytes(50000000);
-                br.Close();
-            }
-            responseStream.Close();
-            imageResponse.Close();
-
-            FileStream fs = new FileStream(_saveLocation, FileMode.Create);
-            BinaryWriter bw = new BinaryWriter(fs);
-            try
-            {
-                bw.Write(imageBytes);
-                //new MetroMessagebox("Download finished.", string.Format("File saved at: " + _saveLocation)).Show();
-            }
-            finally
-            {
-                fs.Close();
-                bw.Close();
-            }
+            DownloadProgress = int.Parse(Math.Truncate(percentage).ToString());
         }
+
+        void client_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
+        {
+            //Image downloaded
+        }
+        #endregion
 
         #region INotifyPropertyChanged Members
 

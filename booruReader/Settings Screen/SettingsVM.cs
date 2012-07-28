@@ -7,18 +7,18 @@ using booruReader.Helpers;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
+using System.Windows.Forms;
 
 namespace booruReader.Settings_Screen
 {
     class SettingsVM : INotifyPropertyChanged
     {
         #region Private variables
-
-        private bool _beenChanges = false;
         private bool _safeModeBrowsing;
         private ObservableCollection<BooruBoard> _providerList;
         private BooruBoard _currentSelectedBoard;
         private string _folderPath;
+        private DelegateCommand _selectFolderCommand;
         #endregion
         #region Public Variables
 
@@ -28,7 +28,6 @@ namespace booruReader.Settings_Screen
             set
             {
                 _safeModeBrowsing = value;
-                _beenChanges = true;
                 GlobalSettings.Instance.IsSafeMode = value;
                 RaisePropertyChanged("SafeModeBrowsing");
             }
@@ -40,7 +39,6 @@ namespace booruReader.Settings_Screen
             set
             {
                 _currentSelectedBoard = value;
-                _beenChanges = true;
 
                 //reset our current page as we changing provider
                 GlobalSettings.Instance.CurrentPage = 1;
@@ -56,8 +54,8 @@ namespace booruReader.Settings_Screen
             {
                 if (ValidatePath(value))
                 {
-                    _folderPath = string.Format(value + "\\");
-                    GlobalSettings.Instance.SavePath = string.Format(value + "\\");
+                    _folderPath = value;
+                    GlobalSettings.Instance.SavePath = value ;
                 }
 
                 RaisePropertyChanged("FolderPath");
@@ -82,10 +80,17 @@ namespace booruReader.Settings_Screen
                 _providerList.Add(new BooruBoard(board));
             }
 
-            CurrentSelectedBoard = GlobalSettings.Instance.CurrentBooru;
+            FolderPath = GlobalSettings.Instance.SavePath;
 
-            //Reset been changes as this was just initialisation
-            _beenChanges = false;
+            var index = _providerList.ElementAt(GlobalSettings.Instance.CurrentBooruIndex);
+            if (index != null)
+                CurrentSelectedBoard = index;
+
+            _selectFolderCommand = new DelegateCommand
+            {
+                CanExecuteDelegate = x => true,
+                ExecuteDelegate = x => SelectFolder()
+            };
         }
 
         private List<BooruBoard> GetProviders()
@@ -103,8 +108,10 @@ namespace booruReader.Settings_Screen
              */
 
             //Temporarily hardcoding sources. This will need further improvement
-            retList.Add(new BooruBoard("https://yande.re/post/index.xml", "Yande.re", ProviderAccessType.XML));
-            retList.Add(new BooruBoard("http://booru.datazbytes.net/post/index.xml", "DataZbyteS.net", ProviderAccessType.XML));
+            retList.Add(new BooruBoard("https://yande.re/", "Yande.re", ProviderAccessType.XML));
+            retList.Add(new BooruBoard("http://konachan.com/", "Konachan.com", ProviderAccessType.XML));
+            retList.Add(new BooruBoard("http://danbooru.donmai.us/", "Danbooru.donmai.us", ProviderAccessType.XML));
+            retList.Add(new BooruBoard("http://booru.datazbytes.net/", "DataZbyteS.net", ProviderAccessType.XML));
 
             return retList;
         }
@@ -112,26 +119,44 @@ namespace booruReader.Settings_Screen
         
         public void Closing()
         {
-            if(_beenChanges)
-            {
-                GlobalSettings.Instance.SaveSettings();
-            }
+            if (GlobalSettings.Instance.MainScreenVM != null)
+                GlobalSettings.Instance.MainScreenVM.SettingsOpen = false;
+
+            var index = ProviderList.IndexOf(GlobalSettings.Instance.CurrentBooru);
+            if (index >= 0)
+                GlobalSettings.Instance.CurrentBooruIndex = index;
+
+            GlobalSettings.Instance.SaveSettings();
         }
 
         private bool ValidatePath(string path)
         {
             bool retVal = false;
 
-            if (Directory.Exists(path))
-                retVal = true;
-            else
+            if (!string.IsNullOrEmpty(path))
             {
-                Directory.CreateDirectory(path);
                 if (Directory.Exists(path))
                     retVal = true;
+                else
+                {
+                    Directory.CreateDirectory(path);
+                    if (Directory.Exists(path))
+                        retVal = true;
+                }
             }
 
             return retVal;
+        }
+
+        public DelegateCommand SelectFolderCommand { get { return _selectFolderCommand; } }
+
+        private void SelectFolder()
+        {
+            FolderBrowserDialog folderDialog = new FolderBrowserDialog();
+            folderDialog.ShowDialog();
+
+            if (!string.IsNullOrEmpty(folderDialog.SelectedPath))
+                FolderPath = folderDialog.SelectedPath + "\\";
         }
 
         #region INotifyPropertyChanged Members

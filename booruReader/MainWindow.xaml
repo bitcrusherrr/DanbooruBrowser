@@ -106,9 +106,13 @@
             
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel Margin="2">
+                    <StackPanel Margin="1">
                         <Border Width="140" Height="140" BorderThickness="2" BorderBrush="#52524B">
-                            <Image Source="{Binding Path=PreviewURL}" Stretch="UniformToFill" />
+                            <Grid>
+                                <Image Source="{Binding Path=PreviewURL}" Stretch="UniformToFill" />
+                                <ProgressBar VerticalAlignment="Top" Height="3" Template="{StaticResource DeterminedProgressBar}" 
+                                             Value="{Binding Path=DownloadProgress}" Visibility="{Binding Path=ProgressBarVisible}"></ProgressBar>
+                            </Grid>
                         </Border>
                     </StackPanel>
                 </DataTemplate>
@@ -133,9 +137,10 @@
         <ProgressBar Visibility="{Binding ProgressBarVisibility}" Name="MainScreenProgressBar" Height="3" VerticalAlignment="Top" Template="{StaticResource CustomProgressBar}" 
                      IsIndeterminate="True" />
 
-        <StackPanel IsEnabled="{Binding SettingsOpen}" Style="{StaticResource StackStyle}" Margin="0,25,0,0">
-            <Settings:SettingsUserControl />
-        </StackPanel>
+        <Grid IsEnabled="{Binding SettingsOpen}" Style="{StaticResource GridStyle}" Margin="0,0,0,0">
+            <Grid Opacity="0.5" Background="{StaticResource MetroBackground}"></Grid>
+            <Settings:SettingsUserControl Width="300" />
+        </Grid>
         
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using booruReader.Helpers;
+using booruReader.Properties;
 
 namespace booruReader.Model
 {
@@ -17,32 +18,24 @@ namespace booruReader.Model
             set;
         }
 
-        public string SavePath = @"C:\TestFolder\";
+        public string SavePath;
 
         public bool IsSafeMode;
+
+        public int CurrentBooruIndex;
 
         public int CurrentPage;
 
         public int TotalPosts;
 
         public int PostsOffset;
+
+        public MainScreenVM MainScreenVM = null;
         #endregion
 
         private GlobalSettings() 
         {
-            //Load all thwe stuff'
-            //NOTE: Temp Code
-            /*
-             * Other sites
-             * http://chan.sankakucomplex.com/post/index.xml
-             * http://gelbooru.com/index.php?page=dapi&s=post&q=index&pid=1 this shit is all crazy bit &tags= for tags
-             */
-
-            //CurrentBooruURL = "http://booru.datazbytes.net/post/index.xml";
-            //This should load default board or whatever was used last
-            CurrentBooru = new BooruBoard("https://yande.re/post/index.xml", "Yandere", ProviderAccessType.XML);
-            //CurrentBooru = new BooruBoard("http://booru.datazbytes.net/post/index.xml", "Yandere", ProviderAccessType.XML);
-            IsSafeMode = false; 
+            LoadSettings();
             CurrentPage = 1;
             TotalPosts = 0;
             PostsOffset = 0;
@@ -65,7 +58,10 @@ namespace booruReader.Model
         /// </summary>
         public void SaveSettings()
         {
-
+            Settings.Default.SafeMode = IsSafeMode;
+            Settings.Default.SaveDirectory = SavePath;
+            Settings.Default.LastUsedBoardIndex = CurrentBooruIndex;
+            Settings.Default.Save();
         }
 
         /// <summary>
@@ -73,7 +69,9 @@ namespace booruReader.Model
         /// </summary>
         private void LoadSettings()
         {
-
+            IsSafeMode = Settings.Default.SafeMode;
+            SavePath = Settings.Default.SaveDirectory;
+            CurrentBooruIndex = Settings.Default.LastUsedBoardIndex;
         }
     }
 }

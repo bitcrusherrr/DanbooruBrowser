@@ -28,5 +28,10 @@ namespace booruReader.Settings_Screen
             viewModel = new SettingsVM();
             DataContext = viewModel;
         }
+
+        private void BackButtonClick(object sender, RoutedEventArgs e)
+        {
+            viewModel.Closing();
+        }
     }
 }

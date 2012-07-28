@@ -11,7 +11,7 @@ using System.Threading;
 
 namespace booruReader
 {
-    class MainScreenVM : INotifyPropertyChanged
+    public class MainScreenVM : INotifyPropertyChanged
     {
         #region Private variables
         private ObservableCollection<BasePost> _imageList;
@@ -81,6 +81,7 @@ namespace booruReader
             _imageLoader.DoWork += BackgroundLoaderWork;
             _imageLoader.RunWorkerCompleted += ServerListLoadWorkerCompleted;
             _imageLoader.WorkerSupportsCancellation = true;
+            GlobalSettings.Instance.MainScreenVM = this;
             SettingsOpen = false;
 
             ProgressBarVisibility = Visibility.Hidden;
@@ -179,11 +180,18 @@ namespace booruReader
 
         private void SaveImages()
         {
-            foreach (BasePost post in MainImageList)
+            if (string.IsNullOrEmpty(GlobalSettings.Instance.SavePath))
             {
-                if (post.IsSelected)
+                new MetroMessagebox("Error", "No save directory specified. \nPlease go to settings and select a folder.").ShowDialog();
+            }
+            else
+            {
+                foreach (BasePost post in MainImageList)
                 {
-                    post.SaveImage();
+                    if (post.IsSelected)
+                    {
+                        post.SaveImage();
+                    }
                 }
             }
         }
@@ -215,7 +223,7 @@ namespace booruReader
         /// </summary>
         public void Closing()
         {
-            //Do saving n shit
+            GlobalSettings.Instance.SaveSettings();
         }
         #endregion
 

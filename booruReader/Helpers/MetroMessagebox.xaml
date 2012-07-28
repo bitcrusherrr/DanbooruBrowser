@@ -5,7 +5,7 @@
         TextOptions.TextRenderingMode="ClearType"
         AllowsTransparency="True"
         Background="{x:Null}"
-        BorderBrush="#FF3F3F3F"
+        BorderBrush="{StaticResource DatazbytesGray}"
         WindowStyle="None"
         Title="MetroMessagebox" Height="150" Width="350">
     <Grid>
@@ -22,7 +22,7 @@
                    Opacity="0.999"
                    BlurRadius="16"
                    ShadowDepth="0" 
-                   Color="{DynamicResource DatazbytesGreenColour}"/>
+                   Color="{DynamicResource DatazbytesGrayColour}"/>
             </Border.Effect>
         </Border>
 
@@ -31,10 +31,10 @@
              VerticalAlignment="Top"
              Fill="{StaticResource MetroBackground}"
              PreviewMouseDown="HandleHeaderPreviewMouseDown" />
-        <Rectangle Height="3" VerticalAlignment="Top" PreviewMouseDown="HandleHeaderPreviewMouseDown" Fill="{StaticResource DatazbytesGreen}" />
-        <Rectangle Height="2" VerticalAlignment="Bottom" PreviewMouseDown="HandleHeaderPreviewMouseDown" Fill="{StaticResource DatazbytesGreen}" />
-        <Rectangle Width="2" HorizontalAlignment="Left" PreviewMouseDown="HandleHeaderPreviewMouseDown" Fill="{StaticResource DatazbytesGreen}" />
-        <Rectangle Width="2" HorizontalAlignment="Right" PreviewMouseDown="HandleHeaderPreviewMouseDown" Fill="{StaticResource DatazbytesGreen}" />
+        <Rectangle Height="3" VerticalAlignment="Top" PreviewMouseDown="HandleHeaderPreviewMouseDown" Fill="{StaticResource DatazbytesGray}" />
+        <Rectangle Height="2" VerticalAlignment="Bottom" PreviewMouseDown="HandleHeaderPreviewMouseDown" Fill="{StaticResource DatazbytesGray}" />
+        <Rectangle Width="2" HorizontalAlignment="Left" PreviewMouseDown="HandleHeaderPreviewMouseDown" Fill="{StaticResource DatazbytesGray}" />
+        <Rectangle Width="2" HorizontalAlignment="Right" PreviewMouseDown="HandleHeaderPreviewMouseDown" Fill="{StaticResource DatazbytesGray}" />
 
         <Button
              HorizontalAlignment="Right"
@@ -46,7 +46,7 @@
             <Image Source="Images\exit.png" Height="12" Width="12"/>
         </Button>
         
-        <Button Width="100" Height="25" Style="{StaticResource Metro}" BorderBrush="{StaticResource DatazbytesGreen}" 
+<Button Width="100" Height="25" Style="{StaticResource Metro}" BorderBrush="{StaticResource DatazbytesGray}" 
                 Margin="125,2,125,8" VerticalAlignment="Bottom" Foreground="White" Content="Ok" Click="ExitButtonClick"></Button>
         <TextBlock Height="25" Margin="2,2,0,0"  VerticalAlignment="Top" HorizontalAlignment="Left" Width="200" Background="{StaticResource DatazbytesGreen}" Foreground="White" Text="{Binding Caption}"></TextBlock>
         <TextBlock Margin="20,50" Foreground="White" Text="{Binding Message}"/>

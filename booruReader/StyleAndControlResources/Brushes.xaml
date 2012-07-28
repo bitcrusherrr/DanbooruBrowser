@@ -9,6 +9,10 @@
 
     <Color x:Key="DatazbytesGreenColour">#09BA00</Color>
     <SolidColorBrush x:Key="DatazbytesGreen" Color="{StaticResource DatazbytesGreenColour}"/>
+    
+    <Color x:Key="DatazbytesGrayColour">#FF3F3F3F</Color>
+    <SolidColorBrush x:Key="DatazbytesGray" Color="{StaticResource DatazbytesGrayColour}"/>
+
     <!-- *************COLORS START************* -->
 
     <!-- Theme Base Colors -->
