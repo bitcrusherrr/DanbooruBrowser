@@ -15,7 +15,7 @@
     <CheckBox Background="Transparent" Style="{StaticResource MetroCheckbox}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="8,9,0,0" Foreground="White"
           Width="80" Content="Safe Mode" ToolTip="All images with non safe rating will be ignored." FlowDirection="RightToLeft" IsChecked="{Binding SafeModeBrowsing}" />
     
-    <ComboBox IsSynchronizedWithCurrentItem="True" Width="140" Height="20" Margin="8,29,0,0" VerticalAlignment="Top" Background="{x:Null}"  ItemsSource="{Binding ProviderList}"
+    <ComboBox IsSynchronizedWithCurrentItem="True" Width="216" Height="20" Margin="8,29,0,0" VerticalAlignment="Top" Background="{x:Null}"  ItemsSource="{Binding ProviderList}"
               SelectedItem="{Binding CurrentSelectedBoard}" Foreground="{DynamicResource DatazbytesGray}" DisplayMemberPath="Name"
               BorderBrush="{StaticResource DatazbytesGray}" HorizontalAlignment="Left"  />      
     
@@ -23,9 +23,10 @@
             HorizontalAlignment="Left" Command="{Binding SelectFolderCommand}">
             <Image Source="Images\folder.png"/>
         </Button>
-        
-    <TextBox Height="23" Margin="40,55,0,00" VerticalAlignment="Top" HorizontalAlignment="Left" Width="150"  
-             Style="{StaticResource MetroTextBox}" Foreground="White" IsEnabled="False"
-                 ToolTip="Directory to save files." Text="{Binding FolderPath}"></TextBox>
+        <Border Height="23" Margin="40,55,0,00" VerticalAlignment="Top" HorizontalAlignment="Left" Width="184" BorderThickness="1" 
+                BorderBrush="{StaticResource DatazbytesGreen}">
+            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center"  
+              Foreground="White" ToolTip="Directory to save files." Text="{Binding FolderPath}"></TextBlock>
+        </Border>
     </Grid>
 </UserControl>

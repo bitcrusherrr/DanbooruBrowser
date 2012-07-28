@@ -39,7 +39,7 @@ namespace booruReader.Model
             if (finalURL.ToLowerInvariant().Contains(".donmai.us"))
             {
                 //danbooru HAS to be logged in to fetch shit
-                finalURL = string.Format(finalURL + "?login=booruReader" + "&password_hash=70de755c930112801ef5e002aff10cfe4cafd76d" + FormTags(tags));
+                finalURL = string.Format(finalURL + "?login=booruReader" + "&password_hash=70de755c930112801ef5e002aff10cfe4cafd76d");
 
                 if (GlobalSettings.Instance.CurrentPage > 1)
                     finalURL = string.Format(finalURL + "&page=" + GlobalSettings.Instance.CurrentPage);
@@ -99,6 +99,9 @@ namespace booruReader.Model
                                             case "file_url": post.FullPictureURL = NormaliseURL(reader.Value); break;
                                             case "preview_url": post.PreviewURL = NormaliseURL(reader.Value); break;
                                             case "md5": post.FileMD = reader.Value; break;
+                                            case "tags": post.Tags = reader.Value; break;
+                                            case "width": int.TryParse(reader.Value, out post._width); break;
+                                            case "height": int.TryParse(reader.Value, out post._height); break;
                                             case "rating":
                                                 {
                                                     if (reader.Value.Contains("s"))

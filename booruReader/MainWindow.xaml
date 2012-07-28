@@ -108,7 +108,7 @@
                 <DataTemplate>
                     <StackPanel Margin="1">
                         <Border Width="140" Height="140" BorderThickness="2" BorderBrush="#52524B">
-                            <Grid>
+                            <Grid ToolTip="{Binding Path=Dimensions}" Style="{StaticResource GridStyle}">
                                 <Image Source="{Binding Path=PreviewURL}" Stretch="UniformToFill" />
                                 <ProgressBar VerticalAlignment="Top" Height="3" Template="{StaticResource DeterminedProgressBar}" 
                                              Value="{Binding Path=DownloadProgress}" Visibility="{Binding Path=ProgressBarVisible}"></ProgressBar>

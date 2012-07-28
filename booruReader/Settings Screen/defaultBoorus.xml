@@ -1,0 +1,10 @@
+﻿<?xml version="1.0"?>
+<!--You can manually add new boards to the list and program will pick em up on launch-->
+<!--Currently provider HAS to be set to XML any other value would invalidate provider-->
+<!--Every site that has API based on danbooru should work, if not you should bug me about it-->
+<somethingBoorus xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Booru name="Danbooru.donmai.us" url="http://danbooru.donmai.us/" providerType="XML" />
+  <Booru name="Yande.re" url="https://yande.re/" providerType="XML" />
+  <Booru name="Konachan.com" url="http://konachan.com/" providerType="XML" />
+  <Booru name="Datazbytes.net" url="http://booru.datazbytes.net/" providerType="XML" />
+</somethingBoorus>

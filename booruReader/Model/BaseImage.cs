@@ -7,6 +7,7 @@ using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
+using System.Windows.Media;
 using booruReader.Helpers;
 
 namespace booruReader.Model
@@ -19,13 +20,18 @@ namespace booruReader.Model
         private string _fullPictureURL;
         private string _fileMD;
         private string _saveLocation;
-        private List<string> _tags;
+        private string _tags;
         private bool _isSelected = false;
+        private string _dimensions;
         private Visibility _progressBarVisibility;
         private int _downloadProgress = 0;
         #endregion
 
         #region Public 
+        //This 2 shouldnt really be public, but ill deal with that later
+        public int _width;
+        public int _height;
+
         public PostRating ImageRating;
 
         public bool IsSelected
@@ -54,9 +60,24 @@ namespace booruReader.Model
             }
         } 
 
-        public List<string> Tags
+        public string Tags
         {
             get { return _tags; }
+            set
+            {
+                _tags = value;
+                RaisePropertyChanged("Tags");
+            }
+        }
+
+        public string Dimensions
+        {
+            get { return _dimensions; }
+            set
+            {
+                _dimensions = value;
+                RaisePropertyChanged("Dimensions");
+            }
         }
 
         public string PreviewURL
@@ -91,28 +112,64 @@ namespace booruReader.Model
         }
         #endregion
 
-        public BasePost(string previewURL, string fullPictureURL, PostRating rating, string fileMD, List<string> tags = null)
+        /// <summary>
+        /// Depreciated test constructor
+        /// </summary>
+        /// <param name="previewURL"></param>
+        /// <param name="fullPictureURL"></param>
+        /// <param name="rating"></param>
+        /// <param name="fileMD"></param>
+        /// <param name="tags"></param>
+        public BasePost(string previewURL, string fullPictureURL, PostRating rating, string fileMD, string tags = null)
         {
             ProgressBarVisible = Visibility.Hidden;
             FullPictureURL = fullPictureURL;
             PreviewURL = previewURL;
             ImageRating = rating;
             FileMD = fileMD;
-
-            if (tags != null && tags.Count > 0)
-                _tags = new List<string>(tags);
-            else
-                _tags = null;
+            Tags = tags;
         }
 
+        /// <summary>
+        /// Constructor that SHOULD be used for images
+        /// </summary>
+        /// <param name="post"></param>
         public BasePost(BasePost post)
         {
             ImageRating = post.ImageRating;
             FullPictureURL = post.FullPictureURL;
             PreviewURL = post.PreviewURL;
             FileMD = post.FileMD;
+            Tags = post.Tags;
+            _width = post._width;
+            _height = post._height;
 
-            _tags = null;
+            TagFormatter(Tags);
+
+            Dimensions = "Resolution " + _width + "x" + _height + "\n" + "Tags: " + "\n" + Tags;
+        }
+
+        private void TagFormatter(string myString)
+        {
+            string[] words = myString.Split(' ');
+            string newTags = string.Empty;
+            int counter = 0;
+
+            foreach (string tag in words)
+            {
+                if (counter == 6)
+                {
+                    newTags += tag + "\n";
+                    counter = 0;
+                }
+                else
+                {
+                    newTags += tag + " ";
+                }
+                counter++;
+            }
+
+            Tags = newTags;
         }
 
         public BasePost()
@@ -120,8 +177,6 @@ namespace booruReader.Model
             FullPictureURL = string.Empty;
             PreviewURL = string.Empty;
             FileMD = string.Empty;
-
-            _tags = null;
         }
 
         #region Image saving stuff

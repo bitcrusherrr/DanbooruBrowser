@@ -5,7 +5,7 @@
     <Style x:Key="MetroTooltip" TargetType="{x:Type ToolTip}">
         <Setter Property ="Background" Value="{StaticResource MetroBackground}"/>
         <Setter Property ="Foreground" Value="White"/>
-        <Setter Property="Border.BorderBrush" Value="{StaticResource MetroBackground}"/>
+        <Setter Property="Border.BorderBrush" Value="{StaticResource DatazbytesGray}"/>
     </Style>
 
     <!--Listbox styling-->
@@ -37,6 +37,9 @@
     
     <Style x:Key="GridStyle" TargetType="Grid">
         <Setter Property="Visibility" Value="Collapsed" />
+        <Style.Resources>
+            <Style BasedOn="{StaticResource MetroTooltip}" TargetType="{x:Type ToolTip}" />
+        </Style.Resources>
         <Style.Triggers>
             <Trigger Property="IsEnabled" Value="True">
                 <Setter Property="Visibility" Value="Visible" />

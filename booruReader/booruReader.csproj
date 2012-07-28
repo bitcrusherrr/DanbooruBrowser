@@ -18,7 +18,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>x64</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -28,7 +28,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>x64</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -54,6 +54,9 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>booruIcon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.JScript" />
@@ -83,7 +86,6 @@
       <DependentUpon>MetroMessagebox.xaml</DependentUpon>
     </Compile>
     <Compile Include="Helpers\MetroMessageBoxVM.cs" />
-    <Compile Include="Settings Screen\ObservableColletion.cs" />
     <Compile Include="Settings Screen\SettingsUserControl.xaml.cs">
       <DependentUpon>SettingsUserControl.xaml</DependentUpon>
     </Compile>
@@ -162,18 +164,16 @@
     <Resource Include="Images\Toolbar\settings.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="3rd Party Libs\System.Windows.Interactivity.dll">
+    <EmbeddedResource Include="Settings Screen\defaultBoorus.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="3rd Party Libs\Caliburn.Micro.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    </EmbeddedResource>
     <Resource Include="Settings Screen\Images\folder.png" />
     <Resource Include="Settings Screen\Images\settings.png" />
     <Resource Include="Settings Screen\Images\back.png" />
     <Resource Include="Images\Toolbar\download.png" />
     <Resource Include="Images\Toolbar\cancel.png" />
     <Resource Include="Helpers\Images\exit.png" />
+    <Resource Include="booruIcon.ico" />
     <Content Include="Images\TestImages\Aliens.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

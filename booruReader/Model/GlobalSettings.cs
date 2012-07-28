@@ -10,13 +10,20 @@ namespace booruReader.Model
     public class GlobalSettings
     {
         private static GlobalSettings instance;
+        private BooruBoard _currentBooru;
 
         #region Global Variables
         public BooruBoard CurrentBooru
         {
-            get;
-            set;
+            get { return _currentBooru; }
+            set
+            {
+                _currentBooru = value;
+                ProviderChanged = true;
+            }
         }
+
+        public bool ProviderChanged = false;
 
         public string SavePath;
 
