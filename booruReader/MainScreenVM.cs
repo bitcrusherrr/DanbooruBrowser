@@ -156,24 +156,7 @@ namespace booruReader
         {
             if (GlobalSettings.Instance.ProviderChanged)
             {
-                ProgressBarVisibility = Visibility.Visible;
-                //Clear image list 
-                _imageList.Clear();
-                RaisePropertyChanged("MainImageList");
-                _imageList.Add(new BasePost());
-                _imageList[0].IsSelected = true;
-                _imageList.Clear();
-                GlobalSettings.Instance.CurrentPage = 1;
-
-                if (_imageLoader.IsBusy)
-                {
-                    _imageLoader.CancelAsync();
-                    //new MetroMessagebox("Note","Bacground loading is cancelled, press search again.");
-                }
-                else
-                {
-                    _imageLoader.RunWorkerAsync();
-                }
+                FetchImages();
             }
 
         }
@@ -191,12 +174,15 @@ namespace booruReader
             _imageList.Add(new BasePost());
             _imageList[0].IsSelected = true;
             _imageList.Clear();
-            GlobalSettings.Instance.CurrentPage = 1;
+
+            if (GlobalSettings.Instance.CurrentBooru.ProviderType == ProviderAccessType.Gelbooru)
+                GlobalSettings.Instance.CurrentPage = 0;
+            else
+                GlobalSettings.Instance.CurrentPage = 1;
 
             if (_imageLoader.IsBusy)
             {
                 _imageLoader.CancelAsync();
-                //new MetroMessagebox("Note","Bacground loading is cancelled, press search again.");
             }
             else
             {

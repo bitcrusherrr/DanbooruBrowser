@@ -1,10 +1,23 @@
 ﻿<?xml version="1.0"?>
-<!--You can manually add new boards to the list and program will pick em up on launch-->
-<!--Currently provider HAS to be set to XML any other value would invalidate provider-->
-<!--Every site that has API based on danbooru should work, if not you should bug me about it-->
+<!--
+You can manually add new boards to the list and program will pick em up on launch
+Usually provider value should be set XML
+Every site that has API based on danbooru should work, if not you should bug me about it
+Provider type GELBOORULIKE is used for gelbooru based sites as they have different API.
+
+If you want to test what api site has try adding post/index.xml?page=1&tags=and to the address for XML
+index.php?page=dapi&s=post&q=index&pid=1 for GELBOORULIKE
+
+Note:this XML file and manual addition are temporary at later stage all addition will be handled within the application and it will also resolve API's by itself
+shimmie based sites not supported and support not planned.
+  -->
 <somethingBoorus xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Booru name="Danbooru.donmai.us" url="http://danbooru.donmai.us/" providerType="XML" />
   <Booru name="Yande.re" url="https://yande.re/" providerType="XML" />
   <Booru name="Konachan.com" url="http://konachan.com/" providerType="XML" />
-  <Booru name="Datazbytes.net" url="http://booru.datazbytes.net/" providerType="XML" />
+  <Booru name="Gelbooru.com" url="http://gelbooru.com/" providerType="GELBOORULIKE" />
+  <Booru name="Safebooru.com" url="http://safebooru.org/" providerType="GELBOORULIKE" />
+  <Booru name="Nekobooru.net" url="http://nekobooru.net/" providerType="XML" />
+  <Booru name="Vectorbooru(ichijou.org)" url="http://ichijou.org/" providerType="XML" />
+  <Booru name="Booru.Datazbytes.net" url="http://booru.datazbytes.net/" providerType="XML" />
 </somethingBoorus>

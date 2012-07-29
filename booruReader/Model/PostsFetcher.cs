@@ -23,7 +23,7 @@ namespace booruReader.Model
         {      
             _PostFetcherImnageList.Clear();
 
-            if (GlobalSettings.Instance.CurrentBooru.ProviderType == ProviderAccessType.XML)
+            if (GlobalSettings.Instance.CurrentBooru.ProviderType == ProviderAccessType.XML || GlobalSettings.Instance.CurrentBooru.ProviderType == ProviderAccessType.Gelbooru)
                 GetXMLImages(_PostFetcherImnageList, tags);
             else
                 GetJSONImages(_PostFetcherImnageList, tags);
@@ -34,29 +34,35 @@ namespace booruReader.Model
         #region XML Fetch routines
         private void GetXMLImages(List<BasePost> ImageList, string tags)
         {
-            string finalURL = GlobalSettings.Instance.CurrentBooru.URL + "post/index.xml"; //+ tags from searchfield
-
-            if (finalURL.ToLowerInvariant().Contains(".donmai.us"))
+            string finalURL = string.Empty;
+            if (tags == null)
             {
-                //danbooru HAS to be logged in to fetch shit
+                tags = string.Empty;
+            }
+
+            //NOTE: refactor
+            //Manual exception for danbooru as it requires user for logging in
+            if (GlobalSettings.Instance.CurrentBooru.URL.ToLowerInvariant().Contains(".donmai.us"))
+            {
+                finalURL = GlobalSettings.Instance.CurrentBooru.URL + "post/index.xml"; //+ tags from searchfield
+
+                //danbooru HAS to be logged in to fetch shit which is pain in the ass
                 finalURL = string.Format(finalURL + "?login=booruReader" + "&password_hash=70de755c930112801ef5e002aff10cfe4cafd76d");
-
-                if (GlobalSettings.Instance.CurrentPage > 1)
-                    finalURL = string.Format(finalURL + "&page=" + GlobalSettings.Instance.CurrentPage);
-
-                if (tags != null)
-                {
-                    finalURL = string.Format(finalURL + "&page=" + GlobalSettings.Instance.CurrentPage + "&tags=" + FormTags(tags));
-                }
+                finalURL = string.Format(finalURL + "&page=" + GlobalSettings.Instance.CurrentPage + "&tags=" + FormTags(tags));
             }
             else
             {
-                if (GlobalSettings.Instance.CurrentPage > 1)
-                    finalURL = string.Format(finalURL + "?page=" + GlobalSettings.Instance.CurrentPage);
-
-                if (tags != null)
+                //Danbooru api based sites
+                if (GlobalSettings.Instance.CurrentBooru.ProviderType == ProviderAccessType.XML)
                 {
+                    finalURL = GlobalSettings.Instance.CurrentBooru.URL + "post/index.xml"; //+ tags from searchfield
                     finalURL = string.Format(finalURL + "?page=" + GlobalSettings.Instance.CurrentPage + "&tags=" + FormTags(tags));
+                }
+                //Gelbooru api based sites
+                else if (GlobalSettings.Instance.CurrentBooru.ProviderType == ProviderAccessType.Gelbooru)
+                {
+                    finalURL = GlobalSettings.Instance.CurrentBooru.URL + "index.php?page=dapi&s=post&q=index";
+                    finalURL = string.Format(finalURL + "&pid=" + GlobalSettings.Instance.CurrentPage + "&tags=" + FormTags(tags));
                 }
             }
 

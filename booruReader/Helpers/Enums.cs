@@ -15,6 +15,8 @@ namespace booruReader.Helpers
     public enum ProviderAccessType
     {
         XML,
-        JSON
+        JSON,
+        Gelbooru,
+        INVALID
     };
 }

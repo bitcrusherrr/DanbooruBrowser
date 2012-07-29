@@ -183,10 +183,16 @@ namespace booruReader.Settings_Screen
                 {
                     string booruName = node.SelectSingleNode("@name").Value.ToString();
                     string booruURL = node.SelectSingleNode("@url").Value.ToString();
-                    string booruPoviderType = node.SelectSingleNode("@providerType").Value.ToString();//NOTE: We dont care yet
+                    string booruPoviderType = node.SelectSingleNode("@providerType").Value.ToString();
 
-                    if (!string.IsNullOrEmpty(booruName) && !string.IsNullOrEmpty(booruURL) && !string.IsNullOrEmpty(booruPoviderType))
-                        booruList.Add(new BooruBoard(booruURL, booruName, ProviderAccessType.XML));
+                    ProviderAccessType providerType = ProviderAccessType.INVALID;
+                    if (booruPoviderType.ToLowerInvariant().Contains("xml"))
+                        providerType = ProviderAccessType.XML;
+                    else if (booruPoviderType.ToLowerInvariant().Contains("gelboorulike"))
+                        providerType = ProviderAccessType.Gelbooru;
+
+                    if (!string.IsNullOrEmpty(booruName) && !string.IsNullOrEmpty(booruURL) && providerType != ProviderAccessType.INVALID)
+                        booruList.Add(new BooruBoard(booruURL, booruName, providerType));
                 }
             }
             catch (Exception e)
