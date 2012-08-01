@@ -164,6 +164,7 @@
     <Resource Include="Images\Toolbar\settings.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Images\Toolbar\emptyImage.png" />
     <EmbeddedResource Include="Settings Screen\defaultBoorus.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>

@@ -25,6 +25,8 @@ namespace booruReader.Model
         private string _dimensions;
         private Visibility _progressBarVisibility;
         private int _downloadProgress = 0;
+        private bool _isVisible = true;
+        private string urlStore;
         #endregion
 
         #region Public 
@@ -83,7 +85,11 @@ namespace booruReader.Model
         public string PreviewURL
         {
             get { return _previewURL; }
-            set { _previewURL = value; }
+            set 
+            { 
+                _previewURL = value;
+                RaisePropertyChanged("PreviewURL");
+            }
         }
 
         public string FullPictureURL
@@ -110,6 +116,28 @@ namespace booruReader.Model
                 RaisePropertyChanged("ProgressBarVisible");
             }
         }
+
+        public bool IsVisible
+        {
+            get { return _isVisible; }
+            set
+            {
+                _isVisible = value;
+                if (value)
+                {
+                    PreviewURL = urlStore;
+                }
+                else
+                {
+                    //Theres an issue if false called twice in a roll we will lose the original url
+                    if (!PreviewURL.Contains("settings"))
+                    {
+                        urlStore = PreviewURL;
+                        PreviewURL = @"Images\Toolbar\emptyImage.png";
+                    }
+                }
+            }
+        }
         #endregion
 
         /// <summary>
@@ -124,10 +152,11 @@ namespace booruReader.Model
         {
             ProgressBarVisible = Visibility.Hidden;
             FullPictureURL = fullPictureURL;
-            PreviewURL = previewURL;
+            urlStore = PreviewURL = previewURL;
             ImageRating = rating;
             FileMD = fileMD;
             Tags = tags;
+            IsVisible = true;
         }
 
         /// <summary>
@@ -138,15 +167,24 @@ namespace booruReader.Model
         {
             ImageRating = post.ImageRating;
             FullPictureURL = post.FullPictureURL;
-            PreviewURL = post.PreviewURL;
+            urlStore = PreviewURL = post.PreviewURL;
             FileMD = post.FileMD;
             Tags = post.Tags;
             _width = post._width;
             _height = post._height;
+            IsVisible = true;
 
             TagFormatter(Tags);
 
             Dimensions = "Resolution " + _width + "x" + _height + "\n" + "Tags: " + "\n" + Tags;
+        }
+
+        public BasePost()
+        {
+            FullPictureURL = string.Empty;
+            urlStore = PreviewURL = string.Empty;
+            FileMD = string.Empty;
+            IsVisible = true;
         }
 
         private void TagFormatter(string myString)
@@ -172,12 +210,6 @@ namespace booruReader.Model
             Tags = newTags;
         }
 
-        public BasePost()
-        {
-            FullPictureURL = string.Empty;
-            PreviewURL = string.Empty;
-            FileMD = string.Empty;
-        }
 
         #region Image saving stuff
         public void SaveImage()

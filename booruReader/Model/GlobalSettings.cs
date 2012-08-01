@@ -38,6 +38,9 @@ namespace booruReader.Model
         public int PostsOffset;
 
         public MainScreenVM MainScreenVM = null;
+
+        //NOTE: Crappy hack to to enable loading of "offloaded" images
+        public int LastHiddenIndex = 0;
         #endregion
 
         private GlobalSettings() 

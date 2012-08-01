@@ -142,6 +142,8 @@ namespace booruReader
             {
                 _imageList.Add(new BasePost(post));
             }
+
+            TriggerOffloading(_threadList.Count);
             _threadList.Clear();
 
             if (GlobalSettings.Instance.TotalPosts == 0)
@@ -158,8 +160,63 @@ namespace booruReader
             {
                 FetchImages();
             }
-
         }
+
+
+        #region Image Offloading 
+        private int imagesLastLoaded;
+        private int cahcedLastHidden;
+        public void TriggerOffloading(int imagesToHide)
+        {
+            //This is enough to fill 2x 1920x1200 screens with images
+            //Will need some better number or perhaps figure out how many images per screen we can fit
+            imagesLastLoaded = imagesToHide;
+            if (GlobalSettings.Instance.PostsOffset > 100)
+            {
+                int offsetIndex = 0;
+
+                if (cahcedLastHidden > GlobalSettings.Instance.LastHiddenIndex)
+                {
+                    for (int i = 0; i <= (cahcedLastHidden + imagesToHide); i++)
+                    {
+                        if (i < _imageList.Count)
+                        {
+                            offsetIndex = i;
+                            _imageList[offsetIndex].IsVisible = false;
+                        }
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i <= imagesToHide; i++)
+                    {
+                        offsetIndex = i + GlobalSettings.Instance.LastHiddenIndex;
+                        if (offsetIndex < _imageList.Count)
+                        {
+                            _imageList[offsetIndex].IsVisible = false;
+                        }
+                    }
+                }
+
+                GlobalSettings.Instance.LastHiddenIndex = offsetIndex;
+                cahcedLastHidden = offsetIndex;
+            }
+        }
+
+        public void TriggerReloading()
+        {
+            int i = 0;
+            while (i <= imagesLastLoaded && GlobalSettings.Instance.LastHiddenIndex >= 0)
+            {
+                i++;
+                _imageList[GlobalSettings.Instance.LastHiddenIndex].IsVisible = true;
+                
+                if(i<=imagesLastLoaded)
+                    GlobalSettings.Instance.LastHiddenIndex--;
+            }
+        }
+
+        #endregion
 
         #region Commands
 
@@ -174,6 +231,7 @@ namespace booruReader
             _imageList.Add(new BasePost());
             _imageList[0].IsSelected = true;
             _imageList.Clear();
+            GlobalSettings.Instance.LastHiddenIndex = 0;
 
             if (GlobalSettings.Instance.CurrentBooru.ProviderType == ProviderAccessType.Gelbooru)
                 GlobalSettings.Instance.CurrentPage = 0;

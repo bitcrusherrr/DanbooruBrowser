@@ -113,6 +113,22 @@ namespace booruReader
                         }
                     }
                 }
+
+                //check if last hidden images is about to be visible and start reloading it
+                if (GlobalSettings.Instance.LastHiddenIndex > 0)// We want to have some hidden images 
+                {
+                    ListBoxItem listitem = ImageList.ItemContainerGenerator.ContainerFromItem(ImageList.Items[GlobalSettings.Instance.LastHiddenIndex]) as ListBoxItem;
+                    if (listitem != null)
+                    {
+                        GeneralTransform transform = listitem.TransformToVisual(ImageList);
+                        Point childToParentCoordinates = transform.Transform(new Point(0, 0));
+                        if (childToParentCoordinates.Y >= 0 &&
+                            childToParentCoordinates.Y + (listitem.ActualHeight / 4) <= ImageList.ActualHeight)
+                        {
+                            viewModel.TriggerReloading();
+                        }
+                    }
+                }
             }
         }
 
