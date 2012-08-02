@@ -87,7 +87,7 @@ namespace booruReader
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-
+            GlobalSettings.Instance.PerformVersionCheck();
         }
 
         private void LoadMoreImages()
@@ -112,20 +112,38 @@ namespace booruReader
                             break;
                         }
                     }
-                }
+                }              
+            }
 
-                //check if last hidden images is about to be visible and start reloading it
-                if (GlobalSettings.Instance.LastHiddenIndex > 0)// We want to have some hidden images 
+            //Should be able to trigger reload regardless if we ended fetching whole internet
+            ImageReloading();
+        }
+
+        private void ImageReloading()
+        {
+            //check if last hidden images is about to be visible and start reloading it
+            if (GlobalSettings.Instance.LastHiddenIndex > 0)// We want to have some hidden images 
+            {
+                ListBoxItem listitem = ImageList.ItemContainerGenerator.ContainerFromItem(ImageList.Items[GlobalSettings.Instance.LastHiddenIndex]) as ListBoxItem;
+                if (listitem != null)
                 {
-                    ListBoxItem listitem = ImageList.ItemContainerGenerator.ContainerFromItem(ImageList.Items[GlobalSettings.Instance.LastHiddenIndex]) as ListBoxItem;
-                    if (listitem != null)
+                    GeneralTransform transform = listitem.TransformToVisual(ImageList);
+                    Point childToParentCoordinates = transform.Transform(new Point(0, 0));
+                    if (childToParentCoordinates.Y >= 0 &&
+                        childToParentCoordinates.Y + (listitem.ActualHeight / 4) <= ImageList.ActualHeight)
                     {
-                        GeneralTransform transform = listitem.TransformToVisual(ImageList);
-                        Point childToParentCoordinates = transform.Transform(new Point(0, 0));
-                        if (childToParentCoordinates.Y >= 0 &&
-                            childToParentCoordinates.Y + (listitem.ActualHeight / 4) <= ImageList.ActualHeight)
+                        viewModel.TriggerReloading();
+                    }
+
+                    ListBoxItem listitem2 = ImageList.ItemContainerGenerator.ContainerFromItem(ImageList.Items[GlobalSettings.Instance.LastHiddenIndex]) as ListBoxItem;
+                    if (listitem2 != null)
+                    {
+                        GeneralTransform transform2 = listitem2.TransformToVisual(ImageList);
+                        Point childToParentCoordinates2 = transform2.Transform(new Point(0, 0));
+                        if (childToParentCoordinates2.Y >= 0 &&
+                            childToParentCoordinates2.Y + (listitem2.ActualHeight / 4) <= listitem2.ActualHeight)
                         {
-                            viewModel.TriggerReloading();
+                            ImageReloading(); //Just to check if last item is still visible
                         }
                     }
                 }

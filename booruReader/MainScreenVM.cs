@@ -8,6 +8,7 @@ using booruReader.Model;
 using System.ComponentModel;
 using System.Windows;
 using System.Threading;
+using System.Diagnostics;
 
 namespace booruReader
 {
@@ -177,6 +178,7 @@ namespace booruReader
 
                 if (cahcedLastHidden > GlobalSettings.Instance.LastHiddenIndex)
                 {
+                    Debug.WriteLine("Hiding: " + (cahcedLastHidden + imagesToHide) + " Images.");
                     for (int i = 0; i <= (cahcedLastHidden + imagesToHide); i++)
                     {
                         if (i < _imageList.Count)
@@ -188,6 +190,7 @@ namespace booruReader
                 }
                 else
                 {
+                    Debug.WriteLine("Hiding: " + imagesToHide + " Images.");
                     for (int i = 0; i <= imagesToHide; i++)
                     {
                         offsetIndex = i + GlobalSettings.Instance.LastHiddenIndex;
@@ -198,6 +201,7 @@ namespace booruReader
                     }
                 }
 
+                Debug.WriteLine("Last hidden image index: " + offsetIndex);
                 GlobalSettings.Instance.LastHiddenIndex = offsetIndex;
                 cahcedLastHidden = offsetIndex;
             }
@@ -205,15 +209,17 @@ namespace booruReader
 
         public void TriggerReloading()
         {
+            Debug.WriteLine("Reloading triggered for index: " + GlobalSettings.Instance.LastHiddenIndex + " For: " + imagesLastLoaded + " images");
             int i = 0;
             while (i <= imagesLastLoaded && GlobalSettings.Instance.LastHiddenIndex >= 0)
             {
                 i++;
                 _imageList[GlobalSettings.Instance.LastHiddenIndex].IsVisible = true;
-                
+                //Debug.WriteLine("Index: " + GlobalSettings.Instance.LastHiddenIndex + " Is Visible: " + _imageList[GlobalSettings.Instance.LastHiddenIndex].IsVisible);
                 if(i<=imagesLastLoaded)
                     GlobalSettings.Instance.LastHiddenIndex--;
             }
+            //Debug.WriteLine("Reloaded: " + imagesLastLoaded + " Last hidden index: " + GlobalSettings.Instance.LastHiddenIndex + " Visibility: " + _imageList[GlobalSettings.Instance.LastHiddenIndex].IsVisible);
         }
 
         #endregion
@@ -232,6 +238,7 @@ namespace booruReader
             _imageList[0].IsSelected = true;
             _imageList.Clear();
             GlobalSettings.Instance.LastHiddenIndex = 0;
+            cahcedLastHidden = 0;
 
             if (GlobalSettings.Instance.CurrentBooru.ProviderType == ProviderAccessType.Gelbooru)
                 GlobalSettings.Instance.CurrentPage = 0;

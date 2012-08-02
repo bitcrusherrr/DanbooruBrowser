@@ -125,12 +125,15 @@ namespace booruReader.Model
                 _isVisible = value;
                 if (value)
                 {
-                    PreviewURL = urlStore;
+                    if (PreviewURL.Contains("emptyImage"))
+                    {
+                        PreviewURL = urlStore;
+                    }
                 }
                 else
                 {
                     //Theres an issue if false called twice in a roll we will lose the original url
-                    if (!PreviewURL.Contains("settings"))
+                    if (!PreviewURL.Contains("emptyImage"))
                     {
                         urlStore = PreviewURL;
                         PreviewURL = @"Images\Toolbar\emptyImage.png";

@@ -15,8 +15,8 @@
     <CheckBox Background="Transparent" Style="{StaticResource MetroCheckbox}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="8,9,0,0" Foreground="White"
           Width="80" Content="Safe Mode" ToolTip="All images with non safe rating will be ignored." FlowDirection="RightToLeft" IsChecked="{Binding SafeModeBrowsing}" />
     
-    <ComboBox IsSynchronizedWithCurrentItem="True" Width="216" Height="20" Margin="8,29,0,0" VerticalAlignment="Top" Background="{x:Null}"  ItemsSource="{Binding ProviderList}"
-              SelectedItem="{Binding CurrentSelectedBoard}" Foreground="White" DisplayMemberPath="Name"
+    <ComboBox IsSynchronizedWithCurrentItem="True" Width="216" Height="20" Margin="8,29,0,0" VerticalAlignment="Top" ItemsSource="{Binding ProviderList}"
+              SelectedItem="{Binding CurrentSelectedBoard}" DisplayMemberPath="Name"
               BorderBrush="{StaticResource DatazbytesGray}" HorizontalAlignment="Left"  />      
     
     <Button ToolTip="Select Folder" Style="{StaticResource Metro}" Width="23" Height="23" Margin="8,55,0,0" VerticalAlignment="Top"
@@ -28,5 +28,12 @@
             <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center"  
               Foreground="White" ToolTip="Directory to save files." Text="{Binding FolderPath}"></TextBlock>
         </Border>
+        
+       <CheckBox Visibility="Collapsed" Background="Transparent" Style="{StaticResource MetroCheckbox}" VerticalAlignment="Top" 
+                 HorizontalAlignment="Left" Margin="8,85,0,0" Foreground="White"
+          Width="145" Content="Check for latest version" ToolTip="Check if you are using latest version on startup." FlowDirection="RightToLeft" 
+                 IsChecked="{Binding DoCheckIfLatest}" />
+
+    
     </Grid>
 </UserControl>

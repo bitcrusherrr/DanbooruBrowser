@@ -169,6 +169,27 @@
         </Style.Resources>
     </Style>
     
+    <!--ComboBox-->
+    <Style x:Key="CustomComboBox"  TargetType="{x:Type ComboBox}">
+        <Style.Resources>
+            <Style TargetType="{x:Type ComboBoxItem}" x:Key="ItemStyle">
+                <Setter Property="Background" Value="{StaticResource MetroBackground}" />
+            </Style>
+        </Style.Resources>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="MinWidth" Value="60"/>
+        <Setter Property="UIElement.SnapsToDevicePixels" Value="True"/>
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+        <Setter Property="ScrollViewer.CanContentScroll" Value="True"/>
+        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="FrameworkElement.FocusVisualStyle" Value="{x:Null}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource DatazbytesGreen}"/>
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Background" Value="{StaticResource MetroBackground}" />
+    </Style>
+    
     <!--ScrollBar Styles & Templates-->
     <ControlTemplate x:Key="HorizontalScrollBarTemplate" TargetType="{x:Type ScrollBar}">
         <Grid x:Name="Root">

@@ -58,5 +58,17 @@ namespace booruReader.Properties {
                 this["LastUsedBoardIndex"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool CheckForLatest {
+            get {
+                return ((bool)(this["CheckForLatest"]));
+            }
+            set {
+                this["CheckForLatest"] = value;
+            }
+        }
     }
 }
