@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -165,14 +165,11 @@ namespace booruReader
 
 
         #region Image Offloading 
-        private int imagesLastLoaded;
         private int cahcedLastHidden;
         public void TriggerOffloading(int imagesToHide)
         {
             //This is enough to fill 2x 1920x1200 screens with images
-            //Will need some better number or perhaps figure out how many images per screen we can fit
-            imagesLastLoaded = imagesToHide;
-            if (GlobalSettings.Instance.PostsOffset > 100)
+            if (GlobalSettings.Instance.PostsOffset > 200)
             {
                 int offsetIndex = 0;
 
@@ -209,14 +206,15 @@ namespace booruReader
 
         public void TriggerReloading()
         {
-            Debug.WriteLine("Reloading triggered for index: " + GlobalSettings.Instance.LastHiddenIndex + " For: " + imagesLastLoaded + " images");
             int i = 0;
-            while (i <= imagesLastLoaded && GlobalSettings.Instance.LastHiddenIndex >= 0)
+            int imagesLoaded = GlobalSettings.Instance.PostsOffset / GlobalSettings.Instance.CurrentPage;
+            Debug.WriteLine("Reloading triggered for index: " + GlobalSettings.Instance.LastHiddenIndex + " For: " + imagesLoaded + " images");
+            while (i <= imagesLoaded && GlobalSettings.Instance.LastHiddenIndex >= 0)
             {
                 i++;
                 _imageList[GlobalSettings.Instance.LastHiddenIndex].IsVisible = true;
                 //Debug.WriteLine("Index: " + GlobalSettings.Instance.LastHiddenIndex + " Is Visible: " + _imageList[GlobalSettings.Instance.LastHiddenIndex].IsVisible);
-                if(i<=imagesLastLoaded)
+                if (i <= imagesLoaded)
                     GlobalSettings.Instance.LastHiddenIndex--;
             }
             //Debug.WriteLine("Reloaded: " + imagesLastLoaded + " Last hidden index: " + GlobalSettings.Instance.LastHiddenIndex + " Visibility: " + _imageList[GlobalSettings.Instance.LastHiddenIndex].IsVisible);
