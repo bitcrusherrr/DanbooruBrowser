@@ -172,6 +172,10 @@
     <Resource Include="Images\Toolbar\settings.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Preview Screen\Images\Toolbar\list.png" />
+    <Resource Include="Preview Screen\Images\Toolbar\folder.png" />
+    <Resource Include="Preview Screen\Images\Toolbar\heart.png" />
+    <Resource Include="Preview Screen\Images\Toolbar\back.png" />
     <Resource Include="Preview Screen\Images\Toolbar\cancel.png" />
     <Resource Include="Preview Screen\Images\Toolbar\download.png" />
     <Resource Include="Preview Screen\Images\Toolbar\emptyImage.png" />

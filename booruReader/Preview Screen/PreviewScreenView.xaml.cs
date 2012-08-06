@@ -10,6 +10,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using booruReader.Model;
+using booruReader.Helpers;
 
 namespace booruReader.Preview_Screen
 {
@@ -20,12 +22,18 @@ namespace booruReader.Preview_Screen
     {
         PreviewScreenVM PreviewVM;
 
-        public PrviewScreenView()
+        public PrviewScreenView(BasePost post)
         {
             InitializeComponent();
 
-            PreviewVM = new PreviewScreenVM();
+            PreviewVM = new PreviewScreenVM(post);
             DataContext = PreviewVM;
+
+            if (GlobalSettings.Instance.PreviewScreenWidth > 0)
+            {
+                this.Width = GlobalSettings.Instance.PreviewScreenWidth;
+                this.Height = GlobalSettings.Instance.PreviewScreenHeight;
+            }
         }
 
         private DateTime m_headerLastClicked;
@@ -51,26 +59,43 @@ namespace booruReader.Preview_Screen
 
         private void ExitButtonClick(object sender, RoutedEventArgs e)
         {
+            if (this.Width > 0 && this.Height > 0)
+            {
+                GlobalSettings.Instance.PreviewScreenWidth = this.Width;
+                GlobalSettings.Instance.PreviewScreenHeight = this.Height;
+            }
             this.Hide();
-            //PreviewVM.Closing();
             this.Close();
         }
 
-        private void MinimiseButtonClick(object sender, RoutedEventArgs e)
+        private void ShowTaglist(object sender, RoutedEventArgs e)
         {
-            this.WindowState = System.Windows.WindowState.Minimized;
+            PreviewVM.ShowTags();
+        }    
+
+        private void DownloadImage(object sender, RoutedEventArgs e)
+        {
+            PreviewVM.Download();
         }
 
-        private void MaximiseButtonClick(object sender, RoutedEventArgs e)
+        //This 2 functions are hackaround to make sure window loads on top of main application at first
+        private void Window_ContentRendered(object sender, EventArgs e) 
+        { 
+            this.Topmost = false; 
+        }
+
+        private void Window_Initialized(object sender, EventArgs e) 
+        { 
+            this.Topmost = true; 
+        }
+
+        private void PrviewScreenView_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (this.WindowState != System.Windows.WindowState.Maximized)
+            if (this.Width > 0 && this.Height > 0)
             {
-                this.WindowState = System.Windows.WindowState.Maximized;
-               // LoadMoreImages();
+                GlobalSettings.Instance.PreviewScreenWidth = this.Width;
+                GlobalSettings.Instance.PreviewScreenHeight = this.Height;
             }
-            else
-                this.WindowState = System.Windows.WindowState.Normal;
         }
-
     }
 }

@@ -34,11 +34,11 @@ namespace booruReader.Model
 
         public int CurrentBooruIndex;
 
-        public int CurrentPage;
+        public int CurrentPage; //Should be moved to main screen VM
 
-        public int TotalPosts;
+        public int TotalPosts; //Should be moved to main screen VM
 
-        public int PostsOffset;
+        public int PostsOffset; //Should be moved to main screen VM
 
         public MainScreenVM MainScreenVM = null;
 
@@ -46,6 +46,15 @@ namespace booruReader.Model
         public int LastHiddenIndex = 0;
 
         public bool CheckLatest = false;
+
+        //Keep the screensizes
+        public double PreviewScreenWidth { get; set; }
+
+        public double PreviewScreenHeight { get; set; }
+
+        public double MainScreenWidth { get; set; }
+
+        public double MainScreenHeight { get; set; }
         #endregion
 
         private GlobalSettings() 
@@ -113,6 +122,10 @@ namespace booruReader.Model
             Settings.Default.SaveDirectory = SavePath;
             Settings.Default.LastUsedBoardIndex = CurrentBooruIndex;
             Settings.Default.CheckForLatest = CheckLatest;
+            Settings.Default.PreviewHeight = PreviewScreenHeight;
+            Settings.Default.PreviewWidth = PreviewScreenWidth;
+            Settings.Default.MainHeight = MainScreenHeight;
+            Settings.Default.MainWidth =  MainScreenWidth;
             Settings.Default.Save();
         }
 
@@ -125,6 +138,10 @@ namespace booruReader.Model
             SavePath = Settings.Default.SaveDirectory;
             CurrentBooruIndex = Settings.Default.LastUsedBoardIndex;
             CheckLatest = Settings.Default.CheckForLatest;
+            PreviewScreenHeight = Settings.Default.PreviewHeight;
+            PreviewScreenWidth = Settings.Default.PreviewWidth;
+            MainScreenHeight = Settings.Default.MainHeight;
+            MainScreenWidth = Settings.Default.MainWidth;
         }
     }
 }

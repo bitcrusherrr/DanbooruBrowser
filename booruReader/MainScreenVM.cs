@@ -9,6 +9,7 @@ using System.ComponentModel;
 using System.Windows;
 using System.Threading;
 using System.Diagnostics;
+using booruReader.Preview_Screen;
 
 namespace booruReader
 {
@@ -27,6 +28,9 @@ namespace booruReader
         //private bool _tagsChanged = false;
         private List<BasePost> _threadList;
         private bool _settingsOpen;
+
+        //This list is used to keep track of all open preview screens
+        private List<PrviewScreenView> _previewList;
         #endregion
 
         #region Public variables
@@ -78,12 +82,14 @@ namespace booruReader
         public MainScreenVM()
         {
             _imageList = new ObservableCollection<BasePost>();
+            _previewList = new List<PrviewScreenView>();
             _postFetcher = new PostsFetcher();
             _threadList = new List<BasePost>();
             _imageLoader = new BackgroundWorker();
             _imageLoader.DoWork += BackgroundLoaderWork;
             _imageLoader.RunWorkerCompleted += ServerListLoadWorkerCompleted;
             _imageLoader.WorkerSupportsCancellation = true;
+            //Ugly hack for settings vm
             GlobalSettings.Instance.MainScreenVM = this;
             SettingsOpen = false;
 
@@ -294,12 +300,23 @@ namespace booruReader
                 SettingsOpen = false;
         }
 
+        private void CloseAllPreviews()
+        {
+            foreach (PrviewScreenView preview in _previewList)
+            {
+                preview.Close();
+            }
+
+            _previewList.Clear();
+        }
+
         #region Close Command
         /// <summary>
         /// Close command that handles saving of the notes for the databases.
         /// </summary>
         public void Closing()
         {
+            CloseAllPreviews();
             GlobalSettings.Instance.SaveSettings();
         }
         #endregion
@@ -319,5 +336,30 @@ namespace booruReader
         }
 
         #endregion
+
+        internal void PreviewImage(string previewURL)
+        {
+            var post = _imageList.FirstOrDefault(x => x.PreviewURL == previewURL);
+            if (post != null)
+            {
+                PrviewScreenView preview =  new PrviewScreenView(post);
+                _previewList.Add(preview);
+                preview.Show();
+            }
+
+            //cleanup preview images
+            int index = 0;
+            while (index < _previewList.Count)
+            {
+                if (_previewList[index].IsLoaded == false)
+                {
+                    _previewList.RemoveAt(index);
+                }
+                else
+                {
+                    index++;
+                }
+            }
+        }
     }
 }

@@ -34,6 +34,12 @@ namespace booruReader
             DataContext = viewModel;
 
             ImageList.SelectedItem = null;
+
+            if (GlobalSettings.Instance.MainScreenWidth > 0)
+            {
+                this.Width = GlobalSettings.Instance.MainScreenWidth;
+                this.Height = GlobalSettings.Instance.MainScreenHeight;
+            }
         }
 
         private DateTime m_headerLastClicked;
@@ -59,6 +65,12 @@ namespace booruReader
 
         private void ExitButtonClick(object sender, RoutedEventArgs e)
         {
+            if (this.Width > 0 && this.Height > 0)
+            {
+                GlobalSettings.Instance.MainScreenWidth = this.Width;
+                GlobalSettings.Instance.MainScreenHeight = this.Height;
+            }
+
             this.Hide();
             viewModel.Closing();
             this.Close();
@@ -134,16 +146,18 @@ namespace booruReader
                     {
                         viewModel.TriggerReloading();
                     }
-
-                    ListBoxItem listitem2 = ImageList.ItemContainerGenerator.ContainerFromItem(ImageList.Items[GlobalSettings.Instance.LastHiddenIndex]) as ListBoxItem;
-                    if (listitem2 != null)
+                    else if (GlobalSettings.Instance.LastHiddenIndex > 0)
                     {
-                        GeneralTransform transform2 = listitem2.TransformToVisual(ImageList);
-                        Point childToParentCoordinates2 = transform2.Transform(new Point(0, 0));
-                        if (childToParentCoordinates2.Y >= 0 &&
-                            childToParentCoordinates2.Y + (listitem2.ActualHeight / 4) <= listitem2.ActualHeight)
+                        ListBoxItem listitem2 = ImageList.ItemContainerGenerator.ContainerFromItem(ImageList.Items[GlobalSettings.Instance.LastHiddenIndex]) as ListBoxItem;
+                        if (listitem2 != null)
                         {
-                            ImageReloading(); //Just to check if last item is still visible
+                            GeneralTransform transform2 = listitem2.TransformToVisual(ImageList);
+                            Point childToParentCoordinates2 = transform2.Transform(new Point(0, 0));
+                            if (childToParentCoordinates2.Y >= 0 &&
+                                childToParentCoordinates2.Y + (listitem2.ActualHeight / 4) <= listitem2.ActualHeight)
+                            {
+                                ImageReloading(); //Just to check if last item is still visible
+                            }
                         }
                     }
                 }
@@ -162,6 +176,13 @@ namespace booruReader
                 viewModel.TagsBox = (sender as TextBox).Text;
                 viewModel.PerformFetchCommand.Execute(true);
             }
+        }
+
+        private void Image_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left && e.ClickCount == 2)
+                if (sender is Image)
+                    viewModel.PreviewImage((sender as Image).Source.ToString());
         }
     }
 }
