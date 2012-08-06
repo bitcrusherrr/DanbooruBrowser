@@ -1,0 +1,67 @@
+﻿<Window x:Class="booruReader.Preview_Screen.PrviewScreenView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Preview" Height="300" Width="300"
+        TextOptions.TextFormattingMode="Display"
+        TextOptions.TextRenderingMode="ClearType"
+        AllowsTransparency="True"
+        Background="{x:Null}"
+        BorderBrush="#FF3F3F3F"
+        WindowStyle="None"
+        ResizeMode="CanResizeWithGrip">
+    <Grid>
+<Border
+             x:Name="m_edgeBorder"
+             x:FieldModifier="private"
+             Margin="0"
+             Background="{StaticResource MetroBackground}"
+             IsHitTestVisible="False"
+             IsEnabled="True">
+            <Border.Effect>
+                <DropShadowEffect
+                   Opacity="0.999"
+                   BlurRadius="16" />
+            </Border.Effect>
+
+        </Border>
+
+        <Rectangle
+             Height="38"
+             VerticalAlignment="Top"
+             Fill="{StaticResource MetroBackground}"
+             PreviewMouseDown="HandleHeaderPreviewMouseDown" />
+        <Rectangle Height="3" VerticalAlignment="Top" PreviewMouseDown="HandleHeaderPreviewMouseDown" Fill="{StaticResource DatazbytesGreen}" />
+
+        <Button
+             HorizontalAlignment="Right"
+             Margin="0,8,8,0"
+             VerticalAlignment="Top"
+             ToolTip="Exit"
+             Style="{StaticResource Metro}"
+             Click="ExitButtonClick" Height="16" Width="16">
+            <Image Source="Images\Toolbar\exit.png" Height="12" Width="12"/>
+        </Button>
+
+        <Button
+             VerticalAlignment="Top"
+             HorizontalAlignment="Right"
+             Margin="0,8,28,0"
+             Style="{StaticResource Metro}"
+             ToolTip="Maximise"
+             Click="MaximiseButtonClick"  Height="16" Width="16">
+            <Image Source="Images\Toolbar\maximise.png" Height="12" Width="12" />
+        </Button>
+
+        <Button
+             HorizontalAlignment="Right"
+             Margin="0,8,48,0"
+             VerticalAlignment="Top"
+             Style="{StaticResource Metro}"
+             ToolTip="Minimize"
+             Click="MinimiseButtonClick" Height="16" Width="16">
+            <Image Source="Images\Toolbar\minimise.png" Height="12" Width="12"/>
+        </Button>
+        
+        
+    </Grid>
+</Window>
