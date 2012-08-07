@@ -1,0 +1,80 @@
+﻿<Window x:Class="booruReader.Preview_Screen.PrviewScreenView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Preview" MinHeight="350" MinWidth="350"
+        TextOptions.TextFormattingMode="Display"
+        TextOptions.TextRenderingMode="ClearType"
+        AllowsTransparency="True"
+        Background="{x:Null}"
+        BorderBrush="#FF3F3F3F"
+        WindowStyle="None"
+        ResizeMode="CanResizeWithGrip"
+        ContentRendered="Window_ContentRendered"
+        Initialized="Window_Initialized"
+        SizeChanged="PrviewScreenView_SizeChanged" Height="210" Width="255">
+    <Grid>
+<Border
+             x:Name="m_edgeBorder"
+             x:FieldModifier="private"
+             Margin="0"
+             Background="{StaticResource MetroBackground}"
+             IsHitTestVisible="False"
+             IsEnabled="True">
+            <Border.Effect>
+                <DropShadowEffect
+                   Opacity="0.999"
+                   BlurRadius="16" />
+            </Border.Effect>
+
+        </Border>
+
+        <Rectangle
+             Height="38"
+             VerticalAlignment="Top"
+             Fill="{StaticResource MetroBackground}"
+             PreviewMouseDown="HandleHeaderPreviewMouseDown" />
+        <Rectangle Height="3" VerticalAlignment="Top" PreviewMouseDown="HandleHeaderPreviewMouseDown" Fill="{StaticResource DatazbytesGreen}" />
+
+        <Button
+             HorizontalAlignment="Right"
+             Margin="0,8,8,0"
+             VerticalAlignment="Top"
+             ToolTip="Exit"
+             Style="{StaticResource Metro}"
+             Click="ExitButtonClick" Height="16" Width="16">
+            <Image Source="Images\Toolbar\exit.png" Height="12" Width="12"/>
+        </Button>
+        
+        <Border Margin="9,38,9,9" BorderThickness="2" BorderBrush="#52524B">
+            <Grid>
+                <Image Source="{Binding ImageSource}" Margin="9,3,9,39" Stretch="Uniform"></Image>
+                
+                <StackPanel Margin="3"  VerticalAlignment="Bottom" HorizontalAlignment="Center" Orientation="Horizontal">
+                    <Button ToolTip="Return" Margin="3" Height="23" Width="23" Style="{StaticResource Metro}" Click="ExitButtonClick">
+                        <Image Source="Images\Toolbar\back.png"/>
+                    </Button>
+                    
+                    <Button ToolTip="Download This Image" Margin="3" Height="23" Width="23" Style="{StaticResource Metro}" Click="DownloadImage">
+                        <Image Source="Images\Toolbar\download.png"/>
+                    </Button>
+                    
+                    <Button ToolTip="Show taglist" Margin="3" Height="23" Width="23" Style="{StaticResource Metro}" Click="ShowTaglist">
+                        <Image Source="Images\Toolbar\list.png"/>
+                    </Button>
+                    
+                    <Button ToolTip="Favorite. NOT IMPLEMENTED" IsEnabled="False" Margin="3" Height="23" Width="23" Style="{StaticResource Metro}">
+                        <Image Source="Images\Toolbar\heart.png"/>
+                    </Button>
+                </StackPanel>
+                
+                    <ListView Margin="200,0,0,39" MaxWidth="300" MinWidth="120" BorderBrush="{StaticResource DatazbytesGray}" Background="{StaticResource MetroBackground}" ItemsSource="{Binding TagList}" 
+                             Visibility="{Binding ShowTagList}" Foreground="White" HorizontalAlignment="Right"/>
+                
+                    <ProgressBar VerticalAlignment="Top" Height="4" Template="{StaticResource DeterminedProgressBar}" 
+                                             Value="{Binding Path=PreviewPost.DownloadProgress}" Visibility="{Binding Path=PreviewPostProgressBarVisible}"></ProgressBar>
+
+            </Grid>
+        </Border>        
+        
+    </Grid>
+</Window>

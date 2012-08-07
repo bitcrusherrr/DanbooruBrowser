@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Reflection;
 using System.Text;
 using booruReader.Helpers;
 using booruReader.Properties;
@@ -31,16 +34,27 @@ namespace booruReader.Model
 
         public int CurrentBooruIndex;
 
-        public int CurrentPage;
+        public int CurrentPage; //Should be moved to main screen VM
 
-        public int TotalPosts;
+        public int TotalPosts; //Should be moved to main screen VM
 
-        public int PostsOffset;
+        public int PostsOffset; //Should be moved to main screen VM
 
         public MainScreenVM MainScreenVM = null;
 
         //NOTE: Crappy hack to to enable loading of "offloaded" images
         public int LastHiddenIndex = 0;
+
+        public bool CheckLatest = false;
+
+        //Keep the screensizes
+        public double PreviewScreenWidth { get; set; }
+
+        public double PreviewScreenHeight { get; set; }
+
+        public double MainScreenWidth { get; set; }
+
+        public double MainScreenHeight { get; set; }
         #endregion
 
         private GlobalSettings() 
@@ -63,6 +77,42 @@ namespace booruReader.Model
             }
         }
 
+        public void PerformVersionCheck()
+        {
+            if (CheckLatest)
+            {
+                string currentVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+
+                try
+                {
+                    byte[] imageBytes;
+                    HttpWebRequest imageRequest = (HttpWebRequest)WebRequest.Create("http://datazbytes.net/programms/version");
+                    WebResponse imageResponse = imageRequest.GetResponse();
+
+                    Stream responseStream = imageResponse.GetResponseStream();
+
+                    using (BinaryReader br = new BinaryReader(responseStream))
+                    {
+                        imageBytes = br.ReadBytes(50000000);
+                        br.Close();
+                    }
+                    responseStream.Close();
+                    imageResponse.Close();
+
+                    string text = System.Text.Encoding.Default.GetString(imageBytes);
+
+                    if (string.Compare(currentVersion, text, true) != 0)
+                    {
+                        new MetroMessagebox("New version", "New version is avaliable.").Show();
+                    }
+                }
+                catch
+                {
+                    //Do nothing, we dont really care if we failed to check version.
+                }
+            }
+        }
+
         /// <summary>
         /// This function writes out current values 
         /// </summary>
@@ -71,6 +121,11 @@ namespace booruReader.Model
             Settings.Default.SafeMode = IsSafeMode;
             Settings.Default.SaveDirectory = SavePath;
             Settings.Default.LastUsedBoardIndex = CurrentBooruIndex;
+            Settings.Default.CheckForLatest = CheckLatest;
+            Settings.Default.PreviewHeight = PreviewScreenHeight;
+            Settings.Default.PreviewWidth = PreviewScreenWidth;
+            Settings.Default.MainHeight = MainScreenHeight;
+            Settings.Default.MainWidth =  MainScreenWidth;
             Settings.Default.Save();
         }
 
@@ -82,6 +137,11 @@ namespace booruReader.Model
             IsSafeMode = Settings.Default.SafeMode;
             SavePath = Settings.Default.SaveDirectory;
             CurrentBooruIndex = Settings.Default.LastUsedBoardIndex;
+            CheckLatest = Settings.Default.CheckForLatest;
+            PreviewScreenHeight = Settings.Default.PreviewHeight;
+            PreviewScreenWidth = Settings.Default.PreviewWidth;
+            MainScreenHeight = Settings.Default.MainHeight;
+            MainScreenWidth = Settings.Default.MainWidth;
         }
     }
 }

@@ -10,6 +10,7 @@ using System.IO;
 using System.Windows.Forms;
 using System.Xml;
 using System.Reflection;
+using System.Net;
 
 namespace booruReader.Settings_Screen
 {
@@ -21,6 +22,7 @@ namespace booruReader.Settings_Screen
         private BooruBoard _currentSelectedBoard;
         private string _folderPath;
         private DelegateCommand _selectFolderCommand;
+        private bool _doCheckIfLatest;
         #endregion
         #region Public Variables
 
@@ -69,6 +71,17 @@ namespace booruReader.Settings_Screen
             get { return _providerList; }
         }
 
+        public bool DoCheckIfLatest
+        {
+            get { return _doCheckIfLatest; }
+            set
+            {
+                _doCheckIfLatest = value;
+                GlobalSettings.Instance.CheckLatest = value;
+                RaisePropertyChanged("DoCheckIfLatest");
+            }
+        }
+
         #endregion
 
         public SettingsVM()
@@ -95,6 +108,8 @@ namespace booruReader.Settings_Screen
                 CanExecuteDelegate = x => true,
                 ExecuteDelegate = x => SelectFolder()
             };
+
+            DoCheckIfLatest = GlobalSettings.Instance.CheckLatest;
         }
 
         private List<BooruBoard> GetProviders()

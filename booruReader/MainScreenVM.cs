@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +8,8 @@ using booruReader.Model;
 using System.ComponentModel;
 using System.Windows;
 using System.Threading;
+using System.Diagnostics;
+using booruReader.Preview_Screen;
 
 namespace booruReader
 {
@@ -26,6 +28,9 @@ namespace booruReader
         //private bool _tagsChanged = false;
         private List<BasePost> _threadList;
         private bool _settingsOpen;
+
+        //This list is used to keep track of all open preview screens
+        private List<PrviewScreenView> _previewList;
         #endregion
 
         #region Public variables
@@ -77,12 +82,14 @@ namespace booruReader
         public MainScreenVM()
         {
             _imageList = new ObservableCollection<BasePost>();
+            _previewList = new List<PrviewScreenView>();
             _postFetcher = new PostsFetcher();
             _threadList = new List<BasePost>();
             _imageLoader = new BackgroundWorker();
             _imageLoader.DoWork += BackgroundLoaderWork;
             _imageLoader.RunWorkerCompleted += ServerListLoadWorkerCompleted;
             _imageLoader.WorkerSupportsCancellation = true;
+            //Ugly hack for settings vm
             GlobalSettings.Instance.MainScreenVM = this;
             SettingsOpen = false;
 
@@ -174,6 +181,7 @@ namespace booruReader
 
                 if (cahcedLastHidden > GlobalSettings.Instance.LastHiddenIndex)
                 {
+                    Debug.WriteLine("Hiding: " + (cahcedLastHidden + imagesToHide) + " Images.");
                     for (int i = 0; i <= (cahcedLastHidden + imagesToHide); i++)
                     {
                         if (i < _imageList.Count)
@@ -185,6 +193,7 @@ namespace booruReader
                 }
                 else
                 {
+                    Debug.WriteLine("Hiding: " + imagesToHide + " Images.");
                     for (int i = 0; i <= imagesToHide; i++)
                     {
                         offsetIndex = i + GlobalSettings.Instance.LastHiddenIndex;
@@ -195,6 +204,7 @@ namespace booruReader
                     }
                 }
 
+                Debug.WriteLine("Last hidden image index: " + offsetIndex);
                 GlobalSettings.Instance.LastHiddenIndex = offsetIndex;
                 cahcedLastHidden = offsetIndex;
             }
@@ -204,14 +214,16 @@ namespace booruReader
         {
             int i = 0;
             int imagesLoaded = GlobalSettings.Instance.PostsOffset / GlobalSettings.Instance.CurrentPage;
+            Debug.WriteLine("Reloading triggered for index: " + GlobalSettings.Instance.LastHiddenIndex + " For: " + imagesLoaded + " images");
             while (i <= imagesLoaded && GlobalSettings.Instance.LastHiddenIndex >= 0)
             {
                 i++;
                 _imageList[GlobalSettings.Instance.LastHiddenIndex].IsVisible = true;
-
+                //Debug.WriteLine("Index: " + GlobalSettings.Instance.LastHiddenIndex + " Is Visible: " + _imageList[GlobalSettings.Instance.LastHiddenIndex].IsVisible);
                 if (i <= imagesLoaded)
                     GlobalSettings.Instance.LastHiddenIndex--;
             }
+            //Debug.WriteLine("Reloaded: " + imagesLastLoaded + " Last hidden index: " + GlobalSettings.Instance.LastHiddenIndex + " Visibility: " + _imageList[GlobalSettings.Instance.LastHiddenIndex].IsVisible);
         }
 
         #endregion
@@ -230,6 +242,7 @@ namespace booruReader
             _imageList[0].IsSelected = true;
             _imageList.Clear();
             GlobalSettings.Instance.LastHiddenIndex = 0;
+            cahcedLastHidden = 0;
 
             if (GlobalSettings.Instance.CurrentBooru.ProviderType == ProviderAccessType.Gelbooru)
                 GlobalSettings.Instance.CurrentPage = 0;
@@ -287,12 +300,23 @@ namespace booruReader
                 SettingsOpen = false;
         }
 
+        private void CloseAllPreviews()
+        {
+            foreach (PrviewScreenView preview in _previewList)
+            {
+                preview.Close();
+            }
+
+            _previewList.Clear();
+        }
+
         #region Close Command
         /// <summary>
         /// Close command that handles saving of the notes for the databases.
         /// </summary>
         public void Closing()
         {
+            CloseAllPreviews();
             GlobalSettings.Instance.SaveSettings();
         }
         #endregion
@@ -312,5 +336,30 @@ namespace booruReader
         }
 
         #endregion
+
+        internal void PreviewImage(string previewURL)
+        {
+            var post = _imageList.FirstOrDefault(x => x.PreviewURL == previewURL);
+            if (post != null)
+            {
+                PrviewScreenView preview =  new PrviewScreenView(post);
+                _previewList.Add(preview);
+                preview.Show();
+            }
+
+            //cleanup preview images
+            int index = 0;
+            while (index < _previewList.Count)
+            {
+                if (_previewList[index].IsLoaded == false)
+                {
+                    _previewList.RemoveAt(index);
+                }
+                else
+                {
+                    index++;
+                }
+            }
+        }
     }
 }
