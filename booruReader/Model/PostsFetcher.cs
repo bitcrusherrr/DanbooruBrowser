@@ -19,20 +19,20 @@ namespace booruReader.Model
             _PostFetcherImnageList = new List<BasePost>();
         }
 
-        public List<BasePost> GetImages(String tags = null)
+        public List<BasePost> GetImages(int page, String tags = null)
         {      
             _PostFetcherImnageList.Clear();
 
             if (GlobalSettings.Instance.CurrentBooru.ProviderType == ProviderAccessType.XML || GlobalSettings.Instance.CurrentBooru.ProviderType == ProviderAccessType.Gelbooru)
-                GetXMLImages(_PostFetcherImnageList, tags);
-            else
-                GetJSONImages(_PostFetcherImnageList, tags);
+                GetXMLImages(_PostFetcherImnageList, tags, page);
+            else if (GlobalSettings.Instance.CurrentBooru.ProviderType == ProviderAccessType.JSON)
+                GetJSONImages(_PostFetcherImnageList, tags, page);
 
             return _PostFetcherImnageList;
         }
 
         #region XML Fetch routines
-        private void GetXMLImages(List<BasePost> ImageList, string tags)
+        private void GetXMLImages(List<BasePost> ImageList, string tags, int page)
         {
             string finalURL = string.Empty;
             if (tags == null)
@@ -48,7 +48,7 @@ namespace booruReader.Model
 
                 //danbooru HAS to be logged in to fetch shit which is pain in the ass
                 finalURL = string.Format(finalURL + "?login=booruReader" + "&password_hash=70de755c930112801ef5e002aff10cfe4cafd76d");
-                finalURL = string.Format(finalURL + "&page=" + GlobalSettings.Instance.CurrentPage + "&tags=" + FormTags(tags));
+                finalURL = string.Format(finalURL + "&page=" + page + "&tags=" + FormTags(tags));
             }
             else
             {
@@ -56,17 +56,16 @@ namespace booruReader.Model
                 if (GlobalSettings.Instance.CurrentBooru.ProviderType == ProviderAccessType.XML)
                 {
                     finalURL = GlobalSettings.Instance.CurrentBooru.URL + "post/index.xml"; //+ tags from searchfield
-                    finalURL = string.Format(finalURL + "?page=" + GlobalSettings.Instance.CurrentPage + "&tags=" + FormTags(tags));
+                    finalURL = string.Format(finalURL + "?page=" + page + "&tags=" + FormTags(tags));
                 }
                 //Gelbooru api based sites
                 else if (GlobalSettings.Instance.CurrentBooru.ProviderType == ProviderAccessType.Gelbooru)
                 {
                     finalURL = GlobalSettings.Instance.CurrentBooru.URL + "index.php?page=dapi&s=post&q=index";
-                    finalURL = string.Format(finalURL + "&pid=" + GlobalSettings.Instance.CurrentPage + "&tags=" + FormTags(tags));
+                    finalURL = string.Format(finalURL + "&pid=" + page + "&tags=" + FormTags(tags));
                 }
             }
 
-            GlobalSettings.Instance.CurrentPage++;
 
             try
             {
@@ -138,22 +137,116 @@ namespace booruReader.Model
             }
             catch (Exception exception)
             {
-                exception.ToString();
-                new MetroMessagebox("Error", exception.ToString()).ShowDialog();
+                throw new Exception(exception.ToString());
             }
 
             if (GlobalSettings.Instance.PostsOffset > GlobalSettings.Instance.TotalPosts)
             {
-                new MetroMessagebox("Fetch Error", "End of posts.").ShowDialog();
+                throw new Exception("End of posts lol.");
             }
         }
 
         #endregion
 
         #region JSON Fetch routines
-        private void GetJSONImages(List<BasePost> _PostFetcherImnageList, string tags)
+        private void GetJSONImages(List<BasePost> ImageList, string tags, int page)
         {
-            throw new NotImplementedException();
+            const int Limit = 20;
+
+            string finalURL = string.Empty;
+            if (tags == null)
+            {
+                tags = string.Empty;
+            }
+
+            finalURL = GlobalSettings.Instance.CurrentBooru.URL + "post/index.json"; //+ tags from searchfield
+            finalURL = string.Format(finalURL + "?page=" + page + "&tags=" + FormTags(tags) + "&limit=" + Limit);
+
+            try
+            {
+                StreamReader reader = new StreamReader(System.Net.WebRequest.Create(finalURL).GetResponse().GetResponseStream());
+
+                String json = "";
+                json = reader.ReadToEnd();
+                reader.Close();
+
+                int actualCount = 0;
+
+                if (json.Length > 4)
+                {
+                    json = json.Substring(2, json.Length - 4);
+                    string[] splitter = { "},{" };
+                    string[] split = json.Split(splitter, StringSplitOptions.None);
+
+                    foreach (string str in split)
+                    {
+                        BasePost post = new BasePost();
+                        string[] node = str.Split(',');
+                        foreach (string str2 in node)
+                        {
+                            char[] splitter2 = { ':' };
+                            string[] val = str2.Split(splitter2, 2);
+                            switch (val[0].ToLowerInvariant())
+                            {
+                                case "\"tags\"":
+                                    post.Tags = val[1].Replace("\"", "");
+                                    break;
+                                case "\"file_url\"":
+                                    post.FullPictureURL= NormaliseURL(val[1].Replace("\"", ""));
+                                    break;
+                                case "\"width\"":
+                                        int.TryParse(val[1], out post._width);
+                                    break;
+                                case "\"height\"":
+                                        int.TryParse(val[1], out post._height);
+                                    break;
+                                case "\"rating\"":
+                                        if (val[1].Contains("s"))
+                                            post.ImageRating = PostRating.Safe;
+                                        else if (val[1].Contains("q"))
+                                            post.ImageRating = PostRating.Explicit;
+                                        else
+                                            post.ImageRating = PostRating.Questionable;
+                                    break;
+                                case "\"md5\"":
+                                    post.FileMD = val[1].Replace("\"", "");
+                                    break;
+                                case "\"preview_url\"":
+                                    post.PreviewURL = NormaliseURL(val[1].Replace("\"", ""));
+                                    break;
+                                default: break;
+                            }
+                        }
+
+                        if (GlobalSettings.Instance.IsSafeMode && post.ImageRating != PostRating.Safe)
+                        {
+                            //Do nothing for now
+                            //TODO: add more UI level filtering later!
+                        }
+                        else
+                            ImageList.Add(post);
+
+                        actualCount++;
+                    }
+                }
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.ToString());
+            }
+
+            GlobalSettings.Instance.PostsOffset = page * Limit;
+
+            //A shitty workaround as json queries dont return total post count from the imageboard
+            if (ImageList.Count > 0)
+            {
+                GlobalSettings.Instance.TotalPosts = GlobalSettings.Instance.TotalPosts + GlobalSettings.Instance.PostsOffset + 1;
+            }
+
+            if (GlobalSettings.Instance.PostsOffset > GlobalSettings.Instance.TotalPosts)
+            {
+                throw new Exception("End of posts.");
+            }
         }
         #endregion
 

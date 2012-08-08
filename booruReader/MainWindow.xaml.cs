@@ -134,9 +134,9 @@ namespace booruReader
         private void ImageReloading()
         {
             //check if last hidden images is about to be visible and start reloading it
-            if (GlobalSettings.Instance.LastHiddenIndex > 0)// We want to have some hidden images 
+            if (viewModel.LastHiddenIndex > 0)// We want to have some hidden images 
             {
-                ListBoxItem listitem = ImageList.ItemContainerGenerator.ContainerFromItem(ImageList.Items[GlobalSettings.Instance.LastHiddenIndex]) as ListBoxItem;
+                ListBoxItem listitem = ImageList.ItemContainerGenerator.ContainerFromItem(ImageList.Items[viewModel.LastHiddenIndex]) as ListBoxItem;
                 if (listitem != null)
                 {
                     GeneralTransform transform = listitem.TransformToVisual(ImageList);
@@ -146,9 +146,9 @@ namespace booruReader
                     {
                         viewModel.TriggerReloading();
                     }
-                    else if (GlobalSettings.Instance.LastHiddenIndex > 0)
+                    else if (viewModel.LastHiddenIndex > 0)
                     {
-                        ListBoxItem listitem2 = ImageList.ItemContainerGenerator.ContainerFromItem(ImageList.Items[GlobalSettings.Instance.LastHiddenIndex]) as ListBoxItem;
+                        ListBoxItem listitem2 = ImageList.ItemContainerGenerator.ContainerFromItem(ImageList.Items[viewModel.LastHiddenIndex]) as ListBoxItem;
                         if (listitem2 != null)
                         {
                             GeneralTransform transform2 = listitem2.TransformToVisual(ImageList);

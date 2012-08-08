@@ -31,6 +31,9 @@ namespace booruReader
 
         //This list is used to keep track of all open preview screens
         private List<PrviewScreenView> _previewList;
+
+        //navigation variables
+        private int CurrentPage; //Keep track of the last loaded pages
         #endregion
 
         #region Public variables
@@ -74,6 +77,9 @@ namespace booruReader
                 RaisePropertyChanged("SettingsOpen");
             }
         }
+
+        //NOTE: Crappy hack to to enable loading of "offloaded" images
+        public int LastHiddenIndex = 0;
         #endregion
 
         /// <summary>
@@ -130,9 +136,13 @@ namespace booruReader
             }
         }
 
+        /// <summary>
+        /// ImageLoader worker todo work. 
+        /// Currently this fetches images for the specified tag and page
+        /// </summary>
         private void BackgroundLoaderWork(object sender, DoWorkEventArgs e)
         {
-            foreach (BasePost post in _postFetcher.GetImages(TagsBox))
+            foreach (BasePost post in _postFetcher.GetImages(CurrentPage, TagsBox))
             {
                 _threadList.Add(new BasePost(post));
             }
@@ -143,21 +153,35 @@ namespace booruReader
             }
         }
 
+        /// <summary>
+        /// Event that gets fired when ImageLoader worker ends
+        /// </summary>
         private void ServerListLoadWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            foreach (BasePost post in _threadList)
+            if (e.Error != null)
             {
-                _imageList.Add(new BasePost(post));
+                new MetroMessagebox("Fetch Error", e.Error.Message).ShowDialog();
             }
-
-            TriggerOffloading(_threadList.Count);
-            _threadList.Clear();
-
-            if (GlobalSettings.Instance.TotalPosts == 0)
+            else
             {
-                new MetroMessagebox("Fetch Error", "No posts for this tag/tags.").ShowDialog();
-            }
 
+                foreach (BasePost post in _threadList)
+                {
+                    _imageList.Add(new BasePost(post));
+                }
+
+                TriggerOffloading(_threadList.Count);
+                _threadList.Clear();
+                if (GlobalSettings.Instance.TotalPosts == 0)
+                {
+                    new MetroMessagebox("Fetch Error", "No posts for this tag/tags.").ShowDialog();
+                }
+                else
+                {
+                    //Were done loading and still have images to load update the page index
+                    CurrentPage++;
+                }
+            }
             ProgressBarVisibility = Visibility.Hidden;
         }
 
@@ -165,6 +189,7 @@ namespace booruReader
         {
             if (GlobalSettings.Instance.ProviderChanged)
             {
+                GlobalSettings.Instance.ProviderChanged = false;
                 FetchImages();
             }
         }
@@ -179,7 +204,7 @@ namespace booruReader
             {
                 int offsetIndex = 0;
 
-                if (cahcedLastHidden > GlobalSettings.Instance.LastHiddenIndex)
+                if (cahcedLastHidden > LastHiddenIndex)
                 {
                     Debug.WriteLine("Hiding: " + (cahcedLastHidden + imagesToHide) + " Images.");
                     for (int i = 0; i <= (cahcedLastHidden + imagesToHide); i++)
@@ -196,7 +221,7 @@ namespace booruReader
                     Debug.WriteLine("Hiding: " + imagesToHide + " Images.");
                     for (int i = 0; i <= imagesToHide; i++)
                     {
-                        offsetIndex = i + GlobalSettings.Instance.LastHiddenIndex;
+                        offsetIndex = i + LastHiddenIndex;
                         if (offsetIndex < _imageList.Count)
                         {
                             _imageList[offsetIndex].IsVisible = false;
@@ -205,7 +230,7 @@ namespace booruReader
                 }
 
                 Debug.WriteLine("Last hidden image index: " + offsetIndex);
-                GlobalSettings.Instance.LastHiddenIndex = offsetIndex;
+                LastHiddenIndex = offsetIndex;
                 cahcedLastHidden = offsetIndex;
             }
         }
@@ -213,17 +238,17 @@ namespace booruReader
         public void TriggerReloading()
         {
             int i = 0;
-            int imagesLoaded = GlobalSettings.Instance.PostsOffset / GlobalSettings.Instance.CurrentPage;
-            Debug.WriteLine("Reloading triggered for index: " + GlobalSettings.Instance.LastHiddenIndex + " For: " + imagesLoaded + " images");
-            while (i <= imagesLoaded && GlobalSettings.Instance.LastHiddenIndex >= 0)
+            int imagesLoaded = GlobalSettings.Instance.PostsOffset / CurrentPage;
+            Debug.WriteLine("Reloading triggered for index: " + LastHiddenIndex + " For: " + imagesLoaded + " images");
+            while (i <= imagesLoaded && LastHiddenIndex >= 0)
             {
                 i++;
-                _imageList[GlobalSettings.Instance.LastHiddenIndex].IsVisible = true;
-                //Debug.WriteLine("Index: " + GlobalSettings.Instance.LastHiddenIndex + " Is Visible: " + _imageList[GlobalSettings.Instance.LastHiddenIndex].IsVisible);
+                _imageList[LastHiddenIndex].IsVisible = true;
+                //Debug.WriteLine("Index: " + LastHiddenIndex + " Is Visible: " + _imageList[LastHiddenIndex].IsVisible);
                 if (i <= imagesLoaded)
-                    GlobalSettings.Instance.LastHiddenIndex--;
+                    LastHiddenIndex--;
             }
-            //Debug.WriteLine("Reloaded: " + imagesLastLoaded + " Last hidden index: " + GlobalSettings.Instance.LastHiddenIndex + " Visibility: " + _imageList[GlobalSettings.Instance.LastHiddenIndex].IsVisible);
+            //Debug.WriteLine("Reloaded: " + imagesLastLoaded + " Last hidden index: " + LastHiddenIndex + " Visibility: " + _imageList[LastHiddenIndex].IsVisible);
         }
 
         #endregion
@@ -241,13 +266,13 @@ namespace booruReader
             _imageList.Add(new BasePost());
             _imageList[0].IsSelected = true;
             _imageList.Clear();
-            GlobalSettings.Instance.LastHiddenIndex = 0;
+            LastHiddenIndex = 0;
             cahcedLastHidden = 0;
 
             if (GlobalSettings.Instance.CurrentBooru.ProviderType == ProviderAccessType.Gelbooru)
-                GlobalSettings.Instance.CurrentPage = 0;
+                CurrentPage = 0;
             else
-                GlobalSettings.Instance.CurrentPage = 1;
+                CurrentPage = 1;
 
             if (_imageLoader.IsBusy)
             {
@@ -310,6 +335,31 @@ namespace booruReader
             _previewList.Clear();
         }
 
+        internal void PreviewImage(string previewURL)
+        {
+            var post = _imageList.FirstOrDefault(x => x.PreviewURL == previewURL);
+            if (post != null)
+            {
+                PrviewScreenView preview = new PrviewScreenView(post);
+                _previewList.Add(preview);
+                preview.Show();
+            }
+
+            //cleanup preview images
+            int index = 0;
+            while (index < _previewList.Count)
+            {
+                if (_previewList[index].IsLoaded == false)
+                {
+                    _previewList.RemoveAt(index);
+                }
+                else
+                {
+                    index++;
+                }
+            }
+        }
+
         #region Close Command
         /// <summary>
         /// Close command that handles saving of the notes for the databases.
@@ -336,30 +386,5 @@ namespace booruReader
         }
 
         #endregion
-
-        internal void PreviewImage(string previewURL)
-        {
-            var post = _imageList.FirstOrDefault(x => x.PreviewURL == previewURL);
-            if (post != null)
-            {
-                PrviewScreenView preview =  new PrviewScreenView(post);
-                _previewList.Add(preview);
-                preview.Show();
-            }
-
-            //cleanup preview images
-            int index = 0;
-            while (index < _previewList.Count)
-            {
-                if (_previewList[index].IsLoaded == false)
-                {
-                    _previewList.RemoveAt(index);
-                }
-                else
-                {
-                    index++;
-                }
-            }
-        }
     }
 }

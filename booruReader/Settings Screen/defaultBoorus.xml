@@ -8,6 +8,9 @@ Provider type GELBOORULIKE is used for gelbooru based sites as they have differe
 If you want to test what api site has try adding post/index.xml?page=1&tags=and to the address for XML
 index.php?page=dapi&s=post&q=index&pid=1 for GELBOORULIKE
 
+Some sites seem to return empty image lists with XML, ie chan and idol at sankaku comples.
+For those I have also added JSON request mechanism
+
 Note:this XML file and manual addition are temporary at later stage all addition will be handled within the application and it will also resolve API's by itself
 shimmie based sites not supported and support not planned.
   -->
@@ -17,6 +20,8 @@ shimmie based sites not supported and support not planned.
   <Booru name="Konachan.com" url="http://konachan.com/" providerType="XML" />
   <Booru name="Gelbooru.com" url="http://gelbooru.com/" providerType="GELBOORULIKE" />
   <Booru name="Safebooru.com" url="http://safebooru.org/" providerType="GELBOORULIKE" />
+  <Booru name="Idol.Sankakucomplex.com" url="http://idol.sankakucomplex.com/" providerType="JSON" />
+  <Booru name="Chan.Sankakucomplex.com" url="http://chan.sankakucomplex.com/" providerType="JSON" />
   <Booru name="Nekobooru.net" url="http://nekobooru.net/" providerType="XML" />
   <Booru name="Vectorbooru(ichijou.org)" url="http://ichijou.org/" providerType="XML" />
   <Booru name="Booru.Datazbytes.net" url="http://booru.datazbytes.net/" providerType="XML" />

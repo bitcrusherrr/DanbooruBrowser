@@ -43,9 +43,7 @@ namespace booruReader.Settings_Screen
             set
             {
                 _currentSelectedBoard = value;
-
                 //reset our current page as we changing provider
-                GlobalSettings.Instance.CurrentPage = 1;
                 GlobalSettings.Instance.CurrentBooru = value;
                 RaisePropertyChanged("CurrentSelectedBoard");
             }
@@ -205,6 +203,8 @@ namespace booruReader.Settings_Screen
                         providerType = ProviderAccessType.XML;
                     else if (booruPoviderType.ToLowerInvariant().Contains("gelboorulike"))
                         providerType = ProviderAccessType.Gelbooru;
+                    else if (booruPoviderType.ToLowerInvariant().Contains("json"))
+                        providerType = ProviderAccessType.JSON;
 
                     if (!string.IsNullOrEmpty(booruName) && !string.IsNullOrEmpty(booruURL) && providerType != ProviderAccessType.INVALID)
                         booruList.Add(new BooruBoard(booruURL, booruName, providerType));

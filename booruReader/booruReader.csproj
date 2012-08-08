@@ -131,7 +131,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model\BaseImage.cs" />
+    <Compile Include="Model\BasePost.cs" />
     <Compile Include="Model\BooruBoard.cs" />
     <Compile Include="Model\GlobalSettings.cs" />
     <Compile Include="Model\PostsFetcher.cs" />

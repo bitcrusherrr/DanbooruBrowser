@@ -34,33 +34,25 @@ namespace booruReader.Model
 
         public int CurrentBooruIndex;
 
-        public int CurrentPage; //Should be moved to main screen VM
-
-        public int TotalPosts; //Should be moved to main screen VM
-
-        public int PostsOffset; //Should be moved to main screen VM
+        //This 2 are related. One keeps track of posts loaded and another one keeps track of post offset.
+        public int TotalPosts;
+        public int PostsOffset;
 
         public MainScreenVM MainScreenVM = null;
-
-        //NOTE: Crappy hack to to enable loading of "offloaded" images
-        public int LastHiddenIndex = 0;
 
         public bool CheckLatest = false;
 
         //Keep the screensizes
         public double PreviewScreenWidth { get; set; }
-
         public double PreviewScreenHeight { get; set; }
 
         public double MainScreenWidth { get; set; }
-
         public double MainScreenHeight { get; set; }
         #endregion
 
         private GlobalSettings() 
         {
             LoadSettings();
-            CurrentPage = 1;
             TotalPosts = 0;
             PostsOffset = 0;
         }

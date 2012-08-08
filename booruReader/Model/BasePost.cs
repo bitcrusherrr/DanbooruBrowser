@@ -223,6 +223,8 @@ namespace booruReader.Model
                 extension = ".jpg";
             else if (FullPictureURL.ToLowerInvariant().Contains("png"))
                 extension = ".png";
+            else if (FullPictureURL.ToLowerInvariant().Contains("gif"))
+                extension = ".gif";
             else
                 extension = null;
 
