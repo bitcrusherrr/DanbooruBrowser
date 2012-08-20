@@ -3,15 +3,20 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Xml.Serialization;
 using booruReader.Helpers;
 
 namespace booruReader.Model
 {
+    [Serializable]
     public class BooruBoard : INotifyPropertyChanged
     {
         private string _name;
         #region Public variables
+        [XmlElement("url")]
         public string URL;
+    
+        [XmlElement("name")]
         public string Name
         {
             get { return _name; }
@@ -21,7 +26,16 @@ namespace booruReader.Model
 
             }
         }
+        
+        [XmlElement("providerType")]
         public ProviderAccessType ProviderType;
+        
+        [XmlElement("userName")]
+        public string UserName;
+        
+        [XmlElement("password")]
+        public string Pasword;
+        
         #endregion 
 
         public BooruBoard(BooruBoard board)
