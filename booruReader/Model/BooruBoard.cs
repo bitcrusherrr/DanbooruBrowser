@@ -37,6 +37,13 @@ namespace booruReader.Model
         public string Pasword;
         
         #endregion 
+        
+        /// <summary>
+        /// For serialization only, DO NOT USE
+        /// </summary>
+        public BooruBoard()
+        {
+        }
 
         public BooruBoard(BooruBoard board)
         {
