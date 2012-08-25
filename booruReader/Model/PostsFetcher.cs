@@ -14,9 +14,13 @@ namespace booruReader.Model
         //private string _currentBooruURL;
         private List<BasePost> _PostFetcherImnageList;
 
-        public PostsFetcher()
+        //Temp hack to bypass some globals breaking
+        bool _booruTestMode;
+
+        public PostsFetcher(bool booruTestMode = false)
         {
             _PostFetcherImnageList = new List<BasePost>();
+            _booruTestMode = booruTestMode;
         }
 
         public List<BasePost> GetImages(int page, String tags = null)
@@ -78,7 +82,7 @@ namespace booruReader.Model
                     {
                         case XmlNodeType.Element: // The node is an element.
                                 var nodeName = reader.Name.ToLowerInvariant();
-                                if (nodeName.Equals("posts"))
+                                if (nodeName.Equals("posts") && !_booruTestMode)
                                 {
                                     while (reader.MoveToNextAttribute())
                                     {
@@ -140,7 +144,7 @@ namespace booruReader.Model
                 throw new Exception(exception.ToString());
             }
 
-            if (GlobalSettings.Instance.PostsOffset > GlobalSettings.Instance.TotalPosts)
+            if (!_booruTestMode && GlobalSettings.Instance.PostsOffset > GlobalSettings.Instance.TotalPosts)
             {
                 throw new Exception("End of posts lol.");
             }
@@ -235,17 +239,20 @@ namespace booruReader.Model
                 throw new Exception(exception.ToString());
             }
 
-            GlobalSettings.Instance.PostsOffset = page * Limit;
-
-            //A shitty workaround as json queries dont return total post count from the imageboard
-            if (ImageList.Count > 0)
+            if (!_booruTestMode)
             {
-                GlobalSettings.Instance.TotalPosts = GlobalSettings.Instance.TotalPosts + GlobalSettings.Instance.PostsOffset + 1;
-            }
+                GlobalSettings.Instance.PostsOffset = page * Limit;
 
-            if (GlobalSettings.Instance.PostsOffset > GlobalSettings.Instance.TotalPosts)
-            {
-                throw new Exception("End of posts.");
+                //A shitty workaround as json queries dont return total post count from the imageboard
+                if (ImageList.Count > 0)
+                {
+                    GlobalSettings.Instance.TotalPosts = GlobalSettings.Instance.TotalPosts + GlobalSettings.Instance.PostsOffset + 1;
+                }
+
+                if (GlobalSettings.Instance.PostsOffset > GlobalSettings.Instance.TotalPosts)
+                {
+                    throw new Exception("End of posts.");
+                }
             }
         }
         #endregion

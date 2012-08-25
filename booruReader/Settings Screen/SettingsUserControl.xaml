@@ -12,28 +12,87 @@
         <Image Source="Images\back.png"/>
     </Button>
         
-    <CheckBox Background="Transparent" Style="{StaticResource MetroCheckbox}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="8,9,0,0" Foreground="White"
-          Width="80" Content="Safe Mode" ToolTip="All images with non safe rating will be ignored." FlowDirection="RightToLeft" IsChecked="{Binding SafeModeBrowsing}" />
-    
-    <ComboBox IsSynchronizedWithCurrentItem="True" Width="216" Height="20" Margin="8,29,0,0" VerticalAlignment="Top" ItemsSource="{Binding ProviderList}"
-              SelectedItem="{Binding CurrentSelectedBoard}" DisplayMemberPath="Name" Foreground="White"
-              BorderBrush="{StaticResource DatazbytesGray}" HorizontalAlignment="Left"  />      
-    
-    <Button ToolTip="Select Folder" Style="{StaticResource Metro}" Width="23" Height="23" Margin="8,55,0,0" VerticalAlignment="Top"
-            HorizontalAlignment="Left" Command="{Binding SelectFolderCommand}">
-            <Image Source="Images\folder.png"/>
-        </Button>
-        <Border Height="23" Margin="40,55,0,00" VerticalAlignment="Top" HorizontalAlignment="Left" Width="184" BorderThickness="1" 
-                BorderBrush="{StaticResource DatazbytesGreen}">
-            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center"  
-              Foreground="White" ToolTip="Directory to save files." Text="{Binding FolderPath}"></TextBlock>
-        </Border>
-        
-       <CheckBox Visibility="Collapsed" Background="Transparent" Style="{StaticResource MetroCheckbox}" VerticalAlignment="Top" 
-                 HorizontalAlignment="Left" Margin="8,85,0,0" Foreground="White"
+    <!--Check latest checkbox-->
+    <CheckBox Visibility="Collapsed" Background="Transparent" Style="{StaticResource MetroCheckbox}" VerticalAlignment="Top" 
+                 HorizontalAlignment="Left" Margin="104,9,0,0" Foreground="White"
           Width="145" Content="Check for latest version" ToolTip="Check if you are using latest version on startup." FlowDirection="RightToLeft" 
                  IsChecked="{Binding DoCheckIfLatest}" />
+        
+    <!--Safe images only mode checkbox-->
+    <CheckBox Background="Transparent" Style="{StaticResource MetroCheckbox}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="8,36,0,0" Foreground="White"
+          Width="80" Content="Safe Mode" ToolTip="All images with non safe rating will be ignored." FlowDirection="RightToLeft" IsChecked="{Binding SafeModeBrowsing}" />
+       
+    <!--Folder select button-->
+    <Button ToolTip="Select Folder" Style="{StaticResource Metro}" Width="23" Height="23" Margin="8,56,0,0" VerticalAlignment="Top"
+            HorizontalAlignment="Left" Command="{Binding SelectFolderCommand}">
+            <Image Source="Images\folder.png"/>
+    </Button>
+        
+    <!--Folder path-->
+    <Border Height="23" Margin="40,56,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="184" BorderThickness="1" 
+            BorderBrush="{StaticResource DatazbytesGreen}">
+        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center"  
+            Foreground="White" ToolTip="Directory to save files." Text="{Binding FolderPath}"></TextBlock>
+    </Border>
 
-    
+    <!--booru selector-->
+    <ComboBox IsSynchronizedWithCurrentItem="True" Width="216" Height="20" Margin="10,87,0,0" VerticalAlignment="Top" ItemsSource="{Binding ProviderList}"
+            SelectedItem="{Binding CurrentSelectedBoard}" DisplayMemberPath="Name" Foreground="White"
+            BorderBrush="{StaticResource DatazbytesGray}" HorizontalAlignment="Left"  />
+ 
+    <!--Add booru button-->
+    <Button ToolTip="Add new booru" Style="{StaticResource Metro}" Width="23" Height="23" Margin="235,85,0,0" VerticalAlignment="Top"
+            HorizontalAlignment="Left" Command="{Binding AddBooruCommand}">
+            <Image Source="Images\add.png"/>
+        </Button>
+    <!--Remove selected booru button-->  
+    <Button ToolTip="Remove this booru" Style="{StaticResource Metro}" Width="23" Height="23" Margin="265,85,0,0" VerticalAlignment="Top"
+            HorizontalAlignment="Left" Command="{Binding RemoveBooruCommand}">
+            <Image Source="Images\cancel.png"/>
+     </Button>
+        
+    <!--New booru settings-->
+    <StackPanel Margin="5,33,0,0" Background="{StaticResource MetroBackground}" Visibility="{Binding DoShowNewBooru}">
+        <StackPanel Orientation="Horizontal">
+        <TextBlock Margin="0,2,0,2" Foreground="White">Enter new booru details:</TextBlock>
+            </StackPanel>
+        
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Margin="0,2,5,2" Foreground="White">Name:</TextBlock>
+                <TextBox ToolTip="Name" Margin="0,2,0,2" IsEnabled="{Binding EnableEditing}" Height="23" Width="175" Text="{Binding CurrentSelectedBoard.Name}"
+            	Foreground="White" Background="{StaticResource MetroBackground}" BorderBrush="{StaticResource DatazbytesGreen}"/>
+            </StackPanel>
+        
+        <StackPanel Orientation="Horizontal">
+        <TextBlock Margin="0,2,5,2" Foreground="White">URL:</TextBlock>
+            <TextBox ToolTip="URL" Margin="0,2,0,2" IsEnabled="{Binding EnableEditing}" Height="23" Width="185" Text="{Binding Path=CurrentSelectedBoard.URL}"
+                Foreground="White" Background="{StaticResource MetroBackground}" BorderBrush="{StaticResource DatazbytesGreen}">
+            </TextBox>
+        </StackPanel>
+        
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Margin="0,2,5,2" Foreground="White">User name:</TextBlock>
+            <TextBox ToolTip="Username" Margin="0,2,0,2" IsEnabled="{Binding EnableEditing}" Height="23" Width="150" Text="{Binding Path=CurrentSelectedBoard.UserName}"
+            Foreground="White" Background="{StaticResource MetroBackground}" BorderBrush="{StaticResource DatazbytesGreen}" >
+            </TextBox>
+        </StackPanel>
+        
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Margin="0,2,5,2" Foreground="White">Password:</TextBlock>
+            <TextBox ToolTip="Password" Margin="0,2,0,2" IsEnabled="{Binding EnableEditing}" Height="23" Width="155" Text="{Binding Path=CurrentSelectedBoard.Pasword}"
+            Foreground="White" Background="{StaticResource MetroBackground}" BorderBrush="{StaticResource DatazbytesGreen}">
+            </TextBox>
+        </StackPanel>
+        
+        <StackPanel Orientation="Horizontal">
+            <Button ToolTip="Save this booru" Style="{StaticResource Metro}" IsEnabled="{Binding EnableEditing}" Width="23" Height="23" Margin="0,2,0,2" VerticalAlignment="Top"
+                HorizontalAlignment="Left" Command="{Binding FinalizeBooruCommand}">
+                    <Image Source="Images\check.png"/></Button>
+        
+            <Button ToolTip="Cancel adding booru" Style="{StaticResource Metro}" IsEnabled="{Binding EnableEditing}" Width="23" Height="23" Margin="5,2,0,2" VerticalAlignment="Top"
+                HorizontalAlignment="Left" Command="{Binding CancelBooruCommand}">
+                    <Image Source="Images\cancel.png"/></Button>
+        </StackPanel>
+    </StackPanel>
     </Grid>
 </UserControl>

@@ -11,6 +11,8 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Reflection;
 using System.Net;
+using System.Windows;
+using System.Xml.Serialization;
 
 namespace booruReader.Settings_Screen
 {
@@ -23,6 +25,13 @@ namespace booruReader.Settings_Screen
         private string _folderPath;
         private DelegateCommand _selectFolderCommand;
         private bool _doCheckIfLatest;
+        private bool _enableEditing;
+
+        private DelegateCommand _addBooruCommand;
+        private DelegateCommand _removeBooruCommand;
+        private DelegateCommand _finalizeBooruCommand;
+        private DelegateCommand _cancelBooruCommand;
+        private Visibility _doShowNewBooru;
         #endregion
         #region Public Variables
 
@@ -80,6 +89,25 @@ namespace booruReader.Settings_Screen
             }
         }
 
+        public bool EnableEditing
+        {
+            get { return _enableEditing; }
+            set
+            {
+                _enableEditing = value;
+                RaisePropertyChanged("EnableEditing");
+            }
+        }
+
+        public Visibility DoShowNewBooru
+        {
+            get { return _doShowNewBooru; }
+            set
+            {
+                _doShowNewBooru = value;
+                RaisePropertyChanged("DoShowNewBooru");
+            }
+        }
         #endregion
 
         public SettingsVM()
@@ -87,6 +115,8 @@ namespace booruReader.Settings_Screen
             //Reload all settings when oppening screen
             SafeModeBrowsing = GlobalSettings.Instance.IsSafeMode;
             _providerList = new ObservableCollection<BooruBoard>();
+            EnableEditing = false;
+            DoShowNewBooru = Visibility.Collapsed;
 
             foreach (BooruBoard board in GetProviders())
             {
@@ -101,12 +131,39 @@ namespace booruReader.Settings_Screen
 
             GlobalSettings.Instance.ProviderChanged = false;
 
+            #region Delegates
+
             _selectFolderCommand = new DelegateCommand
             {
                 CanExecuteDelegate = x => true,
                 ExecuteDelegate = x => SelectFolder()
             };
 
+            _addBooruCommand = new DelegateCommand
+            {
+                CanExecuteDelegate = x => true,
+                ExecuteDelegate = x => AddBooru()
+            };
+
+            _removeBooruCommand = new DelegateCommand
+            {
+                CanExecuteDelegate = x => true,
+                ExecuteDelegate = x => RemoveBooru()
+            };
+
+            _finalizeBooruCommand = new DelegateCommand
+            {
+                CanExecuteDelegate = x => true,
+                ExecuteDelegate = x => FinalizeBooru()
+            };
+
+            _cancelBooruCommand = new DelegateCommand
+            {
+                CanExecuteDelegate = x => true,
+                ExecuteDelegate = x => CancelBooru()
+            };
+
+            #endregion
             DoCheckIfLatest = GlobalSettings.Instance.CheckLatest;
         }
 
@@ -116,26 +173,7 @@ namespace booruReader.Settings_Screen
 
             LoadXMLDataProviders(retList);
 
-            //Temporarily hardcoding sources. This will need further improvement
-            //retList.Add(new BooruBoard("https://yande.re/", "Yande.re", ProviderAccessType.XML));
-            //retList.Add(new BooruBoard("http://konachan.com/", "Konachan.com", ProviderAccessType.XML));
-            //retList.Add(new BooruBoard("http://danbooru.donmai.us/", "Danbooru.donmai.us", ProviderAccessType.XML));
-            //retList.Add(new BooruBoard("http://booru.datazbytes.net/", "DataZbyteS.net", ProviderAccessType.XML));
-
             return retList;
-        }
-
-        
-        public void Closing()
-        {
-            if (GlobalSettings.Instance.MainScreenVM != null)
-                GlobalSettings.Instance.MainScreenVM.SettingsOpen = false;
-
-            var index = ProviderList.IndexOf(GlobalSettings.Instance.CurrentBooru);
-            if (index >= 0)
-                GlobalSettings.Instance.CurrentBooruIndex = index;
-
-            GlobalSettings.Instance.SaveSettings();
         }
 
         private bool ValidatePath(string path)
@@ -168,6 +206,148 @@ namespace booruReader.Settings_Screen
                 FolderPath = folderDialog.SelectedPath + "\\";
         }
 
+        public DelegateCommand AddBooruCommand { get { return _addBooruCommand; } }
+
+        private BooruBoard _previousBoard;
+
+        private void AddBooru()
+        {
+            _previousBoard = CurrentSelectedBoard;
+            CurrentSelectedBoard = new BooruBoard();
+            EnableEditing = true;
+            DoShowNewBooru = Visibility.Visible;
+        }
+
+        public DelegateCommand RemoveBooruCommand { get { return _removeBooruCommand; } }
+
+        private void RemoveBooru()
+        {
+            _providerList.Remove(CurrentSelectedBoard);
+        }
+
+        public DelegateCommand FinalizeBooruCommand { get { return _finalizeBooruCommand; } }
+
+        private void FinalizeBooru()
+        {
+            if (IsValidBooru())
+            {
+                _providerList.Add(CurrentSelectedBoard);
+                CurrentSelectedBoard = CurrentSelectedBoard;
+                EnableEditing = false;
+                DoShowNewBooru = Visibility.Collapsed;
+            }
+        }
+
+        public DelegateCommand CancelBooruCommand { get { return _cancelBooruCommand; } }
+
+        private void CancelBooru()
+        {
+            GlobalSettings.Instance.ProviderChanged = false;
+            CurrentSelectedBoard = _previousBoard;
+            EnableEditing = false;
+            DoShowNewBooru = Visibility.Collapsed;
+        }
+
+        /// <summary>
+        /// Checks that the board user is adding is valid
+        /// </summary>
+        private bool IsValidBooru()
+        {
+            bool retval;
+            bool hadErrors = false;
+            retval = false;
+
+            try
+            {
+                if (!string.IsNullOrEmpty(CurrentSelectedBoard.Name) && !string.IsNullOrEmpty(CurrentSelectedBoard.URL))
+                {
+                    CurrentSelectedBoard.URL = NormalizeURL(CurrentSelectedBoard.URL);
+
+                    //Now we try and fetch a page until we get result... or an exception
+                    PostsFetcher posts = new PostsFetcher(true);
+
+                    try
+                    {
+                        CurrentSelectedBoard.ProviderType = ProviderAccessType.XML;
+                        if (posts.GetImages(1).Count > 0)
+                            hadErrors = false;
+                    }
+                    catch
+                    {
+                        hadErrors = true;
+                    }
+
+                    if (hadErrors)
+                    {
+                        try
+                        {
+                            CurrentSelectedBoard.ProviderType = ProviderAccessType.Gelbooru;
+                            if (posts.GetImages(1).Count > 0)
+                                hadErrors = false;
+                        }
+                        catch
+                        {
+                            hadErrors = true;
+                        }
+                    }
+
+                    if (hadErrors)
+                    {
+                        try
+                        {
+                            CurrentSelectedBoard.ProviderType = ProviderAccessType.JSON;
+                            if (posts.GetImages(1).Count > 0)
+                                hadErrors = false;
+                        }
+                        catch
+                        {
+                            hadErrors = true;
+                        }
+                    }
+
+                    if (hadErrors)
+                        throw new Exception("Invalid or unsupported booru.");
+                }
+                else
+                    throw new Exception("Enter address and name.");
+            }
+            catch
+            {
+                hadErrors = true;
+                new MetroMessagebox("Error", "Invalid or unsupported booru.").Show();
+            }
+            finally
+            {
+                if (!hadErrors)
+                    retval = true;
+            }
+
+            return retval;
+        }
+
+        /// <summary>
+        /// Checks if url starts with http and ends with a /
+        /// If not adds them in and returns an updated string
+        /// </summary>
+        private string NormalizeURL(string url)
+        {
+            string retval = url;
+
+            //Check for http
+            if (!retval.Contains("http"))
+            {
+                retval = "http://" + retval;
+            }
+
+            //Check that we end with a /
+            if (retval[retval.Length - 1] != '/')
+            {
+                retval = retval + "/";
+            }
+
+            return retval;
+        }
+
         /// <summary>
         /// This function either writes out existing xml file and reads it ot reads already existing one to get list of websites.
         /// </summary>
@@ -175,45 +355,59 @@ namespace booruReader.Settings_Screen
         private void LoadXMLDataProviders(List<BooruBoard> booruList)
         {
             booruList.Clear();
-            XmlDocument whiteList = new XmlDocument();
             try
             {
-                string externalFilePath = string.Format(@"{0}\ProviderList.xml", Environment.CurrentDirectory);
-                if (File.Exists(externalFilePath))
-                {
-                    whiteList.Load(externalFilePath);
-                }
+                string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                path = Path.Combine(path, "BooruReader") + @"\Providers.xml";
+                TextReader textReader;
+
+                if (File.Exists(path))
+                    textReader = new StreamReader(path);
                 else
                 {
                     Stream xmlStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("booruReader.Settings_Screen.defaultBoorus.xml");
-                    whiteList.Load(xmlStream);
-                    whiteList.Save(externalFilePath);
+                    textReader = new StreamReader(xmlStream);
                 }
 
-                XmlNode root = whiteList.DocumentElement;
-                XmlNodeList nodelist = root.SelectNodes("/somethingBoorus/Booru");
-                foreach (XmlNode node in nodelist)
-                {
-                    string booruName = node.SelectSingleNode("@name").Value.ToString();
-                    string booruURL = node.SelectSingleNode("@url").Value.ToString();
-                    string booruPoviderType = node.SelectSingleNode("@providerType").Value.ToString();
-
-                    ProviderAccessType providerType = ProviderAccessType.INVALID;
-                    if (booruPoviderType.ToLowerInvariant().Contains("xml"))
-                        providerType = ProviderAccessType.XML;
-                    else if (booruPoviderType.ToLowerInvariant().Contains("gelboorulike"))
-                        providerType = ProviderAccessType.Gelbooru;
-                    else if (booruPoviderType.ToLowerInvariant().Contains("json"))
-                        providerType = ProviderAccessType.JSON;
-
-                    if (!string.IsNullOrEmpty(booruName) && !string.IsNullOrEmpty(booruURL) && providerType != ProviderAccessType.INVALID)
-                        booruList.Add(new BooruBoard(booruURL, booruName, providerType));
-                }
+                XmlSerializer deserializer = new XmlSerializer(_providerList.GetType());
+                _providerList = (ObservableCollection<BooruBoard>)deserializer.Deserialize(textReader);
+                textReader.Close();
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message, "File Error");
+                System.Windows.MessageBox.Show(e.Message, "File Error");
             }
+        }
+
+        public void Closing()
+        {
+            if (DoShowNewBooru == Visibility.Visible)
+            {
+                CancelBooru();
+            }
+            else
+            {
+                string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+
+                path = Path.Combine(path, "BooruReader");
+
+                if (!Directory.Exists(path))
+                    Directory.CreateDirectory(path);
+
+                TextWriter textWriter = new StreamWriter(path + @"\Providers.xml");
+
+                XmlSerializer x = new XmlSerializer(_providerList.GetType());
+                x.Serialize(textWriter, _providerList);
+                textWriter.Close();
+
+                if (GlobalSettings.Instance.MainScreenVM != null)
+                    GlobalSettings.Instance.MainScreenVM.SettingsOpen = false;
+
+                var index = ProviderList.IndexOf(GlobalSettings.Instance.CurrentBooru);
+                if (index >= 0)
+                    GlobalSettings.Instance.CurrentBooruIndex = index;
+            }
+            GlobalSettings.Instance.SaveSettings();
         }
 
         #region INotifyPropertyChanged Members

@@ -177,7 +177,8 @@ namespace booruReader.Model
             _height = post._height;
             IsVisible = true;
 
-            TagFormatter(Tags);
+            if(!string.IsNullOrEmpty(Tags))
+                TagFormatter(Tags);
 
             Dimensions = "Resolution " + _width + "x" + _height + "\n" + "Tags: " + "\n" + Tags;
         }
