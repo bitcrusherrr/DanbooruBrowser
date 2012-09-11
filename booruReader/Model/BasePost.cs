@@ -136,7 +136,7 @@ namespace booruReader.Model
                     if (!PreviewURL.Contains("emptyImage"))
                     {
                         urlStore = PreviewURL;
-                        PreviewURL = @"Images\Toolbar\emptyImage.png";
+                        PreviewURL = @"";
                     }
                 }
             }

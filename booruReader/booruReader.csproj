@@ -188,7 +188,6 @@
     <Resource Include="Preview Screen\Images\Toolbar\minimise.png" />
     <Resource Include="Preview Screen\search.png" />
     <Resource Include="Preview Screen\settings.png" />
-    <Resource Include="Images\Toolbar\emptyImage.png" />
     <EmbeddedResource Include="Settings Screen\defaultBoorus.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
@@ -200,9 +199,6 @@
     <Resource Include="Images\Toolbar\cancel.png" />
     <Resource Include="Helpers\Images\exit.png" />
     <Resource Include="booruIcon.ico" />
-    <Content Include="Images\TestImages\Aliens.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Resource Include="Images\Toolbar\search.png" />
   </ItemGroup>
   <ItemGroup />
