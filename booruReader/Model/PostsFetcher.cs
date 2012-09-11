@@ -136,8 +136,6 @@ namespace booruReader.Model
                                 break;
                     }
                 }
-
-
             }
             catch (Exception exception)
             {
@@ -228,7 +226,19 @@ namespace booruReader.Model
                             //TODO: add more UI level filtering later!
                         }
                         else
-                            ImageList.Add(post);
+                        {
+                            string extension = null;
+
+                            if (post.FullPictureURL.ToLowerInvariant().Contains("jpg") || post.FullPictureURL.ToLowerInvariant().Contains("jpeg"))
+                                extension = ".jpg";
+                            else if (post.FullPictureURL.ToLowerInvariant().Contains("png"))
+                                extension = ".png";
+                            else if (post.FullPictureURL.ToLowerInvariant().Contains("gif"))
+                                extension = ".gif";
+
+                            if (extension != null)
+                                ImageList.Add(post);
+                        }
 
                         actualCount++;
                     }

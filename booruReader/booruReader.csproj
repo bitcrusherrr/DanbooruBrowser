@@ -87,6 +87,7 @@
       <DependentUpon>MetroMessagebox.xaml</DependentUpon>
     </Compile>
     <Compile Include="Helpers\MetroMessageBoxVM.cs" />
+    <Compile Include="Model\ImageCache.cs" />
     <Compile Include="Preview Screen\PreviewScreenVM.cs" />
     <Compile Include="Preview Screen\PreviewScreenView.xaml.cs">
       <DependentUpon>PreviewScreenView.xaml</DependentUpon>
