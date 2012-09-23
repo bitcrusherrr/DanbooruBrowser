@@ -239,9 +239,10 @@ namespace booruReader.Model
             else if (FullPictureURL.ToLowerInvariant().Contains("gif"))
                 extension = ".gif";
 
-            if(extension != null)
+            _saveLocation = string.Format(GlobalSettings.Instance.SavePath + FileMD + extension);
+
+            if (extension != null && !File.Exists(_saveLocation))
             {
-                _saveLocation = string.Format(GlobalSettings.Instance.SavePath + FileMD + extension);
                 File.Copy(imageLcoation, _saveLocation, false);
 
                 ProgressBarVisible = Visibility.Visible;
