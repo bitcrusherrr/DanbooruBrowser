@@ -50,6 +50,8 @@ namespace booruReader.Model
         public double MainScreenHeight { get; set; }
 
         public bool DoUseHumanReadableNames { get; set; }
+
+        public long CacheSizeMb;
         #endregion
 
         private GlobalSettings()
@@ -121,6 +123,7 @@ namespace booruReader.Model
             Settings.Default.MainHeight = MainScreenHeight;
             Settings.Default.MainWidth = MainScreenWidth;
             Settings.Default.DoUseHumanReadableNames = DoUseHumanReadableNames;
+            Settings.Default.CacheSizeMb = CacheSizeMb;
             Settings.Default.Save();
         }
 
@@ -138,6 +141,7 @@ namespace booruReader.Model
             MainScreenHeight = Settings.Default.MainHeight;
             MainScreenWidth = Settings.Default.MainWidth;
             DoUseHumanReadableNames = Settings.Default.DoUseHumanReadableNames;
+            CacheSizeMb = Settings.Default.CacheSizeMb;
         }
     }
 }

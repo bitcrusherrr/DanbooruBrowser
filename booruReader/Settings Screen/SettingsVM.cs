@@ -31,6 +31,7 @@ namespace booruReader.Settings_Screen
         private DelegateCommand _finalizeBooruCommand;
         private DelegateCommand _cancelBooruCommand;
         private Visibility _doShowNewBooru;
+        private string _sizeString;
         #endregion
         #region Public Variables
 
@@ -116,6 +117,26 @@ namespace booruReader.Settings_Screen
                 RaisePropertyChanged("SafeModeBrowsing");
             }
         }
+
+        public long ImageChacheSize
+        {
+            get { return GlobalSettings.Instance.CacheSizeMb; }
+            set
+            {
+                GlobalSettings.Instance.CacheSizeMb = value;
+                RaisePropertyChanged("ImageChacheSize");
+            }
+        }
+
+        public string SizeString
+        {
+            get { return _sizeString; }
+            set
+            {
+                _sizeString = value;
+                RaisePropertyChanged("SizeString");
+            }
+        }
         #endregion
 
         public SettingsVM()
@@ -172,6 +193,7 @@ namespace booruReader.Settings_Screen
             };
 
             #endregion
+            SizeString = GlobalSettings.Instance.CacheSizeMb.ToString();
             DoCheckIfLatest = GlobalSettings.Instance.CheckLatest;
         }
 

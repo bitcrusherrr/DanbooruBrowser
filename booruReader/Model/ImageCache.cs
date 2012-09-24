@@ -107,6 +107,12 @@ namespace booruReader.Model
             }
         }
 
+
+        Comparison<FileInfo> FileInfoCompare = new Comparison<FileInfo>(delegate(FileInfo a, FileInfo b)
+        {
+            return DateTime.Compare(a.LastWriteTimeUtc, b.LastWriteTimeUtc);
+        });
+
         /// <summary>
         /// Cleans up cache, if its above maximum size, remove files until size is half of maximum allowed
         /// </summary>
@@ -115,13 +121,16 @@ namespace booruReader.Model
             DirectoryInfo bigCacheDir = new DirectoryInfo(BigCachePath);
             long size = bigCacheDir.EnumerateFiles("*.*", SearchOption.AllDirectories).Sum(fi => fi.Length);
 
-            //1gb atm for each folder
-            const long cacheSize = 1024000000;
-
-            //Roughly 500 megs
+            long cacheSize = GlobalSettings.Instance.CacheSizeMb * 1048576;
+            
             if (size > cacheSize)
             {
-                foreach (FileInfo file in bigCacheDir.GetFiles())
+                //Try to sort files by date of last write to the file, we should get older files at the top of the list
+                //Thus removing potentially less needed thumbs
+                List<FileInfo> fileList = new List<FileInfo>(bigCacheDir.GetFiles());
+                fileList.Sort(FileInfoCompare);
+
+                foreach (FileInfo file in fileList)
                 {
                     file.Delete();
 
@@ -134,10 +143,14 @@ namespace booruReader.Model
             DirectoryInfo smallCacheDir = new DirectoryInfo(ThumbCachePath);
             size = smallCacheDir.EnumerateFiles("*.*", SearchOption.AllDirectories).Sum(fi => fi.Length);
 
-            //Roughly 500 megs
             if (size > cacheSize)
             {
-                foreach (FileInfo file in smallCacheDir.GetFiles())
+                //Try to sort files by date of last write to the file, we should get older files at the top of the list
+                //Thus removing potentially less needed thumbs
+                List<FileInfo> fileList = new List<FileInfo>(smallCacheDir.GetFiles());
+                fileList.Sort(FileInfoCompare);
+
+                foreach (FileInfo file in fileList)
                 {
                     file.Delete();
 

@@ -54,12 +54,20 @@
         <!--Filename type checkbox-->
         <CheckBox Style="{StaticResource MetroCheckbox}" VerticalAlignment="Top" 
                 HorizontalAlignment="Left" Margin="10,115,0,0" Foreground="White"
-        Width="185" Content="Human friendly filenames" ToolTip="Use Yande.re like filenames i.e. board postid tag1 tag2.png"
+                Width="185" Content="Human friendly filenames" ToolTip="Use Yande.re like filenames i.e. board postid tag1 tag2.png"
                 IsChecked="{Binding DoUseHumanReadableNames}" />
+        
+        <StackPanel Orientation="Horizontal" Margin="10,136,0,0" Height="28" VerticalAlignment="Top" HorizontalAlignment="Left" Width="286">
+            <TextBlock Margin="0,5,3,2" Foreground="White">Cache:</TextBlock>
+            <TextBox Name="CacheSizeTextBox" ToolTip="Maximum size for the thumbnail image cache." Margin="0,2,0,2" Height="23" Width="175" Text="{Binding SizeString, Mode=TwoWay}"
+                TextChanged="TextBox_TextChanged_1" PreviewTextInput="CacheSizeTextBox_PreviewTextInput_1"
+                Foreground="White" Background="{StaticResource MetroBackground}" BorderBrush="{StaticResource DatazbytesGreen}">
+            </TextBox>
+        </StackPanel>
 
         <!--New booru settings-->
         <!--Visibility="{Binding DoShowNewBooru}"    Visibility="Collapsed"-->
-        <StackPanel Margin="5,33,0,0" Background="{StaticResource MetroBackground}" Visibility="{Binding DoShowNewBooru}">
+        <StackPanel Margin="5,33,0,0" Background="{StaticResource MetroBackground}" Visibility="Hidden">
             <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
                 <TextBlock Margin="0,2,0,2" Foreground="White">Enter new booru details:</TextBlock>
             </StackPanel>

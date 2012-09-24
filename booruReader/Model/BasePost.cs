@@ -297,7 +297,6 @@ namespace booruReader.Model
                     ProgressBarVisible = Visibility.Visible;
                     DownloadProgress = 100;
                 }
-
             }
         }
 

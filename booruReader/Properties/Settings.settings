@@ -29,5 +29,8 @@
     <Setting Name="DoUseHumanReadableNames" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="CacheSizeMb" Type="System.Int64" Scope="User">
+      <Value Profile="(Default)">1024</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
