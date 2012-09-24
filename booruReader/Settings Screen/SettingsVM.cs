@@ -24,7 +24,6 @@ namespace booruReader.Settings_Screen
         private BooruBoard _currentSelectedBoard;
         private string _folderPath;
         private DelegateCommand _selectFolderCommand;
-        private bool _doCheckIfLatest;
         private bool _enableEditing;
 
         private DelegateCommand _addBooruCommand;
@@ -66,7 +65,7 @@ namespace booruReader.Settings_Screen
                 if (ValidatePath(value))
                 {
                     _folderPath = value;
-                    GlobalSettings.Instance.SavePath = value ;
+                    GlobalSettings.Instance.SavePath = value;
                 }
 
                 RaisePropertyChanged("FolderPath");
@@ -80,10 +79,9 @@ namespace booruReader.Settings_Screen
 
         public bool DoCheckIfLatest
         {
-            get { return _doCheckIfLatest; }
+            get { return GlobalSettings.Instance.CheckLatest; }
             set
             {
-                _doCheckIfLatest = value;
                 GlobalSettings.Instance.CheckLatest = value;
                 RaisePropertyChanged("DoCheckIfLatest");
             }
@@ -106,6 +104,16 @@ namespace booruReader.Settings_Screen
             {
                 _doShowNewBooru = value;
                 RaisePropertyChanged("DoShowNewBooru");
+            }
+        }
+
+        public bool DoUseHumanReadableNames
+        {
+            get { return GlobalSettings.Instance.DoUseHumanReadableNames; }
+            set
+            {
+                GlobalSettings.Instance.DoUseHumanReadableNames = value;
+                RaisePropertyChanged("SafeModeBrowsing");
             }
         }
         #endregion

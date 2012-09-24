@@ -24,7 +24,7 @@ namespace booruReader.Model
         }
 
         public List<BasePost> GetImages(int page, String tags = null)
-        {      
+        {
             _PostFetcherImnageList.Clear();
 
             if (GlobalSettings.Instance.CurrentBooru.ProviderType == ProviderAccessType.XML || GlobalSettings.Instance.CurrentBooru.ProviderType == ProviderAccessType.Gelbooru)
@@ -44,7 +44,7 @@ namespace booruReader.Model
                 tags = string.Empty;
             }
 
-            //NOTE: refactor
+            //NOTE: refractor
             //Manual exception for danbooru as it requires user for logging in
             if (GlobalSettings.Instance.CurrentBooru.URL.ToLowerInvariant().Contains(".donmai.us"))
             {
@@ -74,66 +74,80 @@ namespace booruReader.Model
             try
             {
                 XmlTextReader reader = new XmlTextReader(finalURL);
-                
+
                 while (reader.Read())
                 {
 
                     switch (reader.NodeType)
                     {
                         case XmlNodeType.Element: // The node is an element.
-                                var nodeName = reader.Name.ToLowerInvariant();
-                                if (nodeName.Equals("posts") && !_booruTestMode)
+                            var nodeName = reader.Name.ToLowerInvariant();
+                            if (nodeName.Equals("posts") && !_booruTestMode)
+                            {
+                                while (reader.MoveToNextAttribute())
                                 {
-                                    while (reader.MoveToNextAttribute())
+                                    if (reader.Name.ToLowerInvariant().Equals("count")) // Posts Count
                                     {
-                                        if (reader.Name.ToLowerInvariant().Equals("count")) // Posts Count
-                                        {
-                                            GlobalSettings.Instance.TotalPosts = int.Parse(reader.Value);
-                                        }
+                                        GlobalSettings.Instance.TotalPosts = int.Parse(reader.Value);
+                                    }
 
-                                        if (reader.Name.ToLowerInvariant().Equals("offset")) // Posts Count
-                                        {
-                                            GlobalSettings.Instance.PostsOffset = int.Parse(reader.Value);
-                                        }
+                                    if (reader.Name.ToLowerInvariant().Equals("offset")) // Posts Count
+                                    {
+                                        GlobalSettings.Instance.PostsOffset = int.Parse(reader.Value);
                                     }
                                 }
-                                else if (nodeName.Equals("post"))
+                            }
+                            else if (nodeName.Equals("post"))
+                            {
+                                BasePost post = new BasePost();
+
+                                while (reader.MoveToNextAttribute())
                                 {
-                                    BasePost post = new BasePost();
-
-                                    while (reader.MoveToNextAttribute())
+                                    switch (reader.Name.ToLowerInvariant())
                                     {
-                                        switch (reader.Name.ToLowerInvariant())
-                                        {
-                                            case "file_url": post.FullPictureURL = NormaliseURL(reader.Value); break;
-                                            case "preview_url": post.PreviewURL = NormaliseURL(reader.Value); break;
-                                            case "md5": post.FileMD = reader.Value; break;
-                                            case "tags": post.Tags = reader.Value; break;
-                                            case "width": int.TryParse(reader.Value, out post._width); break;
-                                            case "height": int.TryParse(reader.Value, out post._height); break;
-                                            case "rating":
-                                                {
-                                                    if (reader.Value.Contains("s"))
-                                                        post.ImageRating = PostRating.Safe;
-                                                    else if (reader.Value.Contains("q"))
-                                                        post.ImageRating = PostRating.Explicit;
-                                                    else
-                                                        post.ImageRating = PostRating.Questionable;
-                                                }
-                                                break;
-                                        }
+                                        //This is usually just a number, but it really makes no difference here
+                                        case "id": post.PostId = reader.Value; break;
+                                        case "file_url": post.FullPictureURL = NormaliseURL(reader.Value); break;
+                                        case "preview_url": post.PreviewURL = NormaliseURL(reader.Value); break;
+                                        case "md5": post.FileMD = reader.Value; break;
+                                        case "tags": post.Tags = reader.Value; break;
+                                        case "width": int.TryParse(reader.Value, out post._width); break;
+                                        case "height": int.TryParse(reader.Value, out post._height); break;
+                                        case "rating":
+                                            {
+                                                if (reader.Value.Contains("s"))
+                                                    post.ImageRating = PostRating.Safe;
+                                                else if (reader.Value.Contains("q"))
+                                                    post.ImageRating = PostRating.Explicit;
+                                                else
+                                                    post.ImageRating = PostRating.Questionable;
+                                            }
+                                            break;
                                     }
+                                }
 
-                                    if (GlobalSettings.Instance.IsSafeMode && post.ImageRating != PostRating.Safe)
-                                    {
-                                        //Do nothing for now
-                                        //TODO: add more UI level filtering later!
-                                    }
-                                    else
+                                if (GlobalSettings.Instance.IsSafeMode && post.ImageRating != PostRating.Safe)
+                                {
+                                    //Do nothing for now
+                                    //TODO: add more UI level filtering later!
+                                }
+                                else
+                                {
+                                    string extension = null;
+
+                                    if (post.FullPictureURL.ToLowerInvariant().Contains("jpg") || post.FullPictureURL.ToLowerInvariant().Contains("jpeg"))
+                                        extension = ".jpg";
+                                    else if (post.FullPictureURL.ToLowerInvariant().Contains("png"))
+                                        extension = ".png";
+                                    else if (post.FullPictureURL.ToLowerInvariant().Contains("gif"))
+                                        extension = ".gif";
+
+                                    if (extension != null)
                                         ImageList.Add(post);
-
                                 }
-                                break;
+
+                            }
+                            break;
                     }
                 }
             }
@@ -144,7 +158,7 @@ namespace booruReader.Model
 
             if (!_booruTestMode && GlobalSettings.Instance.PostsOffset > GlobalSettings.Instance.TotalPosts)
             {
-                throw new Exception("End of posts lol.");
+                throw new Exception("End of posts.");
             }
         }
 
@@ -161,7 +175,7 @@ namespace booruReader.Model
                 tags = string.Empty;
             }
 
-            finalURL = GlobalSettings.Instance.CurrentBooru.URL + "post/index.json"; //+ tags from searchfield
+            finalURL = GlobalSettings.Instance.CurrentBooru.URL + "post/index.json"; //+ tags from search field
             finalURL = string.Format(finalURL + "?page=" + page + "&tags=" + FormTags(tags) + "&limit=" + Limit);
 
             try
@@ -190,25 +204,29 @@ namespace booruReader.Model
                             string[] val = str2.Split(splitter2, 2);
                             switch (val[0].ToLowerInvariant())
                             {
+                                //This is usually just a number, but it really makes no difference here
+                                case "\"id\"":
+                                    post.PostId = val[1].Replace("\"", "");
+                                    break;
                                 case "\"tags\"":
                                     post.Tags = val[1].Replace("\"", "");
                                     break;
                                 case "\"file_url\"":
-                                    post.FullPictureURL= NormaliseURL(val[1].Replace("\"", ""));
+                                    post.FullPictureURL = NormaliseURL(val[1].Replace("\"", ""));
                                     break;
                                 case "\"width\"":
-                                        int.TryParse(val[1], out post._width);
+                                    int.TryParse(val[1], out post._width);
                                     break;
                                 case "\"height\"":
-                                        int.TryParse(val[1], out post._height);
+                                    int.TryParse(val[1], out post._height);
                                     break;
                                 case "\"rating\"":
-                                        if (val[1].Contains("s"))
-                                            post.ImageRating = PostRating.Safe;
-                                        else if (val[1].Contains("q"))
-                                            post.ImageRating = PostRating.Explicit;
-                                        else
-                                            post.ImageRating = PostRating.Questionable;
+                                    if (val[1].Contains("s"))
+                                        post.ImageRating = PostRating.Safe;
+                                    else if (val[1].Contains("q"))
+                                        post.ImageRating = PostRating.Explicit;
+                                    else
+                                        post.ImageRating = PostRating.Questionable;
                                     break;
                                 case "\"md5\"":
                                     post.FileMD = val[1].Replace("\"", "");
@@ -253,7 +271,7 @@ namespace booruReader.Model
             {
                 GlobalSettings.Instance.PostsOffset = page * Limit;
 
-                //A shitty workaround as json queries dont return total post count from the imageboard
+                //A shitty workaround as json queries don't return total post count from the imageboard
                 if (ImageList.Count > 0)
                 {
                     GlobalSettings.Instance.TotalPosts = GlobalSettings.Instance.TotalPosts + GlobalSettings.Instance.PostsOffset + 1;
@@ -283,7 +301,7 @@ namespace booruReader.Model
         {
             string returnTags = tags;
 
-            if(!string.IsNullOrEmpty(tags))
+            if (!string.IsNullOrEmpty(tags))
             {
                 returnTags = tags.Replace(" ", "+");
             }

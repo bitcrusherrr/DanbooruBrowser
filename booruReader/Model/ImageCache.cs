@@ -30,7 +30,7 @@ namespace booruReader.Model
         }
 
         /// <summary>
-        /// Retrieves image from the cahce or prepares image and then returns filename via action
+        /// Retrieves image from the cache or prepares image and then returns filename via action
         /// </summary>
         public string GetImage(string imageName, string imageURL, Action<object, AsyncCompletedEventArgs> finalFilePath, bool BigImage = true)
         {
@@ -62,7 +62,7 @@ namespace booruReader.Model
         }
 
         /// <summary>
-        /// Gets fullsize image
+        /// Gets full-size image
         /// </summary>
         /// <returns>Path to the full image</returns>
         private string GetBigImage(string imageName, string imageURL, Action<object, AsyncCompletedEventArgs> finalFilePath)
@@ -84,7 +84,7 @@ namespace booruReader.Model
         /// <summary>
         /// Gets small image
         /// </summary>
-        /// <returns>filepath</returns>
+        /// <returns>file path</returns>
         private string GetSmallImage(string imageName, string imageURL, Action<object, AsyncCompletedEventArgs> finalFilePath)
         {
             string imagePath;
@@ -158,7 +158,7 @@ namespace booruReader.Model
                 filename = ".png";
             else if (FullPictureURL.ToLowerInvariant().Contains("gif"))
                 filename = ".gif";
-            else // This shouldnt happen
+            else // This shouldn't happen
                 filename = null;
 
             return md5 + filename;

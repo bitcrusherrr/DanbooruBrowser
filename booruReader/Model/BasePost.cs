@@ -106,6 +106,9 @@ namespace booruReader.Model
             set { _fileMD = value; }
         }
 
+        public string PostId
+        { get; set; }
+
         public Visibility ProgressBarVisible
         {
             get
@@ -174,6 +177,7 @@ namespace booruReader.Model
             Tags = post.Tags;
             _width = post._width;
             _height = post._height;
+            PostId = post.PostId;
             IsVisible = true;
 
             if(!string.IsNullOrEmpty(Tags))
@@ -209,12 +213,15 @@ namespace booruReader.Model
             {
                 if (counter == 6)
                 {
-                    newTags += tag + "\n";
+                    if (tag.Count() > 0)
+                        newTags += tag + " \n";
+
                     counter = 0;
                 }
                 else
                 {
-                    newTags += tag + " ";
+                    if (tag.Count() > 0)
+                        newTags += tag + " ";
                 }
                 counter++;
             }
@@ -239,7 +246,10 @@ namespace booruReader.Model
             else if (FullPictureURL.ToLowerInvariant().Contains("gif"))
                 extension = ".gif";
 
-            _saveLocation = string.Format(GlobalSettings.Instance.SavePath + FileMD + extension);
+            if (GlobalSettings.Instance.DoUseHumanReadableNames)
+                _saveLocation = string.Format(GlobalSettings.Instance.SavePath + GetHumanFilename(extension));
+            else
+                _saveLocation = string.Format(GlobalSettings.Instance.SavePath + FileMD + extension);
 
             if (extension != null && !File.Exists(_saveLocation))
             {
@@ -250,6 +260,9 @@ namespace booruReader.Model
             }
         }
 
+        /// <summary>
+        /// This call will try to save the image
+        /// </summary>
         public void SaveImage()
         {
             string extension;
@@ -265,7 +278,10 @@ namespace booruReader.Model
 
             if (extension != null)
             {
-                _saveLocation = string.Format(GlobalSettings.Instance.SavePath + FileMD + extension);
+                if(GlobalSettings.Instance.DoUseHumanReadableNames)
+                    _saveLocation = string.Format(GlobalSettings.Instance.SavePath + GetHumanFilename(extension));
+                else
+                    _saveLocation = string.Format(GlobalSettings.Instance.SavePath + FileMD + extension);
 
                 if (!File.Exists(_saveLocation) && Directory.Exists(GlobalSettings.Instance.SavePath))
                 {
@@ -285,6 +301,47 @@ namespace booruReader.Model
             }
         }
 
+        /// <summary>
+        /// Returns human readable filename in format of: booru postid tag1 tag2... .extension
+        /// Function will try adding as many tags as possible until we hit the 260 char limit for filename + folder path.
+        /// Refer to http://msdn.microsoft.com/en-us/library/ee681827(VS.85).aspx#limits for the filename size limit.
+        /// </summary>
+        private string GetHumanFilename(string extension)
+        {
+            string filename;
+
+            filename = GlobalSettings.Instance.CurrentBooru.Name + " " +  PostId;
+
+            //Check if we have tags
+            if (!string.IsNullOrEmpty(Tags))
+            {
+                string[] tags = Tags.Split(' ');
+
+                //Try to append as many tags as we can within the filename size limit
+                foreach (string tag in tags)
+                {
+                    if ((tag.Count() > 0) && (filename.Count() + tag.Count() + extension.Count() + GlobalSettings.Instance.SavePath.Count()) < 260)
+                    {
+                            filename += " " + tag;
+                    }
+                    //Otherwise we hit the limit and might as well dump out
+                    else if (tag.Count() > 0)
+                        break;
+                }
+            }
+
+            //Remove all illegal chars from filename
+            filename = Regex.Replace(filename, @"[^\w\.@-_& ]", "", RegexOptions.None);
+
+            //Finally add extension
+            filename += extension;
+
+            return filename;
+        }
+
+        /// <summary>
+        /// Progress callback for updating the image download progressbar
+        /// </summary>
         void client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
             double bytesIn = double.Parse(e.BytesReceived.ToString());
