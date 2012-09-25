@@ -32,7 +32,11 @@ namespace booruReader.Settings_Screen
         private DelegateCommand _cancelBooruCommand;
         private Visibility _doShowNewBooru;
         private string _sizeString;
+        private Visibility _doShowProgressBar;
+        bool _isValidBooru;
+        bool _isBackArrowEnabled;
         #endregion
+
         #region Public Variables
 
         public bool SafeModeBrowsing
@@ -137,6 +141,29 @@ namespace booruReader.Settings_Screen
                 RaisePropertyChanged("SizeString");
             }
         }
+
+        public Visibility DoShowProgressBar
+        {
+            get { return _doShowProgressBar; }
+            set
+            {
+                _doShowProgressBar = value;
+                RaisePropertyChanged("DoShowProgressBar");
+            }
+        }
+
+        public bool IsBackArrowEnabled
+        {
+            get { return _isBackArrowEnabled; }
+            set
+            {
+                _isBackArrowEnabled = value;
+                RaisePropertyChanged("IsBackArrowEnabled");
+            }
+        }
+
+        public string NewBooruName;
+        public string NewBooruURL;
         #endregion
 
         public SettingsVM()
@@ -146,6 +173,7 @@ namespace booruReader.Settings_Screen
             _providerList = new ObservableCollection<BooruBoard>();
             EnableEditing = false;
             DoShowNewBooru = Visibility.Collapsed;
+            DoShowProgressBar = Visibility.Hidden;
 
             foreach (BooruBoard board in GetProviders())
             {
@@ -195,6 +223,8 @@ namespace booruReader.Settings_Screen
             #endregion
             SizeString = GlobalSettings.Instance.CacheSizeMb.ToString();
             DoCheckIfLatest = GlobalSettings.Instance.CheckLatest;
+
+            IsBackArrowEnabled = true;
         }
 
         private List<BooruBoard> GetProviders()
@@ -259,12 +289,43 @@ namespace booruReader.Settings_Screen
 
         private void FinalizeBooru()
         {
-            if (IsValidBooru())
+            DoShowProgressBar = Visibility.Visible;
+            _isValidBooru = false;
+            EnableEditing = false;
+            IsBackArrowEnabled = false;
+
+            BackgroundWorker booruValidator = new BackgroundWorker();
+            booruValidator.DoWork += booruValidator_DoWork;
+            booruValidator.RunWorkerCompleted += booruValidator_RunWorkerCompleted;
+
+            booruValidator.RunWorkerAsync();
+        }
+
+        void booruValidator_DoWork(object sender, DoWorkEventArgs e)
+        {
+            string result = IsValidBooru();
+            if (result == null)
+                _isValidBooru = true;
+            else
+                throw new Exception(result);
+        }
+
+        void booruValidator_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            DoShowProgressBar = Visibility.Hidden;
+            IsBackArrowEnabled = true;
+
+            if (_isValidBooru)
             {
                 _providerList.Add(CurrentSelectedBoard);
                 CurrentSelectedBoard = CurrentSelectedBoard;
                 EnableEditing = false;
                 DoShowNewBooru = Visibility.Collapsed;
+            }
+            else
+            {
+                new MetroMessagebox("Error", e.Error.Message).ShowDialog();
+                EnableEditing = true;
             }
         }
 
@@ -281,11 +342,10 @@ namespace booruReader.Settings_Screen
         /// <summary>
         /// Checks that the board user is adding is valid
         /// </summary>
-        private bool IsValidBooru()
+        private string IsValidBooru()
         {
-            bool retval;
+            string retval = null;
             bool hadErrors = false;
-            retval = false;
 
             try
             {
@@ -336,20 +396,20 @@ namespace booruReader.Settings_Screen
                     }
 
                     if (hadErrors)
-                        throw new Exception("Invalid or unsupported booru.");
+                        retval = "Invalid or unsupported booru.";
                 }
                 else
-                    throw new Exception("Enter address and name.");
+                    retval = "Enter address and name.";
             }
             catch
             {
                 hadErrors = true;
-                new MetroMessagebox("Error", "Invalid or unsupported booru.").Show();
+                retval = "Invalid or unsupported booru.";
             }
             finally
             {
                 if (!hadErrors)
-                    retval = true;
+                    retval = null;
             }
 
             return retval;
@@ -453,6 +513,5 @@ namespace booruReader.Settings_Screen
         }
 
         #endregion
-
     }
 }

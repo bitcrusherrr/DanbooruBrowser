@@ -62,7 +62,7 @@
                         <Image Source="Images\Toolbar\list.png"/>
                     </Button>
                     
-                    <Button ToolTip="Favorite. NOT IMPLEMENTED" IsEnabled="False" Margin="3" Height="23" Width="23" Style="{StaticResource Metro}">
+                    <Button Visibility="Collapsed" ToolTip="Favorite. NOT IMPLEMENTED" IsEnabled="False" Margin="3" Height="23" Width="23" Style="{StaticResource Metro}">
                         <Image Source="Images\Toolbar\heart.png"/>
                     </Button>
                 </StackPanel>

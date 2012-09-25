@@ -8,7 +8,7 @@
     <Grid Background="{StaticResource MetroBackground}">
 
         <Button ToolTip="Return" Style="{StaticResource Metro}" Width="23" Height="23" Margin="0,8,8,0" VerticalAlignment="Top" 
-            HorizontalAlignment="Right" Click="BackButtonClick">
+            HorizontalAlignment="Right" Click="BackButtonClick" IsEnabled="{Binding IsBackArrowEnabled}">
             <Image Source="Images\back.png"/>
         </Button>
 
@@ -67,14 +67,14 @@
 
         <!--New booru settings-->
         <!--Visibility="{Binding DoShowNewBooru}"    Visibility="Collapsed"-->
-        <StackPanel Margin="5,33,0,0" Background="{StaticResource MetroBackground}" Visibility="Hidden">
+        <StackPanel Margin="5,33,0,0" Background="{StaticResource MetroBackground}" Visibility="{Binding DoShowNewBooru}">
             <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
                 <TextBlock Margin="0,2,0,2" Foreground="White">Enter new booru details:</TextBlock>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Margin="0,15,0,0">
                 <TextBlock Margin="0,2,5,2" Foreground="White">Name:</TextBlock>
-                <TextBox ToolTip="Name" Margin="0,2,0,2" IsEnabled="{Binding EnableEditing}" Height="23" Width="175" Text="{Binding CurrentSelectedBoard.Name}"
+                <TextBox ToolTip="Name" Margin="0,2,0,2" IsEnabled="{Binding EnableEditing}" Height="23" Width="175" Text="{Binding Path=CurrentSelectedBoard.Name}"
             	Foreground="White" Background="{StaticResource MetroBackground}" BorderBrush="{StaticResource DatazbytesGreen}"/>
             </StackPanel>
 
@@ -111,9 +111,9 @@
                 </Button>
             </StackPanel>
         </StackPanel>
-
-        <ProgressBar Visibility="Visible"  Name="MainScreenProgressBar" Height="3" VerticalAlignment="Top" Template="{StaticResource CustomProgressBar}" 
+        
+        <Rectangle Height="3" VerticalAlignment="Top" Fill="{StaticResource DatazbytesGreen}" />
+        <ProgressBar Visibility="{Binding DoShowProgressBar}"  Name="MainScreenProgressBar" Height="3" VerticalAlignment="Top" Template="{StaticResource CustomProgressBar}" 
                      IsIndeterminate="True" />
-
     </Grid>
 </UserControl>
