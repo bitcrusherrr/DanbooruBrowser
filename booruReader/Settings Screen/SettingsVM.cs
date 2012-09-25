@@ -162,8 +162,8 @@ namespace booruReader.Settings_Screen
             }
         }
 
-        public string NewBooruName;
-        public string NewBooruURL;
+        //public string NewBooruName;
+        //public string NewBooruURL;
         #endregion
 
         public SettingsVM()
@@ -399,7 +399,10 @@ namespace booruReader.Settings_Screen
                         retval = "Invalid or unsupported booru.";
                 }
                 else
+                {
+                    hadErrors = true;
                     retval = "Enter address and name.";
+                }
             }
             catch
             {
