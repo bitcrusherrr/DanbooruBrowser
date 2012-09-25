@@ -34,6 +34,8 @@ namespace booruReader
 
         //navigation variables
         private int CurrentPage; //Keep track of the last loaded pages
+
+        private ImageCache _cache;
         #endregion
 
         #region Public variables
@@ -92,6 +94,7 @@ namespace booruReader
             _postFetcher = new PostsFetcher();
             _threadList = new List<BasePost>();
             _imageLoader = new BackgroundWorker();
+            _cache = new ImageCache();
             _imageLoader.DoWork += BackgroundLoaderWork;
             _imageLoader.RunWorkerCompleted += ServerListLoadWorkerCompleted;
             _imageLoader.WorkerSupportsCancellation = true;
@@ -167,7 +170,7 @@ namespace booruReader
 
                 foreach (BasePost post in _threadList)
                 {
-                    _imageList.Add(new BasePost(post));
+                    _imageList.Add(new BasePost(post, true));
                 }
 
                 TriggerOffloading(_threadList.Count);
@@ -337,7 +340,16 @@ namespace booruReader
 
         internal void PreviewImage(string previewURL)
         {
-            var post = _imageList.FirstOrDefault(x => x.PreviewURL == previewURL);
+            /*
+             * Have to reformat the string from 
+             * "file:///C:/Users/Username/AppData/Roaming/BooruReader/SmallCache/somefile.jpg"
+             * to
+             * "C:\\Users\\Username\\AppData\\Roaming\\BooruReader\\SmallCache\\somefile.jpg"
+             * otherwise its not mnatching.
+             */
+            string filepath = previewURL.Replace("file:///", "");
+            filepath = filepath.Replace(@"/", @"\");
+            var post = _imageList.FirstOrDefault(x => x.PreviewURL == filepath);
             if (post != null)
             {
                 PrviewScreenView preview = new PrviewScreenView(post);
@@ -368,7 +380,9 @@ namespace booruReader
         {
             CloseAllPreviews();
             GlobalSettings.Instance.SaveSettings();
+            _cache.CleanCache();
         }
+
         #endregion
 
         #endregion

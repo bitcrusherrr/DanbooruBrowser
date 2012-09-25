@@ -7,6 +7,7 @@
         TextOptions.TextRenderingMode="ClearType"
         AllowsTransparency="True"
         Background="{x:Null}"
+        BorderThickness="1"
         BorderBrush="#FF3F3F3F"
         WindowStyle="None"
         ResizeMode="CanResizeWithGrip"
@@ -109,7 +110,7 @@
                     <StackPanel Margin="1">
                         <Border Width="140" Height="140" BorderThickness="2" BorderBrush="#52524B">
                             <Grid ToolTip="{Binding Path=Dimensions}" Style="{StaticResource GridStyle}">
-                                <Image Source="{Binding Path=PreviewURL}" Stretch="Uniform"  MouseDown="Image_MouseDown"/>
+                                <Image Source="{Binding Path=PreviewURL}" Stretch="Uniform"  MouseDown="Image_MouseDown" SnapsToDevicePixels="True" RenderOptions.BitmapScalingMode="LowQuality"/>
                                 <ProgressBar VerticalAlignment="Top" Height="3" Template="{StaticResource DeterminedProgressBar}" 
                                              Value="{Binding Path=DownloadProgress}" Visibility="{Binding Path=ProgressBarVisible}"></ProgressBar>
                             </Grid>

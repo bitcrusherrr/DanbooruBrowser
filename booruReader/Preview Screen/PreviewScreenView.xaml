@@ -47,7 +47,7 @@
         
         <Border Margin="9,38,9,9" BorderThickness="2" BorderBrush="#52524B">
             <Grid>
-                <Image Source="{Binding ImageSource}" Margin="9,3,9,39" Stretch="Uniform"></Image>
+                <Image Source="{Binding ImageSource}" Margin="9,3,9,39" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality"></Image>
                 
                 <StackPanel Margin="3"  VerticalAlignment="Bottom" HorizontalAlignment="Center" Orientation="Horizontal">
                     <Button ToolTip="Return" Margin="3" Height="23" Width="23" Style="{StaticResource Metro}" Click="ExitButtonClick">
@@ -62,7 +62,7 @@
                         <Image Source="Images\Toolbar\list.png"/>
                     </Button>
                     
-                    <Button ToolTip="Favorite. NOT IMPLEMENTED" IsEnabled="False" Margin="3" Height="23" Width="23" Style="{StaticResource Metro}">
+                    <Button Visibility="Collapsed" ToolTip="Favorite. NOT IMPLEMENTED" IsEnabled="False" Margin="3" Height="23" Width="23" Style="{StaticResource Metro}">
                         <Image Source="Images\Toolbar\heart.png"/>
                     </Button>
                 </StackPanel>

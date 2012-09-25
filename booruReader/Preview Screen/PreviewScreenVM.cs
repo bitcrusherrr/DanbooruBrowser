@@ -16,6 +16,7 @@ namespace booruReader.Preview_Screen
         private string _imageSource;
         private ObservableCollection<string> _taglist;
         private Visibility _showTaglist;
+        private bool CopyWhenReady = false;
 
         public ObservableCollection<string> TagList { get { return _taglist; } }
 
@@ -60,16 +61,33 @@ namespace booruReader.Preview_Screen
 
         public PreviewScreenVM(BasePost post)
         {
+            _post = post;
+
+            ImageCache cache = new ImageCache();
+
+            ImageSource = cache.GetImage(post.FileMD, post.FullPictureURL, LateFilePath);
+
             PreviewPost = post;
-            ImageSource = _post.FullPictureURL;
+            //ImageSource = _post.FullPictureURL;
             ShowTagList = Visibility.Collapsed;
+            char[] splitter = { ' ' };
 
             if (!string.IsNullOrEmpty(post.Tags))
-                _taglist = new ObservableCollection<string>(post.Tags.Split(' '));
+                _taglist = new ObservableCollection<string>(post.Tags.Split(splitter, StringSplitOptions.RemoveEmptyEntries));
             else
                 _taglist = new ObservableCollection<string>();
         }
 
+        private void LateFilePath(object e, AsyncCompletedEventArgs args)
+        {
+            //Yeah, I know, should really pass the flippin thing as a argument.
+            ImageCache cache = new ImageCache();
+
+            ImageSource = cache.GetImage(_post.FileMD, _post.FullPictureURL, LateFilePath);
+
+            if(CopyWhenReady)
+                _post.SaveImage(ImageSource);
+        }
 
         #region INotifyPropertyChanged Members
 
@@ -93,7 +111,10 @@ namespace booruReader.Preview_Screen
             }
             else
             {
-                _post.SaveImage();
+                if (ImageSource != null)
+                    _post.SaveImage(ImageSource);
+                else
+                    CopyWhenReady = true;
             }
         }
 

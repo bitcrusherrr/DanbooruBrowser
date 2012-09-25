@@ -27,6 +27,8 @@ namespace booruReader.Model
         private int _downloadProgress = 0;
         private bool _isVisible = true;
         private string urlStore;
+        private ImageCache _cache;
+        private string _extension;
         #endregion
 
         #region Public 
@@ -104,6 +106,9 @@ namespace booruReader.Model
             set { _fileMD = value; }
         }
 
+        public string PostId
+        { get; set; }
+
         public Visibility ProgressBarVisible
         {
             get
@@ -125,7 +130,7 @@ namespace booruReader.Model
                 _isVisible = value;
                 if (value)
                 {
-                    if (PreviewURL.Contains("emptyImage"))
+                    if (PreviewURL != null && PreviewURL == "")
                     {
                         PreviewURL = urlStore;
                     }
@@ -133,10 +138,10 @@ namespace booruReader.Model
                 else
                 {
                     //Theres an issue if false called twice in a roll we will lose the original url
-                    if (!PreviewURL.Contains("emptyImage"))
+                    if (PreviewURL != null && PreviewURL == "")
                     {
                         urlStore = PreviewURL;
-                        PreviewURL = @"Images\Toolbar\emptyImage.png";
+                        PreviewURL = @"";
                     }
                 }
             }
@@ -144,40 +149,39 @@ namespace booruReader.Model
         #endregion
 
         /// <summary>
-        /// Depreciated test constructor
-        /// </summary>
-        /// <param name="previewURL"></param>
-        /// <param name="fullPictureURL"></param>
-        /// <param name="rating"></param>
-        /// <param name="fileMD"></param>
-        /// <param name="tags"></param>
-        public BasePost(string previewURL, string fullPictureURL, PostRating rating, string fileMD, string tags = null)
-        {
-            ProgressBarVisible = Visibility.Hidden;
-            FullPictureURL = fullPictureURL;
-            urlStore = PreviewURL = previewURL;
-            ImageRating = rating;
-            FileMD = fileMD;
-            Tags = tags;
-            IsVisible = true;
-        }
-
-        /// <summary>
         /// Constructor that SHOULD be used for images
         /// </summary>
         /// <param name="post"></param>
-        public BasePost(BasePost post)
+        public BasePost(BasePost post, bool isUIImage = false)
         {
+            _cache = new ImageCache();
+
             ImageRating = post.ImageRating;
             FullPictureURL = post.FullPictureURL;
-            urlStore = PreviewURL = post.PreviewURL;
+
+            if (isUIImage)
+            {
+                if (post.PreviewURL.ToLowerInvariant().Contains("jpg") || post.PreviewURL.ToLowerInvariant().Contains("jpeg"))
+                    _extension = ".jpg";
+                else if (post.PreviewURL.ToLowerInvariant().Contains("png"))
+                    _extension = ".png";
+                else if (post.PreviewURL.ToLowerInvariant().Contains("gif"))
+                    _extension = ".gif";
+
+                urlStore = PreviewURL = _cache.GetImage(post.FileMD, post.PreviewURL, LateFilePath, false);
+            }
+            else
+                urlStore = PreviewURL = post.PreviewURL;
+
             FileMD = post.FileMD;
             Tags = post.Tags;
             _width = post._width;
             _height = post._height;
+            PostId = post.PostId;
             IsVisible = true;
 
-            TagFormatter(Tags);
+            if(!string.IsNullOrEmpty(Tags))
+                TagFormatter(Tags);
 
             Dimensions = "Resolution " + _width + "x" + _height + "\n" + "Tags: " + "\n" + Tags;
         }
@@ -190,6 +194,15 @@ namespace booruReader.Model
             IsVisible = true;
         }
 
+        private void LateFilePath(object e, AsyncCompletedEventArgs args)
+        {
+            //Yeah, I know...
+            if(_isVisible)
+                urlStore = PreviewURL = _cache.GetImage(FileMD + _extension, null, LateFilePath, false);
+            else
+                urlStore = _cache.GetImage(FileMD + _extension, null, LateFilePath, false);
+        }
+
         private void TagFormatter(string myString)
         {
             string[] words = myString.Split(' ');
@@ -200,12 +213,15 @@ namespace booruReader.Model
             {
                 if (counter == 6)
                 {
-                    newTags += tag + "\n";
+                    if (tag.Count() > 0)
+                        newTags += tag + " \n";
+
                     counter = 0;
                 }
                 else
                 {
-                    newTags += tag + " ";
+                    if (tag.Count() > 0)
+                        newTags += tag + " ";
                 }
                 counter++;
             }
@@ -215,6 +231,38 @@ namespace booruReader.Model
 
 
         #region Image saving stuff
+        /// <summary>
+        /// This save method is invoked from preview screen.
+        /// We already have full-size image downloaded so just copy it.
+        /// </summary>
+        public void SaveImage(string imageLcoation)
+        {
+            string extension = null;
+
+            if (FullPictureURL.ToLowerInvariant().Contains("jpg") || FullPictureURL.ToLowerInvariant().Contains("jpeg"))
+                extension = ".jpg";
+            else if (FullPictureURL.ToLowerInvariant().Contains("png"))
+                extension = ".png";
+            else if (FullPictureURL.ToLowerInvariant().Contains("gif"))
+                extension = ".gif";
+
+            if (GlobalSettings.Instance.DoUseHumanReadableNames)
+                _saveLocation = string.Format(GlobalSettings.Instance.SavePath + GetHumanFilename(extension));
+            else
+                _saveLocation = string.Format(GlobalSettings.Instance.SavePath + FileMD + extension);
+
+            if (extension != null && !File.Exists(_saveLocation))
+            {
+                File.Copy(imageLcoation, _saveLocation, false);
+
+                ProgressBarVisible = Visibility.Visible;
+                DownloadProgress = 100;
+            }
+        }
+
+        /// <summary>
+        /// This call will try to save the image
+        /// </summary>
         public void SaveImage()
         {
             string extension;
@@ -230,7 +278,10 @@ namespace booruReader.Model
 
             if (extension != null)
             {
-                _saveLocation = string.Format(GlobalSettings.Instance.SavePath + FileMD + extension);
+                if(GlobalSettings.Instance.DoUseHumanReadableNames)
+                    _saveLocation = string.Format(GlobalSettings.Instance.SavePath + GetHumanFilename(extension));
+                else
+                    _saveLocation = string.Format(GlobalSettings.Instance.SavePath + FileMD + extension);
 
                 if (!File.Exists(_saveLocation) && Directory.Exists(GlobalSettings.Instance.SavePath))
                 {
@@ -246,10 +297,50 @@ namespace booruReader.Model
                     ProgressBarVisible = Visibility.Visible;
                     DownloadProgress = 100;
                 }
-
             }
         }
 
+        /// <summary>
+        /// Returns human readable filename in format of: booru postid tag1 tag2... .extension
+        /// Function will try adding as many tags as possible until we hit the 260 char limit for filename + folder path.
+        /// Refer to http://msdn.microsoft.com/en-us/library/ee681827(VS.85).aspx#limits for the filename size limit.
+        /// </summary>
+        private string GetHumanFilename(string extension)
+        {
+            string filename;
+
+            filename = GlobalSettings.Instance.CurrentBooru.Name + " " +  PostId;
+
+            //Check if we have tags
+            if (!string.IsNullOrEmpty(Tags))
+            {
+                string[] tags = Tags.Split(' ');
+
+                //Try to append as many tags as we can within the filename size limit
+                foreach (string tag in tags)
+                {
+                    if ((tag.Count() > 0) && (filename.Count() + tag.Count() + extension.Count() + GlobalSettings.Instance.SavePath.Count()) < 260)
+                    {
+                            filename += " " + tag;
+                    }
+                    //Otherwise we hit the limit and might as well dump out
+                    else if (tag.Count() > 0)
+                        break;
+                }
+            }
+
+            //Remove all illegal chars from filename
+            filename = Regex.Replace(filename, @"[^\w\.@-_& ]", "", RegexOptions.None);
+
+            //Finally add extension
+            filename += extension;
+
+            return filename;
+        }
+
+        /// <summary>
+        /// Progress callback for updating the image download progressbar
+        /// </summary>
         void client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
             double bytesIn = double.Parse(e.BytesReceived.ToString());

@@ -87,6 +87,7 @@
       <DependentUpon>MetroMessagebox.xaml</DependentUpon>
     </Compile>
     <Compile Include="Helpers\MetroMessageBoxVM.cs" />
+    <Compile Include="Model\ImageCache.cs" />
     <Compile Include="Preview Screen\PreviewScreenVM.cs" />
     <Compile Include="Preview Screen\PreviewScreenView.xaml.cs">
       <DependentUpon>PreviewScreenView.xaml</DependentUpon>
@@ -173,6 +174,9 @@
     <Resource Include="Images\Toolbar\settings.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Settings Screen\Images\add.png" />
+    <Resource Include="Settings Screen\Images\cancel.png" />
+    <Resource Include="Settings Screen\Images\check.png" />
     <Resource Include="Preview Screen\Images\Toolbar\list.png" />
     <Resource Include="Preview Screen\Images\Toolbar\folder.png" />
     <Resource Include="Preview Screen\Images\Toolbar\heart.png" />
@@ -185,7 +189,6 @@
     <Resource Include="Preview Screen\Images\Toolbar\minimise.png" />
     <Resource Include="Preview Screen\search.png" />
     <Resource Include="Preview Screen\settings.png" />
-    <Resource Include="Images\Toolbar\emptyImage.png" />
     <EmbeddedResource Include="Settings Screen\defaultBoorus.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
@@ -197,9 +200,6 @@
     <Resource Include="Images\Toolbar\cancel.png" />
     <Resource Include="Helpers\Images\exit.png" />
     <Resource Include="booruIcon.ico" />
-    <Content Include="Images\TestImages\Aliens.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Resource Include="Images\Toolbar\search.png" />
   </ItemGroup>
   <ItemGroup />
