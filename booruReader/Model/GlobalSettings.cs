@@ -48,9 +48,13 @@ namespace booruReader.Model
 
         public double MainScreenWidth { get; set; }
         public double MainScreenHeight { get; set; }
+
+        public bool DoUseHumanReadableNames { get; set; }
+
+        public long CacheSizeMb;
         #endregion
 
-        private GlobalSettings() 
+        private GlobalSettings()
         {
             LoadSettings();
             TotalPosts = 0;
@@ -95,7 +99,7 @@ namespace booruReader.Model
 
                     if (string.Compare(currentVersion, text, true) != 0)
                     {
-                        new MetroMessagebox("New version", "New version is avaliable.").Show();
+                        new MetroMessagebox("New version", "New version is available.").Show();
                     }
                 }
                 catch
@@ -117,12 +121,14 @@ namespace booruReader.Model
             Settings.Default.PreviewHeight = PreviewScreenHeight;
             Settings.Default.PreviewWidth = PreviewScreenWidth;
             Settings.Default.MainHeight = MainScreenHeight;
-            Settings.Default.MainWidth =  MainScreenWidth;
+            Settings.Default.MainWidth = MainScreenWidth;
+            Settings.Default.DoUseHumanReadableNames = DoUseHumanReadableNames;
+            Settings.Default.CacheSizeMb = CacheSizeMb;
             Settings.Default.Save();
         }
 
         /// <summary>
-        /// This function reads initial settings on the class initilisation
+        /// This function reads initial settings on the class initialisation
         /// </summary>
         private void LoadSettings()
         {
@@ -134,6 +140,8 @@ namespace booruReader.Model
             PreviewScreenWidth = Settings.Default.PreviewWidth;
             MainScreenHeight = Settings.Default.MainHeight;
             MainScreenWidth = Settings.Default.MainWidth;
+            DoUseHumanReadableNames = Settings.Default.DoUseHumanReadableNames;
+            CacheSizeMb = Settings.Default.CacheSizeMb;
         }
     }
 }

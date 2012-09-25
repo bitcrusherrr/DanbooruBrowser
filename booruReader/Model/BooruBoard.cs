@@ -12,9 +12,21 @@ namespace booruReader.Model
     public class BooruBoard : INotifyPropertyChanged
     {
         private string _name;
+        private string _URL;
+        private string _userName;
+        private string _password;
+
         #region Public variables
         [XmlElement("url")]
-        public string URL;
+        public string URL
+        {
+            get { return _URL; }
+            set
+            {
+                _URL = value;
+                RaisePropertyChanged("URL");
+            }
+        }
     
         [XmlElement("name")]
         public string Name
@@ -23,7 +35,7 @@ namespace booruReader.Model
             set
             {
                 _name = value;
-
+                RaisePropertyChanged("Name");
             }
         }
         
@@ -31,10 +43,26 @@ namespace booruReader.Model
         public ProviderAccessType ProviderType;
         
         [XmlElement("userName")]
-        public string UserName;
+        public string UserName
+        {
+            get { return _userName; }
+            set
+            {
+                _userName = value;
+                RaisePropertyChanged("UserName");
+            }
+        }
         
         [XmlElement("password")]
-        public string Pasword;
+        public string Pasword
+        {
+            get { return _password; }
+            set
+            {
+                _password = value;
+                RaisePropertyChanged("Pasword");
+            }
+        }
         
         #endregion 
         

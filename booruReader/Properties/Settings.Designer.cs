@@ -118,5 +118,29 @@ namespace booruReader.Properties {
                 this["PreviewHeight"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool DoUseHumanReadableNames {
+            get {
+                return ((bool)(this["DoUseHumanReadableNames"]));
+            }
+            set {
+                this["DoUseHumanReadableNames"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1024")]
+        public long CacheSizeMb {
+            get {
+                return ((long)(this["CacheSizeMb"]));
+            }
+            set {
+                this["CacheSizeMb"] = value;
+            }
+        }
     }
 }

@@ -1,28 +1,53 @@
-﻿<?xml version="1.0"?>
-<!--
-You can manually add new boards to the list and program will pick em up on launch
-Usually provider value should be set XML
-Every site that has API based on danbooru should work, if not you should bug me about it
-Provider type GELBOORULIKE is used for gelbooru based sites as they have different API.
-
-If you want to test what api site has try adding post/index.xml?page=1&tags=and to the address for XML
-index.php?page=dapi&s=post&q=index&pid=1 for GELBOORULIKE
-
-Some sites seem to return empty image lists with XML, ie chan and idol at sankaku comples.
-For those I have also added JSON request mechanism
-
-Note:this XML file and manual addition are temporary at later stage all addition will be handled within the application and it will also resolve API's by itself
-shimmie based sites not supported and support not planned.
-  -->
-<somethingBoorus xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <Booru name="Danbooru.donmai.us" url="http://danbooru.donmai.us/" providerType="XML" />
-  <Booru name="Yande.re" url="https://yande.re/" providerType="XML" />
-  <Booru name="Konachan.com" url="http://konachan.com/" providerType="XML" />
-  <Booru name="Gelbooru.com" url="http://gelbooru.com/" providerType="GELBOORULIKE" />
-  <Booru name="Safebooru.com" url="http://safebooru.org/" providerType="GELBOORULIKE" />
-  <Booru name="Idol.Sankakucomplex.com" url="http://idol.sankakucomplex.com/" providerType="JSON" />
-  <Booru name="Chan.Sankakucomplex.com" url="http://chan.sankakucomplex.com/" providerType="JSON" />
-  <Booru name="Nekobooru.net" url="http://nekobooru.net/" providerType="XML" />
-  <Booru name="Vectorbooru(ichijou.org)" url="http://ichijou.org/" providerType="XML" />
-  <Booru name="Booru.Datazbytes.net" url="http://booru.datazbytes.net/" providerType="XML" />
-</somethingBoorus>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfBooruBoard xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <BooruBoard>
+    <providerType>XML</providerType>
+    <url>http://danbooru.donmai.us/</url>
+    <name>Danbooru.donmai.us</name>
+  </BooruBoard>
+  <BooruBoard>
+    <providerType>XML</providerType>
+    <url>https://yande.re/</url>
+    <name>Yande.re</name>
+  </BooruBoard>
+  <BooruBoard>
+    <providerType>XML</providerType>
+    <url>http://konachan.com/</url>
+    <name>Konachan.com</name>
+  </BooruBoard>
+  <BooruBoard>
+    <providerType>Gelbooru</providerType>
+    <url>http://gelbooru.com/</url>
+    <name>Gelbooru.com</name>
+  </BooruBoard>
+  <BooruBoard>
+    <providerType>Gelbooru</providerType>
+    <url>http://safebooru.org/</url>
+    <name>Safebooru.com</name>
+  </BooruBoard>
+  <BooruBoard>
+    <providerType>JSON</providerType>
+    <url>http://idol.sankakucomplex.com/</url>
+    <name>Idol.Sankakucomplex.com</name>
+  </BooruBoard>
+  <BooruBoard>
+    <providerType>JSON</providerType>
+    <url>http://chan.sankakucomplex.com/</url>
+    <name>Chan.Sankakucomplex.com</name>
+  </BooruBoard>
+  <BooruBoard>
+    <providerType>XML</providerType>
+    <url>http://nekobooru.net/</url>
+    <name>Nekobooru.net</name>
+  </BooruBoard>
+  <BooruBoard>
+    <providerType>XML</providerType>
+    <url>http://ichijou.org/</url>
+    <name>Vectorbooru(ichijou.org)</name>
+  </BooruBoard>
+  <BooruBoard>
+    <providerType>XML</providerType>
+    <url>http://booru.datazbytes.net/</url>
+    <name>Booru.Datazbytes.net</name>
+  </BooruBoard>
+</ArrayOfBooruBoard>
