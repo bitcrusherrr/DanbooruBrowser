@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -21,7 +22,14 @@ namespace booruReader.Helpers
                 throw new ApplicationException("Value must be string!");
             }
 
-            return new BitmapImage(new Uri(value as string));
+            try
+            {
+                return new BitmapImage(new Uri(value as string));
+            }
+            catch
+            {
+                return DependencyProperty.UnsetValue;
+            }
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

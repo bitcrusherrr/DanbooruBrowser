@@ -47,18 +47,37 @@ namespace booruReader.Model
         {
             if (BigImage)
             {
-                if (!File.Exists(BigCachePath + imageName))
+                //Check if file is actually valid, occasionally there is a rubbish 0byte file.
+                if (!File.Exists(BigCachePath + imageName) && FileIsNotZero(BigCachePath + imageName))
                     return false;
                 else
                     return true;
             }
             else
             {
-                if (!File.Exists(ThumbCachePath + imageName))
+                if (!File.Exists(ThumbCachePath + imageName) && FileIsNotZero(ThumbCachePath + imageName))
                     return false;
                 else
                     return true;
             }
+        }
+
+        /// <summary>
+        /// This function checks if file is actually valid, occasionally there is a rubbish 0byte file.
+        /// </summary>
+        private bool FileIsNotZero(string path)
+        {
+            if (File.Exists(path))
+            {
+                FileInfo file = new FileInfo(path);
+
+                if (file.Length > 0)
+                    return true;
+                else
+                    return false;
+            }
+            else
+                return false;
         }
 
         /// <summary>
@@ -69,7 +88,7 @@ namespace booruReader.Model
         {
             string imagePath = Path.Combine(BigCachePath, FormFilename(imageName, imageURL));
 
-            if (File.Exists(imagePath))
+            if (File.Exists(imagePath) && FileIsNotZero(imagePath))
                 return imagePath;
             else
             {
@@ -95,7 +114,7 @@ namespace booruReader.Model
             else
                 imagePath = Path.Combine(ThumbCachePath, imageName);
 
-            if (File.Exists(imagePath))
+            if (File.Exists(imagePath) && FileIsNotZero(imagePath))
                 return imagePath;
             else
             {
