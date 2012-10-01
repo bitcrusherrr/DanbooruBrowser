@@ -64,10 +64,12 @@
                 Foreground="White" Background="{StaticResource MetroBackground}" BorderBrush="{StaticResource DatazbytesGreen}">
             </TextBox>
         </StackPanel>
+        
+        <TextBlock Margin="0,15,10,5" VerticalAlignment="Bottom" HorizontalAlignment="Right" Foreground="Gray" Text="{Binding VersionInfo}"></TextBlock>
 
         <!--New booru settings-->
         <!--Visibility="{Binding DoShowNewBooru}"    Visibility="Collapsed"-->
-        <StackPanel Margin="5,33,0,0" Background="{StaticResource MetroBackground}" Visibility="{Binding DoShowNewBooru}">
+        <StackPanel Margin="5,33,0,0" Background="{StaticResource MetroBackground}" Visibility="Collapsed">
             <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
                 <TextBlock Margin="0,2,0,2" Foreground="White">Enter new booru details:</TextBlock>
             </StackPanel>

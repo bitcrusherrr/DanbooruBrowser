@@ -77,6 +77,11 @@ namespace booruReader.Settings_Screen
             }
         }
 
+        public string VersionInfo
+        {
+            get { return "v"+Assembly.GetExecutingAssembly().GetName().Version.ToString(); }
+        }
+
         public ObservableCollection<BooruBoard> ProviderList
         {
             get { return _providerList; }
