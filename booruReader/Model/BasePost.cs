@@ -130,7 +130,7 @@ namespace booruReader.Model
                 _isVisible = value;
                 if (value)
                 {
-                    if (PreviewURL != null && PreviewURL == "")
+                    if (PreviewURL == null || PreviewURL == "")
                     {
                         PreviewURL = urlStore;
                     }
@@ -138,7 +138,7 @@ namespace booruReader.Model
                 else
                 {
                     //Theres an issue if false called twice in a roll we will lose the original url
-                    if (PreviewURL != null && PreviewURL == "")
+                    if (PreviewURL != null && PreviewURL != "")
                     {
                         urlStore = PreviewURL;
                         PreviewURL = @"";
@@ -288,7 +288,6 @@ namespace booruReader.Model
                     ProgressBarVisible = Visibility.Visible;
                     WebClient client = new WebClient();
                     client.DownloadProgressChanged += new DownloadProgressChangedEventHandler(client_DownloadProgressChanged);
-                    client.DownloadFileCompleted += new AsyncCompletedEventHandler(client_DownloadFileCompleted);
                     client.DownloadFileAsync(new Uri(FullPictureURL), _saveLocation);
                 }
                 else if (File.Exists(_saveLocation))
@@ -348,11 +347,6 @@ namespace booruReader.Model
             double percentage = bytesIn / totalBytes * 100;
 
             DownloadProgress = int.Parse(Math.Truncate(percentage).ToString());
-        }
-
-        void client_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
-        {
-            //Image downloaded
         }
         #endregion
 

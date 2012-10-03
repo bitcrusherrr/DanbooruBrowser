@@ -18,9 +18,10 @@ namespace booruReader.Helpers
                 return DependencyProperty.UnsetValue;
 
             if (!(value is String))
-            {
                 throw new ApplicationException("Value must be string!");
-            }
+
+            if(string.IsNullOrEmpty(value as string))
+                return DependencyProperty.UnsetValue;
 
             try
             {

@@ -80,8 +80,6 @@ namespace booruReader
             }
         }
 
-        //NOTE: Crappy hack to to enable loading of "offloaded" images
-        public int LastHiddenIndex = 0;
         #endregion
 
         /// <summary>
@@ -167,14 +165,13 @@ namespace booruReader
             }
             else
             {
-
                 foreach (BasePost post in _threadList)
                 {
                     _imageList.Add(new BasePost(post, true));
                 }
 
-                TriggerOffloading(_threadList.Count);
                 _threadList.Clear();
+
                 if (GlobalSettings.Instance.TotalPosts == 0)
                 {
                     new MetroMessagebox("Fetch Error", "No posts for this tag/tags.").ShowDialog();
@@ -196,66 +193,6 @@ namespace booruReader
                 FetchImages();
             }
         }
-
-
-        #region Image Offloading 
-        private int cahcedLastHidden;
-        public void TriggerOffloading(int imagesToHide)
-        {
-            //This is enough to fill 2x 1920x1200 screens with images
-            if (GlobalSettings.Instance.PostsOffset > 200)
-            {
-                int offsetIndex = 0;
-
-                if (cahcedLastHidden > LastHiddenIndex)
-                {
-                    Debug.WriteLine("Hiding: " + (cahcedLastHidden + imagesToHide) + " Images.");
-                    for (int i = 0; i <= (cahcedLastHidden + imagesToHide); i++)
-                    {
-                        if (i < _imageList.Count)
-                        {
-                            offsetIndex = i;
-                            _imageList[offsetIndex].IsVisible = false;
-                        }
-                    }
-                }
-                else
-                {
-                    Debug.WriteLine("Hiding: " + imagesToHide + " Images.");
-                    for (int i = 0; i <= imagesToHide; i++)
-                    {
-                        offsetIndex = i + LastHiddenIndex;
-                        if (offsetIndex < _imageList.Count)
-                        {
-                            _imageList[offsetIndex].IsVisible = false;
-                        }
-                    }
-                }
-
-                Debug.WriteLine("Last hidden image index: " + offsetIndex);
-                LastHiddenIndex = offsetIndex;
-                cahcedLastHidden = offsetIndex;
-            }
-        }
-
-        public void TriggerReloading()
-        {
-            int i = 0;
-            int imagesLoaded = GlobalSettings.Instance.PostsOffset / CurrentPage;
-            Debug.WriteLine("Reloading triggered for index: " + LastHiddenIndex + " For: " + imagesLoaded + " images");
-            while (i <= imagesLoaded && LastHiddenIndex >= 0)
-            {
-                i++;
-                _imageList[LastHiddenIndex].IsVisible = true;
-                //Debug.WriteLine("Index: " + LastHiddenIndex + " Is Visible: " + _imageList[LastHiddenIndex].IsVisible);
-                if (i <= imagesLoaded)
-                    LastHiddenIndex--;
-            }
-            //Debug.WriteLine("Reloaded: " + imagesLastLoaded + " Last hidden index: " + LastHiddenIndex + " Visibility: " + _imageList[LastHiddenIndex].IsVisible);
-        }
-
-        #endregion
-
         #region Commands
 
         public DelegateCommand PerformFetchCommand { get { return _performFetchCommand; } }
@@ -269,8 +206,6 @@ namespace booruReader
             _imageList.Add(new BasePost());
             _imageList[0].IsSelected = true;
             _imageList.Clear();
-            LastHiddenIndex = 0;
-            cahcedLastHidden = 0;
 
             if (GlobalSettings.Instance.CurrentBooru.ProviderType == ProviderAccessType.Gelbooru)
                 CurrentPage = 0;

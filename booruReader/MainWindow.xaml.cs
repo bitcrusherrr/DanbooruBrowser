@@ -86,7 +86,26 @@ namespace booruReader
             if (this.WindowState != System.Windows.WindowState.Maximized)
             {
                 this.WindowState = System.Windows.WindowState.Maximized;
-                LoadMoreImages();
+
+                int lastItem = ImageList.Items.Count - 1;
+                //Check if last item is visible and trigger more loading
+                if (lastItem > 0)
+                {
+                    ListBoxItem listitem = ImageList.ItemContainerGenerator.ContainerFromItem(ImageList.Items[lastItem]) as ListBoxItem;
+
+                    //have to use code different from IsFullyOrPartiallyVisible as we don't know the scroller.
+                    if (listitem != null)
+                    {
+                        GeneralTransform transform = listitem.TransformToVisual(ImageList);
+                        Point childToParentCoordinates = transform.Transform(new Point(0, 0));
+                        if (childToParentCoordinates.Y >= 0 &&
+                            childToParentCoordinates.Y + (listitem.ActualHeight / 4) <= ImageList.ActualHeight)
+                        {
+                            viewModel.TriggerImageLoading();
+                        }
+                    }
+                }
+
             }
             else
                 this.WindowState = System.Windows.WindowState.Normal;
@@ -102,71 +121,46 @@ namespace booruReader
             GlobalSettings.Instance.PerformVersionCheck();
         }
 
-        private void LoadMoreImages()
+        private void ShowVisibleItems(object sender)
         {
-            if (GlobalSettings.Instance.TotalPosts > GlobalSettings.Instance.PostsOffset)
+            var scrollViewer = (FrameworkElement)sender;
+            int end = ImageList.Items.Count - 1;
+            foreach (BasePost item in ImageList.Items)
             {
-                int offset = 0;
-                if (ImageList.Items.Count > 5)
-                    offset = ImageList.Items.Count - 4;
-
-                for (int index = offset; index < ImageList.Items.Count; index++)
+                if (item.IsVisible)
                 {
-                    ListBoxItem listitem = ImageList.ItemContainerGenerator.ContainerFromItem(ImageList.Items[index]) as ListBoxItem;
-                    if (listitem != null)
+                    var listBoxItem = (FrameworkElement)ImageList.ItemContainerGenerator.ContainerFromItem(item);
+                    if (!IsFullyOrPartiallyVisible(listBoxItem, scrollViewer))
+                        item.IsVisible = false;
+                    else
                     {
-                        GeneralTransform transform = listitem.TransformToVisual(ImageList);
-                        Point childToParentCoordinates = transform.Transform(new Point(0, 0));
-                        if (childToParentCoordinates.Y >= 0 &&
-                            childToParentCoordinates.Y + (listitem.ActualHeight / 4) <= ImageList.ActualHeight)
+                        if (ImageList.Items.IndexOf(item) == end && end > 0)
                         {
                             viewModel.TriggerImageLoading();
-                            break;
                         }
                     }
-                }              
-            }
-
-            //Should be able to trigger reload regardless if we ended fetching whole internet
-            ImageReloading();
-        }
-
-        private void ImageReloading()
-        {
-            //check if last hidden images is about to be visible and start reloading it
-            if (viewModel.LastHiddenIndex > 0)// We want to have some hidden images 
-            {
-                ListBoxItem listitem = ImageList.ItemContainerGenerator.ContainerFromItem(ImageList.Items[viewModel.LastHiddenIndex]) as ListBoxItem;
-                if (listitem != null)
+                }
+                else
                 {
-                    GeneralTransform transform = listitem.TransformToVisual(ImageList);
-                    Point childToParentCoordinates = transform.Transform(new Point(0, 0));
-                    if (childToParentCoordinates.Y >= 0 &&
-                        childToParentCoordinates.Y + (listitem.ActualHeight / 4) <= ImageList.ActualHeight)
-                    {
-                        viewModel.TriggerReloading();
-                    }
-                    else if (viewModel.LastHiddenIndex > 0)
-                    {
-                        ListBoxItem listitem2 = ImageList.ItemContainerGenerator.ContainerFromItem(ImageList.Items[viewModel.LastHiddenIndex]) as ListBoxItem;
-                        if (listitem2 != null)
-                        {
-                            GeneralTransform transform2 = listitem2.TransformToVisual(ImageList);
-                            Point childToParentCoordinates2 = transform2.Transform(new Point(0, 0));
-                            if (childToParentCoordinates2.Y >= 0 &&
-                                childToParentCoordinates2.Y + (listitem2.ActualHeight / 4) <= listitem2.ActualHeight)
-                            {
-                                ImageReloading(); //Just to check if last item is still visible
-                            }
-                        }
-                    }
+                    var listBoxItem = (FrameworkElement)ImageList.ItemContainerGenerator.ContainerFromItem(item);
+                    if (IsFullyOrPartiallyVisible(listBoxItem, scrollViewer))
+                        item.IsVisible = true;
                 }
             }
         }
 
+        protected bool IsFullyOrPartiallyVisible(FrameworkElement child, FrameworkElement scrollViewer)
+        {
+            var childTransform = child.TransformToAncestor(scrollViewer);
+            var childRectangle = childTransform.TransformBounds(
+                                      new Rect(new Point(0, 0), child.RenderSize));
+            var ownerRectangle = new Rect(new Point(0, 0), scrollViewer.RenderSize);
+            return ownerRectangle.IntersectsWith(childRectangle);
+        } 
+
         private void ImageList_ScrollChanged_1(object sender, ScrollChangedEventArgs e)
         {
-            LoadMoreImages();
+            ShowVisibleItems(sender);
         }
 
         private void TextboxKeypres(object sender, KeyEventArgs e)
