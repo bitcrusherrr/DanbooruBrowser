@@ -232,7 +232,9 @@ namespace booruReader
             }
             else
             {
-                foreach (BasePost post in MainImageList)
+                var selected = MainImageList.Where(x => x.IsSelected == true);
+
+                foreach (BasePost post in selected)
                 {
                     if (post.IsSelected)
                     {

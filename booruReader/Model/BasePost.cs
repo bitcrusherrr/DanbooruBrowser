@@ -137,7 +137,7 @@ namespace booruReader.Model
                 }
                 else
                 {
-                    //Theres an issue if false called twice in a roll we will lose the original url
+                    //There's an issue if false called twice in a roll we will lose the original url
                     if (PreviewURL != null && PreviewURL != "")
                     {
                         urlStore = PreviewURL;

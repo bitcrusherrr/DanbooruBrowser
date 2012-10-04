@@ -87,16 +87,6 @@ namespace booruReader.Settings_Screen
             get { return _providerList; }
         }
 
-        public bool DoCheckIfLatest
-        {
-            get { return GlobalSettings.Instance.CheckLatest; }
-            set
-            {
-                GlobalSettings.Instance.CheckLatest = value;
-                RaisePropertyChanged("DoCheckIfLatest");
-            }
-        }
-
         public bool EnableEditing
         {
             get { return _enableEditing; }
@@ -227,7 +217,6 @@ namespace booruReader.Settings_Screen
 
             #endregion
             SizeString = GlobalSettings.Instance.CacheSizeMb.ToString();
-            DoCheckIfLatest = GlobalSettings.Instance.CheckLatest;
 
             IsBackArrowEnabled = true;
         }

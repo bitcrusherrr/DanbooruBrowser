@@ -111,16 +111,6 @@ namespace booruReader
                 this.WindowState = System.Windows.WindowState.Normal;
         }
 
-        private void WindowLostFocus(Object sender, MouseEventArgs e)
-        {
-
-        }
-
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            GlobalSettings.Instance.PerformVersionCheck();
-        }
-
         private void ShowVisibleItems(object sender)
         {
             var scrollViewer = (FrameworkElement)sender;

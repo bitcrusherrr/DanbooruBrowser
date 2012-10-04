@@ -5,17 +5,52 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Text;
+using System.Xml;
+using System.Xml.Serialization;
 using booruReader.Helpers;
 using booruReader.Properties;
 
 namespace booruReader.Model
 {
+    [Serializable]
     public class GlobalSettings
     {
         private static GlobalSettings instance;
         private BooruBoard _currentBooru;
 
         #region Global Variables
+        [XmlElement("SavePath")]
+        public string SavePath;
+
+        [XmlElement("IsSafeMode")]
+        public bool IsSafeMode;
+
+        [XmlElement("CurrentBooruIndex")]
+        public int CurrentBooruIndex;
+
+        //Keep the screen sizes
+        [XmlElement("PreviewScreenWidth")]
+        public double PreviewScreenWidth;
+        [XmlElement("PreviewScreenHeight")]
+        public double PreviewScreenHeight;
+
+        [XmlElement("MainScreenWidth")]
+        public double MainScreenWidth;
+        [XmlElement("MainScreenHeight")]
+        public double MainScreenHeight;
+
+        [XmlElement("DoUseHumanReadableNames")]
+        public bool DoUseHumanReadableNames;
+
+        [XmlElement("CacheSizeMb")]
+        public long CacheSizeMb;
+
+        //This 2 are related. One keeps track of posts loaded and another one keeps track of post offset.
+        public int TotalPosts;
+        public int PostsOffset;
+
+        public MainScreenVM MainScreenVM = null;
+
         public BooruBoard CurrentBooru
         {
             get { return _currentBooru; }
@@ -27,33 +62,7 @@ namespace booruReader.Model
         }
 
         public bool ProviderChanged = false;
-
-        public string SavePath;
-
-        public bool IsSafeMode;
-
-        public int CurrentBooruIndex;
-
-        //This 2 are related. One keeps track of posts loaded and another one keeps track of post offset.
-        public int TotalPosts;
-        public int PostsOffset;
-
-        public MainScreenVM MainScreenVM = null;
-
-        public bool CheckLatest = false;
-
-        //Keep the screensizes
-        public double PreviewScreenWidth { get; set; }
-        public double PreviewScreenHeight { get; set; }
-
-        public double MainScreenWidth { get; set; }
-        public double MainScreenHeight { get; set; }
-
-        public bool DoUseHumanReadableNames { get; set; }
-
-        public long CacheSizeMb;
         #endregion
-
         private GlobalSettings()
         {
             LoadSettings();
@@ -73,58 +82,19 @@ namespace booruReader.Model
             }
         }
 
-        public void PerformVersionCheck()
-        {
-            if (CheckLatest)
-            {
-                string currentVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-
-                try
-                {
-                    byte[] imageBytes;
-                    HttpWebRequest imageRequest = (HttpWebRequest)WebRequest.Create("http://datazbytes.net/programms/version");
-                    WebResponse imageResponse = imageRequest.GetResponse();
-
-                    Stream responseStream = imageResponse.GetResponseStream();
-
-                    using (BinaryReader br = new BinaryReader(responseStream))
-                    {
-                        imageBytes = br.ReadBytes(50000000);
-                        br.Close();
-                    }
-                    responseStream.Close();
-                    imageResponse.Close();
-
-                    string text = System.Text.Encoding.Default.GetString(imageBytes);
-
-                    if (string.Compare(currentVersion, text, true) != 0)
-                    {
-                        new MetroMessagebox("New version", "New version is available.").Show();
-                    }
-                }
-                catch
-                {
-                    //Do nothing, we dont really care if we failed to check version.
-                }
-            }
-        }
-
         /// <summary>
         /// This function writes out current values 
         /// </summary>
         public void SaveSettings()
         {
-            Settings.Default.SafeMode = IsSafeMode;
-            Settings.Default.SaveDirectory = SavePath;
-            Settings.Default.LastUsedBoardIndex = CurrentBooruIndex;
-            Settings.Default.CheckForLatest = CheckLatest;
-            Settings.Default.PreviewHeight = PreviewScreenHeight;
-            Settings.Default.PreviewWidth = PreviewScreenWidth;
-            Settings.Default.MainHeight = MainScreenHeight;
-            Settings.Default.MainWidth = MainScreenWidth;
-            Settings.Default.DoUseHumanReadableNames = DoUseHumanReadableNames;
-            Settings.Default.CacheSizeMb = CacheSizeMb;
-            Settings.Default.Save();
+            string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            path = Path.Combine(path, "BooruReader");
+
+            TextWriter textWriter = new StreamWriter(path + @"\settings.xml");
+
+            XmlSerializer x = new XmlSerializer(this.GetType());
+            x.Serialize(textWriter, this);
+            textWriter.Close();
         }
 
         /// <summary>
@@ -132,16 +102,39 @@ namespace booruReader.Model
         /// </summary>
         private void LoadSettings()
         {
-            IsSafeMode = Settings.Default.SafeMode;
-            SavePath = Settings.Default.SaveDirectory;
-            CurrentBooruIndex = Settings.Default.LastUsedBoardIndex;
-            CheckLatest = Settings.Default.CheckForLatest;
-            PreviewScreenHeight = Settings.Default.PreviewHeight;
-            PreviewScreenWidth = Settings.Default.PreviewWidth;
-            MainScreenHeight = Settings.Default.MainHeight;
-            MainScreenWidth = Settings.Default.MainWidth;
-            DoUseHumanReadableNames = Settings.Default.DoUseHumanReadableNames;
-            CacheSizeMb = Settings.Default.CacheSizeMb;
+            string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            path = Path.Combine(path, "BooruReader") + @"\settings.xml";
+
+            //Try loading xml file if one exists
+            if (File.Exists(path))
+            {
+                XmlTextReader reader = new XmlTextReader(path);
+                XmlDocument xml = new XmlDocument();
+                xml.Load(reader);
+
+                SavePath = xml.SelectSingleNode("/GlobalSettings/SavePath").InnerText;
+                IsSafeMode = xml.SelectSingleNode("/GlobalSettings/IsSafeMode").InnerText.Contains("true");
+                int.TryParse(xml.SelectSingleNode("/GlobalSettings/CurrentBooruIndex").InnerText, out CurrentBooruIndex);
+                double.TryParse(xml.SelectSingleNode("/GlobalSettings/PreviewScreenWidth").InnerText, out PreviewScreenWidth);
+                double.TryParse(xml.SelectSingleNode("/GlobalSettings/PreviewScreenHeight").InnerText, out PreviewScreenHeight);
+                double.TryParse(xml.SelectSingleNode("/GlobalSettings/MainScreenWidth").InnerText, out MainScreenWidth);
+                double.TryParse(xml.SelectSingleNode("/GlobalSettings/MainScreenHeight").InnerText, out MainScreenHeight);
+                DoUseHumanReadableNames = xml.SelectSingleNode("/GlobalSettings/DoUseHumanReadableNames").InnerText.Contains("true");
+                long.TryParse(xml.SelectSingleNode("/GlobalSettings/CacheSizeMb").InnerText, out CacheSizeMb);
+            }
+            //otherwise load default settings provided
+            else
+            {
+                IsSafeMode = Settings.Default.SafeMode;
+                SavePath = Settings.Default.SaveDirectory;
+                CurrentBooruIndex = Settings.Default.LastUsedBoardIndex;
+                PreviewScreenHeight = Settings.Default.PreviewHeight;
+                PreviewScreenWidth = Settings.Default.PreviewWidth;
+                MainScreenHeight = Settings.Default.MainHeight;
+                MainScreenWidth = Settings.Default.MainWidth;
+                DoUseHumanReadableNames = Settings.Default.DoUseHumanReadableNames;
+                CacheSizeMb = Settings.Default.CacheSizeMb;
+            }
         }
     }
 }

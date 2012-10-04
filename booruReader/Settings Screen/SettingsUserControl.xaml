@@ -12,12 +12,6 @@
             <Image Source="Images\back.png"/>
         </Button>
 
-        <!--Check latest checkbox-->
-        <CheckBox Visibility="Collapsed" Background="Transparent" Style="{StaticResource MetroCheckbox}" VerticalAlignment="Top" 
-                 HorizontalAlignment="Left" Margin="104,9,0,0" Foreground="White"
-                 Width="145" Content="Check for latest version" ToolTip="Check if you are using latest version on startup." 
-                 IsChecked="{Binding DoCheckIfLatest}" />
-
         <!--Safe images only mode checkbox-->
         <CheckBox Style="{StaticResource MetroCheckbox}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="8,35,0,0" Foreground="White"
           Width="80" Content="Safe Mode" ToolTip="All images with non safe rating will be ignored."  IsChecked="{Binding SafeModeBrowsing}" />
@@ -69,7 +63,7 @@
 
         <!--New booru settings-->
         <!--Visibility="{Binding DoShowNewBooru}"    Visibility="Collapsed"-->
-        <StackPanel Margin="5,33,0,0" Background="{StaticResource MetroBackground}" Visibility="Collapsed">
+        <StackPanel Margin="5,33,0,0" Background="{StaticResource MetroBackground}" Visibility="{Binding DoShowNewBooru}">
             <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
                 <TextBlock Margin="0,2,0,2" Foreground="White">Enter new booru details:</TextBlock>
             </StackPanel>
