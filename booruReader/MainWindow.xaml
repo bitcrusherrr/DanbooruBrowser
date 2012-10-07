@@ -92,7 +92,7 @@
                  VerticalAlignment="Top" HorizontalAlignment="Left" KeyUp="TextboxKeypres"></TextBox>
         
         <ListBox Name="ImageList" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Background="{StaticResource MetroBackground}" 
-                 BorderBrush="{StaticResource MetroBackground}" SelectionMode="Multiple" Style="{StaticResource MetroListBox}" 
+                 BorderBrush="{StaticResource MetroBackground}" SelectionMode="Extended" Style="{StaticResource MetroListBox}" 
                  ItemsSource="{Binding MainImageList}" ScrollViewer.ScrollChanged="ImageList_ScrollChanged_1"
                  IsSynchronizedWithCurrentItem="True" SelectedItem="{Binding SelectedPostsList}"
                  Margin="8,38,8,8">

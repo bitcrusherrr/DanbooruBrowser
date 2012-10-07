@@ -282,7 +282,7 @@ namespace booruReader
              * "file:///C:/Users/Username/AppData/Roaming/BooruReader/SmallCache/somefile.jpg"
              * to
              * "C:\\Users\\Username\\AppData\\Roaming\\BooruReader\\SmallCache\\somefile.jpg"
-             * otherwise its not mnatching.
+             * otherwise its not matching.
              */
             string filepath = previewURL.Replace("file:///", "");
             filepath = filepath.Replace(@"/", @"\");
