@@ -1,3 +1,5 @@
 This tool grew out from simple wpf exercise into something useable to browse and grab pictures from danbooru like image sites.
 
-You can find more details and the more, or less stable compiled binaries at the programs homepage: http://www.datazbytes.net/?page_id=119
+You can grab the "bleeding edge" exe file straight from here. It may or may not have weird bugs.
+
+Otherwise you can go to the programs homepage and grab the clickonce installer, which will handle updating etc automaticly whenever I make a new version @ http://www.datazbytes.net/?page_id=119 Chances are the booruReader from there will be slightly less fresh, but it wouldnt have some of the silly dev-only bugs.
