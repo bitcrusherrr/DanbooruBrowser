@@ -1,5 +1,19 @@
 This tool grew out from simple wpf exercise into something useable to browse and grab pictures from danbooru like image sites.
 
-You can grab the "bleeding edge" exe file straight from here. It may or may not have weird bugs.
+You can grab compiled exe straight from here. It tends to be updated whenever commits happen.
 
-Otherwise you can go to the programs homepage and grab the clickonce installer, which will handle updating etc automaticly whenever I make a new version @ http://www.datazbytes.net/?page_id=119 Chances are the booruReader from there will be slightly less fresh, but it wouldnt have some of the silly dev-only bugs.
+Note: 
+This is a WIP so occasionally some things may break and its not fully feature complete.
+Once all features are done I will provide a centralised ClickOnce installer for convinience.
+
+Rough list of some things that work and that dont:
+- Browsing sites that conform to danbooru/gelbooru base API's.
+- Image downloading.
+- Image previews.
+- Searching by tags.
+
+Things that dont but will eventually:
+- Centralised download prorgess tracker.
+- Local Favorites collection.
+
+Feel free to leave suggestions, comments, criticism, whatever.
