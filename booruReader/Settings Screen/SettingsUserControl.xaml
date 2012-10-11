@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:Controls="clr-namespace:booruReader.CustomControls"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300" BorderBrush="{StaticResource DatazbytesGray}" BorderThickness="2">
     <Grid Background="{StaticResource MetroBackground}">
@@ -69,16 +70,15 @@
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Margin="0,15,0,0">
-                <TextBlock Margin="0,2,5,2" Foreground="White" Width="35">Name:</TextBlock>
-                <TextBox ToolTip="Name" Margin="0,2,0,2" IsEnabled="{Binding EnableEditing}" Height="23" Width="175" Text="{Binding Path=CurrentSelectedBoard.Name}"
-            	Foreground="White" Background="{StaticResource MetroBackground}" BorderBrush="{StaticResource DatazbytesGreen}"/>
+                <Controls:LabelTextBox Label="Name" ToolTip="Site name" Margin="0,2,0,2" IsEnabled="{Binding EnableEditing}" Height="23" Width="240"
+                    Text="{Binding Path=CurrentSelectedBoard.Name}" Foreground="White" Background="{StaticResource MetroBackground}" 
+                    BorderBrush="{StaticResource DatazbytesGreen}"/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                <TextBlock Margin="0,2,5,2" Foreground="White" Width="35">URL:</TextBlock>
-                <TextBox ToolTip="URL" Margin="0,2,0,2" IsEnabled="{Binding EnableEditing}" Height="23" Width="175" Text="{Binding Path=CurrentSelectedBoard.URL}"
-                Foreground="White" Background="{StaticResource MetroBackground}" BorderBrush="{StaticResource DatazbytesGreen}">
-                </TextBox>
+                <Controls:LabelTextBox Label="URL" ToolTip="Site URL" Margin="0,2,0,2" IsEnabled="{Binding EnableEditing}" Height="23" Width="240" 
+                    Text="{Binding Path=CurrentSelectedBoard.URL}" Foreground="White" Background="{StaticResource MetroBackground}" 
+                    BorderBrush="{StaticResource DatazbytesGreen}" />
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Margin="0,15,0,0">

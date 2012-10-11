@@ -10,8 +10,8 @@ namespace booruReader.Model
 {
     public class ImageCache
     {
-        public string BigCachePath;
-        public string ThumbCachePath;
+        private string BigCachePath;
+        private string ThumbCachePath;
 
         public ImageCache()
         {
@@ -180,6 +180,9 @@ namespace booruReader.Model
             }
         }
 
+        /// <summary>
+        /// MD5 based filename builder
+        /// </summary>
         private string FormFilename(string md5, string FullPictureURL)
         {
             string filename;

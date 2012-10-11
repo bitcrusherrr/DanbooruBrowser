@@ -18,7 +18,6 @@ namespace booruReader.Model
 
         private string _previewURL;
         private string _fullPictureURL;
-        private string _fileMD;
         private string _saveLocation;
         private string _tags;
         private bool _isSelected = false;
@@ -100,14 +99,9 @@ namespace booruReader.Model
             set { _fullPictureURL = value; }
         }
 
-        public string FileMD
-        {
-            get { return _fileMD; }
-            set { _fileMD = value; }
-        }
+        public string FileMD;
 
-        public string PostId
-        { get; set; }
+        public string PostId;
 
         public Visibility ProgressBarVisible
         {

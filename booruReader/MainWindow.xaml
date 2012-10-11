@@ -4,6 +4,7 @@
         xmlns:Local="clr-namespace:booruReader"
         xmlns:Helpers="clr-namespace:booruReader.Helpers"
         xmlns:Settings="clr-namespace:booruReader.Settings_Screen"
+        xmlns:Controls="clr-namespace:booruReader.CustomControls"
         TextOptions.TextFormattingMode="Display"
         TextOptions.TextRenderingMode="ClearType"
         AllowsTransparency="True"
@@ -87,9 +88,9 @@
             </StackPanel>
         </Button>
 
-        <TextBox Height="25" Width="155" Margin="86,7,0,0" Style="{StaticResource MetroTextBox}" 
-                 ToolTip="Enter tags to search for." Text="{Binding TagsBox}"
-                 VerticalAlignment="Top" HorizontalAlignment="Left" KeyUp="TextboxKeypres"></TextBox>
+        <Controls:LabelTextBox Label="Tags to search for" Height="25" Width="155" Margin="86,7,0,0" Style="{StaticResource MetroTextBox}" 
+                 ToolTip="Enter tags to search for." Text="{Binding TagsBox, Mode=TwoWay}"
+                 VerticalAlignment="Top" HorizontalAlignment="Left" KeyUp="TextboxKeypres" />
         
         <ListBox Name="ImageList" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Background="{StaticResource MetroBackground}" 
                  BorderBrush="{StaticResource MetroBackground}" SelectionMode="Extended" Style="{StaticResource MetroListBox}" 

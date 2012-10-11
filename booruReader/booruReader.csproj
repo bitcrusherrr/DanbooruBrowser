@@ -124,6 +124,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CustomControls\LabelTextBox.cs" />
+    <Compile Include="CustomControls\SuggestionTextBox.cs" />
     <Compile Include="Helpers\MetroMessagebox.xaml.cs">
       <DependentUpon>MetroMessagebox.xaml</DependentUpon>
     </Compile>
