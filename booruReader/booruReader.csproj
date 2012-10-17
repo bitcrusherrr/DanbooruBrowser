@@ -231,15 +231,11 @@
     <Resource Include="Settings Screen\Images\cancel.png" />
     <Resource Include="Settings Screen\Images\check.png" />
     <Resource Include="Preview Screen\Images\Toolbar\list.png" />
-    <Resource Include="Preview Screen\Images\Toolbar\folder.png" />
     <Resource Include="Preview Screen\Images\Toolbar\heart.png" />
     <Resource Include="Preview Screen\Images\Toolbar\back.png" />
-    <Resource Include="Preview Screen\Images\Toolbar\cancel.png" />
     <Resource Include="Preview Screen\Images\Toolbar\download.png" />
     <Resource Include="Preview Screen\Images\Toolbar\emptyImage.png" />
     <Resource Include="Preview Screen\Images\Toolbar\exit.png" />
-    <Resource Include="Preview Screen\Images\Toolbar\maximise.png" />
-    <Resource Include="Preview Screen\Images\Toolbar\minimise.png" />
     <Resource Include="Preview Screen\search.png" />
     <Resource Include="Preview Screen\settings.png" />
     <EmbeddedResource Include="Settings Screen\defaultBoorus.xml">
@@ -300,25 +296,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="ViewModels\Images\list.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="ViewModels\Images\add.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="ViewModels\Images\back.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="ViewModels\Images\cancel.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="ViewModels\Images\check.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="ViewModels\Images\folder.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="ViewModels\Images\settings.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Toolbar\list.png" />
