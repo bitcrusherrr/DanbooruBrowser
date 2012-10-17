@@ -140,6 +140,10 @@
       <DependentUpon>SettingsUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Settings Screen\SettingsVM.cs" />
+    <Compile Include="ViewModels\DownloadTracker.xaml.cs">
+      <DependentUpon>DownloadTracker.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\DownloadTrackerVM.cs" />
     <Page Include="Helpers\MetroMessagebox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -172,6 +176,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="StyleAndControlResources\ControlStyles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ViewModels\DownloadTracker.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -291,9 +299,37 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModels\Images\list.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModels\Images\add.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModels\Images\back.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModels\Images\cancel.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModels\Images\check.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModels\Images\folder.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModels\Images\settings.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Toolbar\list.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy /Q /Y "$(TargetDir)$(TargetName).exe" "$(SolutionDir)"</PostBuildEvent>
+    <PostBuildEvent>if $(ConfigurationName) == Debug goto :debug
+
+xcopy /Q /Y "$(TargetDir)$(TargetName).exe" "$(SolutionDir)"
+
+:debug</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -39,6 +39,9 @@ namespace booruReader
         #endregion
 
         #region Public variables
+
+        public ObservableCollection<BasePost> DowloadList { get; set; }
+
         //UI list for the images
         public ObservableCollection<BasePost> MainImageList
         {
@@ -93,6 +96,7 @@ namespace booruReader
             _threadList = new List<BasePost>();
             _imageLoader = new BackgroundWorker();
             _cache = new ImageCache();
+            DowloadList = new ObservableCollection<BasePost>();
             _imageLoader.DoWork += BackgroundLoaderWork;
             _imageLoader.RunWorkerCompleted += ServerListLoadWorkerCompleted;
             _imageLoader.WorkerSupportsCancellation = true;
@@ -239,6 +243,9 @@ namespace booruReader
                     if (post.IsSelected)
                     {
                         post.SaveImage();
+
+                        if (DowloadList.IndexOf(post) == -1)
+                            DowloadList.Add(post);
                     }
                 }
             }

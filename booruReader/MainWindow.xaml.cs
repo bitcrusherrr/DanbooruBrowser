@@ -16,6 +16,7 @@ using System.Diagnostics;
 using System.Windows.Controls.Primitives;
 using booruReader.Helpers;
 using booruReader.Model;
+using booruReader.ViewModels;
 
 namespace booruReader
 {
@@ -167,6 +168,24 @@ namespace booruReader
             if (e.ChangedButton == MouseButton.Left && e.ClickCount == 2)
                 if (sender is Image)
                     viewModel.PreviewImage((sender as Image).Source.ToString());
+        }
+
+        DownloadTracker downloadTracker;
+        private void Tracker_Button_Click(object sender, RoutedEventArgs e)
+        {
+            downloadTracker = new DownloadTracker(viewModel.DowloadList);
+            downloadTracker.IsVisibleChanged += downloadTracker_IsVisibleChanged;
+
+            MainGrid.Children.Add(downloadTracker);
+        }
+
+        void downloadTracker_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (downloadTracker != null && downloadTracker.Visibility != System.Windows.Visibility.Visible)
+            {
+                MainGrid.Children.Remove(downloadTracker);
+                downloadTracker = null;
+            }
         }
     }
 }

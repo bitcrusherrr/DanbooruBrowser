@@ -5,6 +5,7 @@
         xmlns:Helpers="clr-namespace:booruReader.Helpers"
         xmlns:Settings="clr-namespace:booruReader.Settings_Screen"
         xmlns:Controls="clr-namespace:booruReader.CustomControls"
+        xmlns:Views="clr-namespace:booruReader.ViewModels"
         TextOptions.TextFormattingMode="Display"
         TextOptions.TextRenderingMode="ClearType"
         AllowsTransparency="True"
@@ -13,8 +14,8 @@
         BorderBrush="#FF3F3F3F"
         WindowStyle="None"
         ResizeMode="CanResizeWithGrip"
-        Title="booruBrowser" Height="300" Width="525" MinHeight="200" MinWidth="400">
-    <Grid>
+        Title="booruBrowser" Height="300" Width="525" MinHeight="300" MinWidth="420">
+    <Grid Name="MainGrid">
         <Grid.Resources>
             <Helpers:ImageConverter x:Key="imageConverter"/>
         </Grid.Resources>
@@ -124,33 +125,39 @@
             </ListBox.ItemTemplate>
         </ListBox>
 
-        <Button ToolTip="Fetch Posts" Margin="250,8,0,0" Height="23" Width="23" VerticalAlignment="Top" 
-               Command="{Binding PerformFetchCommand}" HorizontalAlignment="Left" Style="{StaticResource Metro}">
-            <Image Source="Images\Toolbar\search.png"/>
-        </Button>
+        <StackPanel Orientation="Horizontal" Margin="250,8,75,0" Height="25" VerticalAlignment="Top">
         
-        <Button ToolTip="Download Selected" Margin="280,8,0,0" Height="23" Width="23" VerticalAlignment="Top" 
-                Command="{Binding PerformSelectedImagesDownloadCommand}" HorizontalAlignment="Left" Style="{StaticResource Metro}">
-            <Image Source="Images\Toolbar\download.png"/>
-        </Button>
+            <Button ToolTip="Fetch Posts" Margin="0,0,0,0" Height="23" Width="23" VerticalAlignment="Top" 
+                   Command="{Binding PerformFetchCommand}" HorizontalAlignment="Left" Style="{StaticResource Metro}">
+                <Image Source="Images\Toolbar\search.png"/>
+            </Button>
         
-        <Button ToolTip="Remove Selection" Margin="310,8,0,0" Height="23" Width="23" VerticalAlignment="Top" 
-                Command="{Binding ClearSelectionCommand}" HorizontalAlignment="Left" Style="{StaticResource Metro}">
-            <Image Source="Images\Toolbar\cancel.png"/>
-        </Button> 
+            <Button ToolTip="Download Selected" Margin="5,0,0,0" Height="23" Width="23" VerticalAlignment="Top" 
+                    Command="{Binding PerformSelectedImagesDownloadCommand}" HorizontalAlignment="Left" Style="{StaticResource Metro}">
+                <Image Source="Images\Toolbar\download.png"/>
+            </Button>
+        
+            <Button ToolTip="Remove Selection" Margin="5,0,0,0" Height="23" Width="23" VerticalAlignment="Top" 
+                    Command="{Binding ClearSelectionCommand}" HorizontalAlignment="Left" Style="{StaticResource Metro}">
+                <Image Source="Images\Toolbar\cancel.png"/>
+            </Button> 
+        
+            <Button ToolTip="Download progress" Margin="5,0,0,0" Height="23" Width="23" VerticalAlignment="Top" 
+                    HorizontalAlignment="Left" Style="{StaticResource Metro}" Click="Tracker_Button_Click">
+                <Image Source="Images\Toolbar\list.png"/>
+            </Button>
+            
+        </StackPanel>
+
+        
 
         <ProgressBar Visibility="{Binding ProgressBarVisibility}" Name="MainScreenProgressBar" Height="3" VerticalAlignment="Top" Template="{StaticResource CustomProgressBar}" 
                      IsIndeterminate="True" />
-
+       
         <Grid IsEnabled="{Binding SettingsOpen}" Style="{StaticResource GridStyle}" Margin="0,0,0,0">
             <Grid Opacity="0.5" Background="{StaticResource MetroBackground}"></Grid>
             <Settings:SettingsUserControl Width="300" />
         </Grid>
-        
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition Width="0*"/>
-        </Grid.ColumnDefinitions>
-
+       
     </Grid>
 </Window>
