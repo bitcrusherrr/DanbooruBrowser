@@ -72,9 +72,12 @@ namespace booruReader
                 GlobalSettings.Instance.MainScreenHeight = this.Height;
             }
 
-            this.Hide();
-            viewModel.Closing();
-            this.Close();
+            if (!viewModel.DownloadsPending())
+            {
+                this.Hide();
+                viewModel.Closing();
+                this.Close();
+            }
         }
 
         private void MinimiseButtonClick(object sender, RoutedEventArgs e)

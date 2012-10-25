@@ -1,6 +1,7 @@
 ﻿<Window x:Class="booruReader.Preview_Screen.PrviewScreenView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:Helpers="clr-namespace:booruReader.Helpers"
         Title="Preview" MinHeight="350" MinWidth="350"
         TextOptions.TextFormattingMode="Display"
         TextOptions.TextRenderingMode="ClearType"
@@ -13,6 +14,9 @@
         Initialized="Window_Initialized"
         SizeChanged="PrviewScreenView_SizeChanged" Height="210" Width="255">
     <Grid>
+    <Grid.Resources>
+        <Helpers:ImageConverter x:Key="imageConverter"/>
+    </Grid.Resources>
 <Border
              x:Name="m_edgeBorder"
              x:FieldModifier="private"
@@ -47,7 +51,7 @@
         
         <Border Margin="9,38,9,9" BorderThickness="2" BorderBrush="#52524B">
             <Grid>
-                <Image Source="{Binding ImageSource}" Margin="9,3,9,39" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality"></Image>
+                <Image Source="{Binding ImageSource, Converter={StaticResource imageConverter}}" Margin="9,3,9,39" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality"></Image>
                 
                 <StackPanel Margin="3"  VerticalAlignment="Bottom" HorizontalAlignment="Center" Orientation="Horizontal">
                     <Button ToolTip="Return" Margin="3" Height="23" Width="23" Style="{StaticResource Metro}" Click="ExitButtonClick">

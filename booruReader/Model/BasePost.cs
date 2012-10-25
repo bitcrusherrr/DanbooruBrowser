@@ -28,6 +28,7 @@ namespace booruReader.Model
         private string urlStore;
         private ImageCache _cache;
         private string _extension;
+        private WebClient _downloadClient;
         #endregion
 
         #region Public 
@@ -197,6 +198,7 @@ namespace booruReader.Model
                 urlStore = _cache.GetImage(FileMD + _extension, null, LateFilePath, false);
         }
 
+        //Note:rewrite this to use Enviroment.LineBreak
         private void TagFormatter(string myString)
         {
             string[] words = myString.Split(' ');
@@ -280,11 +282,11 @@ namespace booruReader.Model
                 if (!File.Exists(_saveLocation) && Directory.Exists(GlobalSettings.Instance.SavePath))
                 {
                     ProgressBarVisible = Visibility.Visible;
-                    WebClient client = new WebClient();
-                    client.DownloadProgressChanged += new DownloadProgressChangedEventHandler(client_DownloadProgressChanged);
-                    client.DownloadFileAsync(new Uri(FullPictureURL), _saveLocation);
+                    _downloadClient = new WebClient();
+                    _downloadClient.DownloadProgressChanged += new DownloadProgressChangedEventHandler(client_DownloadProgressChanged);
+                    _downloadClient.DownloadFileAsync(new Uri(FullPictureURL), _saveLocation);
                 }
-                else if (File.Exists(_saveLocation))
+                else if (File.Exists(_saveLocation) && _downloadClient == null)
                 {
                     //File already exists set the bar to visible and full
                     ProgressBarVisible = Visibility.Visible;

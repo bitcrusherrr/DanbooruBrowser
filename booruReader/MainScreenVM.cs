@@ -344,5 +344,20 @@ namespace booruReader
         }
 
         #endregion
+
+        /// <summary>
+        /// Performs check on pending downloads and if any are in progress asks user if he really wants to exit.
+        /// </summary>
+        internal bool DownloadsPending()
+        {
+            bool waitForDownload = false;
+
+            if (DowloadList.Count > 0)
+            {
+                //new MetroMessagebox("Downloads Pending", "Currently there are downloads pending, /n would you like to wait for them to finish?").ShowDialog();
+            }
+
+            return waitForDownload;
+        }
     }
 }
