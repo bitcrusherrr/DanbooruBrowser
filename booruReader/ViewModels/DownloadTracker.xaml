@@ -32,18 +32,24 @@
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <Grid Margin="1">
-                                    <Border BorderThickness="1" BorderBrush="#52524B">
+                                <Border BorderThickness="1" BorderBrush="#52524B">
                                         <Grid>
-                                            <ProgressBar Template="{StaticResource DeterminedProgressBar}" Margin="1"  Value="{Binding Path=DownloadProgress}" 
-                                                 Visibility="{Binding Path=ProgressBarVisible}" Height="13" Width="340">
+                                        <ProgressBar Template="{StaticResource DeterminedProgressBar}" Margin="1"  Value="{Binding Path=DownloadProgress}" 
+                                                 Visibility="{Binding Path=ProgressBarVisible}" Height="13" Width="340" >
                                                 <ProgressBar.ToolTip>
                                                     <Border BorderBrush="{StaticResource DatazbytesGray}" BorderThickness="1">
                                                         <Image Source="{Binding Path=PreviewURL}" Stretch="Uniform"
                                                                SnapsToDevicePixels="True" RenderOptions.BitmapScalingMode="LowQuality"/>
                                                     </Border>
                                                 </ProgressBar.ToolTip>
+                                            <!--<ProgressBar.ContextMenu>
+                                                <ContextMenu>
+                                                    <MenuItem Header="Open File" Command="{Binding Path=OpenFile}"/>
+                                                </ContextMenu>
+                                            </ProgressBar.ContextMenu>-->
                                             </ProgressBar>
-                                        </Grid>
+                                        <TextBlock Text="{Binding Path=DownloadProgress}" HorizontalAlignment="Center" Foreground="White"/>
+                                    </Grid>
                                     </Border>
                                 </Grid>
                             </DataTemplate>

@@ -352,9 +352,9 @@ namespace booruReader
         {
             bool waitForDownload = false;
 
-            if (DowloadList.Count > 0)
+            if (DowloadList.Count > 0 && DowloadList.Where(x => x.DownloadProgress != 100) != null)
             {
-                //new MetroMessagebox("Downloads Pending", "Currently there are downloads pending, /n would you like to wait for them to finish?").ShowDialog();
+                waitForDownload = true;
             }
 
             return waitForDownload;

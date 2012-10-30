@@ -72,11 +72,13 @@ namespace booruReader
                 GlobalSettings.Instance.MainScreenHeight = this.Height;
             }
 
-            if (!viewModel.DownloadsPending())
+            if (viewModel.DownloadsPending())
             {
-                this.Hide();
-                viewModel.Closing();
-                this.Close();
+                DoWaitForDownloads();
+            }
+            else
+            {
+                Exit();
             }
         }
 
@@ -190,5 +192,37 @@ namespace booruReader
                 downloadTracker = null;
             }
         }
+
+        ExitScreenView exitScreen;
+        private void DoWaitForDownloads()
+        {
+            exitScreen = new ExitScreenView();
+            exitScreen.IsVisibleChanged += exitScreen_IsVisibleChanged;
+
+            MainGrid.Children.Add(exitScreen);
+        }
+
+        void exitScreen_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (exitScreen != null && exitScreen.Visibility != System.Windows.Visibility.Visible)
+            {
+                MainGrid.Children.Remove(exitScreen);
+
+                if (((ExitScreenVM)exitScreen.DataContext).CarryOnExit)
+                {
+                    Exit();
+                }
+                else
+                    downloadTracker = null;
+            }
+        }
+
+        void Exit()
+        {
+            this.Hide();
+            viewModel.Closing();
+            this.Close();
+        }
+
     }
 }

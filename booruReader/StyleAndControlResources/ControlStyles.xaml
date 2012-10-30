@@ -105,6 +105,9 @@
 
     <!--Progress Bar Template-->
     <ControlTemplate x:Key="CustomProgressBar" TargetType="ProgressBar" >
+        <ControlTemplate.Resources>
+            <Style BasedOn="{StaticResource MetroTooltip}" TargetType="{x:Type ToolTip}" />
+        </ControlTemplate.Resources>
         <Grid Name="TemplateRoot" SnapsToDevicePixels="True">
             <Rectangle RadiusX="2" RadiusY="2" Fill="Transparent" />
             <Border CornerRadius="0,0,0,0" Margin="1,1,1,1">
@@ -134,6 +137,9 @@
     
 <!--Progress Bar Template-->
     <ControlTemplate x:Key="DeterminedProgressBar" TargetType="ProgressBar" >
+        <ControlTemplate.Resources>
+            <Style BasedOn="{StaticResource MetroTooltip}" TargetType="{x:Type ToolTip}" />
+        </ControlTemplate.Resources>
         <Grid Name="TemplateRoot" SnapsToDevicePixels="True">
             <Rectangle RadiusX="2" RadiusY="2" Fill="Transparent" />
             <Border CornerRadius="0,0,0,0" Margin="1,1,1,1">

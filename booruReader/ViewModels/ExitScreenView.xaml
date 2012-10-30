@@ -1,0 +1,34 @@
+﻿<UserControl x:Class="booruReader.ViewModels.ExitScreenView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:Local="clr-namespace:booruReader.ViewModels"
+             mc:Ignorable="d"
+             MinWidth="350" MinHeight="250">
+    <Grid Background="Transparent">
+        <Rectangle Opacity="0.5"
+             Fill="{StaticResource MetroBackground}"/>
+        <Border BorderBrush="{StaticResource DatazbytesGray}" BorderThickness="2" Width="350">
+            <Grid Background="{StaticResource MetroBackground}" Width="350">
+                <Button ToolTip="Return" Style="{StaticResource Metro}" Width="23" Height="23" Margin="0,8,8,0" VerticalAlignment="Top" 
+                        HorizontalAlignment="Right" Click="BackButtonClick" IsEnabled="{Binding IsBackArrowEnabled}">
+                    <Image Source="Images\back.png"/>
+                </Button>
+
+                <TextBlock Width="230" Height="80" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" xml:space="preserve">
+You have unfinished downloads.
+Would you like to wait for them to finish? 
+                </TextBlock>
+                
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Height="60">
+                    <Button Width="100" Height="25" Style="{StaticResource Metro}" BorderBrush="{StaticResource DatazbytesGray}"
+                        VerticalAlignment="Center" Foreground="White" Content="Yes" Click="YesButtonClick" Margin="0,0,15,0"></Button>
+                    
+                    <Button Width="100" Height="25" Style="{StaticResource Metro}" BorderBrush="{StaticResource DatazbytesGray}" 
+                        VerticalAlignment="Center" Foreground="White" Content="No" Click="NoButtonClick"></Button>
+                </StackPanel>               
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>
