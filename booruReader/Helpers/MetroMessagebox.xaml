@@ -7,7 +7,8 @@
         Background="{x:Null}"
         BorderBrush="{StaticResource DatazbytesGray}"
         WindowStyle="None"
-        Title="MetroMessagebox" Height="150" Width="350">
+        Title="MetroMessagebox" Height="150" Width="350" WindowStartupLocation="CenterOwner"
+        >
     <Grid>
         <Border
              x:Name="m_edgeBorder"

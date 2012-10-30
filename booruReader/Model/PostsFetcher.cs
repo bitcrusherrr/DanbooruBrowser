@@ -245,6 +245,66 @@ namespace booruReader.Model
                         }
                         else
                         {
+                            //Test bandaid for sankaku which didnt work.
+                            //Keeping this here for now
+                            #region Test
+
+                            ////Sankaku have been messing with returns and API, bandaid solution for current as of 30/10/12 state of API
+                            //if (post.PreviewURL.ToLowerInvariant().Contains("sankakustatic"))
+                            //{
+                            //    string tempURL = post.PreviewURL.Replace("preview/", "");
+                            //    //bool carryon = false;
+                            //    //This isnt going to always work because not all images jpg, so lets check for gif and png as well
+                            //    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(tempURL);
+                            //    request.Method = "GET";
+                            //    try
+                            //    {
+                            //        request.GetResponse();
+                            //        post.FullPictureURL = tempURL;
+                            //    }
+                            //    catch (Exception ex)
+                            //    {
+                            //        //carryon = true;
+                            //    }
+
+                            //    //Test for PNG now
+                            //    if (carryon)
+                            //    {
+                            //        request = (HttpWebRequest)WebRequest.Create(tempURL.Replace(".jpg", ".png"));
+
+                            //        try
+                            //        {
+                            //            request.GetResponse();
+                            //            post.FullPictureURL = tempURL.ToLowerInvariant().Replace(".jpg", ".png");
+                            //            carryon = false;
+                            //        }
+                            //        catch (Exception ex)
+                            //        {
+                            //            ex.Message.ToString();
+                            //            carryon = true;
+                            //        }
+                            //    }
+
+                            //    //Test for GIF now
+                            //    if (carryon)
+                            //    {
+                            //        request = (HttpWebRequest)WebRequest.Create(tempURL.Replace(".jpg", ".gif"));
+
+                            //        try
+                            //        {
+                            //            request.GetResponse();
+                            //            post.FullPictureURL = tempURL.ToLowerInvariant().Replace(".jpg", ".gif");
+                            //            carryon = false;
+                            //        }
+                            //        catch (Exception ex)
+                            //        {
+                            //            ex.Message.ToString();
+                            //        }
+                            //    }
+                            //}
+
+                            #endregion
+
                             string extension = null;
 
                             if (post.FullPictureURL.ToLowerInvariant().Contains("jpg") || post.FullPictureURL.ToLowerInvariant().Contains("jpeg"))

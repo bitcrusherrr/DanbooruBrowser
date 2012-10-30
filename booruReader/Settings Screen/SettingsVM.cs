@@ -318,7 +318,9 @@ namespace booruReader.Settings_Screen
             }
             else
             {
-                new MetroMessagebox("Error", e.Error.Message).ShowDialog();
+                MetroMessagebox metroBox = new MetroMessagebox("Error", e.Error.Message);
+                metroBox.Owner = System.Windows.Application.Current.MainWindow;
+                metroBox.ShowDialog();
                 EnableEditing = true;
             }
         }
