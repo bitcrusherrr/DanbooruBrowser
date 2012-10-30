@@ -352,9 +352,13 @@ namespace booruReader
         {
             bool waitForDownload = false;
 
-            if (DowloadList.Count > 0 && DowloadList.Where(x => x.DownloadProgress != 100) != null)
+            foreach (BasePost post in DowloadList)
             {
-                waitForDownload = true;
+                if(post.DownloadProgress != 100)
+                {
+                    waitForDownload = true;
+                    break;
+                }
             }
 
             return waitForDownload;

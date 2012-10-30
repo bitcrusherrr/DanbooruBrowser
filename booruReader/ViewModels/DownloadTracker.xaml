@@ -38,7 +38,7 @@
                                                  Visibility="{Binding Path=ProgressBarVisible}" Height="13" Width="340" >
                                                 <ProgressBar.ToolTip>
                                                     <Border BorderBrush="{StaticResource DatazbytesGray}" BorderThickness="1">
-                                                        <Image Source="{Binding Path=PreviewURL}" Stretch="Uniform"
+                                                        <Image Source="{Binding Path=URLStore}" Stretch="Uniform"
                                                                SnapsToDevicePixels="True" RenderOptions.BitmapScalingMode="LowQuality"/>
                                                     </Border>
                                                 </ProgressBar.ToolTip>

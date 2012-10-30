@@ -94,6 +94,11 @@ namespace booruReader.Model
             }
         }
 
+        public string URLStore
+        {
+            get { return urlStore; }
+        }
+
         public string FullPictureURL
         {
             get { return _fullPictureURL; }
