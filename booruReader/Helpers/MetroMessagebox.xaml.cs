@@ -22,6 +22,7 @@ namespace booruReader.Helpers
 
         public MetroMessagebox(string caption, string message)
         {
+            Owner = Application.Current.MainWindow;
             InitializeComponent();
 
             viewModel = new MetroMessageBoxVM(caption, message);

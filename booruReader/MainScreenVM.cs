@@ -165,9 +165,7 @@ namespace booruReader
         {
             if (e.Error != null)
             {
-                MetroMessagebox metroBox = new MetroMessagebox("Fetch Error", e.Error.Message);
-                metroBox.Owner = Application.Current.MainWindow;
-                metroBox.ShowDialog();
+                new MetroMessagebox("Fetch Error", e.Error.Message).ShowDialog();
             }
             else
             {
@@ -180,9 +178,7 @@ namespace booruReader
 
                 if (GlobalSettings.Instance.TotalPosts == 0)
                 {
-                    MetroMessagebox metroBox = new MetroMessagebox("Fetch Error", "No posts for this tag/tags.");
-                    metroBox.Owner = Application.Current.MainWindow;
-                    metroBox.ShowDialog();
+                    new MetroMessagebox("Fetch Error", "No posts for this tag/tags.").ShowDialog();
                 }
                 else
                 {
@@ -236,9 +232,7 @@ namespace booruReader
         {
             if (string.IsNullOrEmpty(GlobalSettings.Instance.SavePath))
             {
-                MetroMessagebox metroBox = new MetroMessagebox("Error", "No save directory specified. \nPlease go to settings and select a folder.");
-                metroBox.Owner = Application.Current.MainWindow;
-                metroBox.ShowDialog();
+                new MetroMessagebox("Error", "No save directory specified. \nPlease go to settings and select a folder.").ShowDialog();
             }
             else
             {

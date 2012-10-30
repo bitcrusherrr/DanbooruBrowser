@@ -109,9 +109,7 @@ namespace booruReader.Preview_Screen
         {
             if (string.IsNullOrEmpty(GlobalSettings.Instance.SavePath))
             {
-                MetroMessagebox metroBox = new MetroMessagebox("Error", "No save directory specified. \nPlease go to settings and select a folder.");
-                metroBox.Owner = Application.Current.MainWindow;
-                metroBox.ShowDialog();
+                new MetroMessagebox("Error", "No save directory specified. \nPlease go to settings and select a folder.").ShowDialog();
             }
             else
             {
