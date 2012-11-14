@@ -30,6 +30,7 @@ namespace booruReader
 
         public MainWindow()
         {
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             InitializeComponent();
             viewModel = new MainScreenVM();
             DataContext = viewModel;
@@ -41,6 +42,13 @@ namespace booruReader
                 this.Width = GlobalSettings.Instance.MainScreenWidth;
                 this.Height = GlobalSettings.Instance.MainScreenHeight;
             }
+        }
+
+        //Attempt at catching all top level crashes.
+        void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            if(e.IsTerminating)
+                booruReader.Helpers.DebugUtils.Logger.Instance.LogEvent("Crash", e.ExceptionObject.ToString(), e.ToString());
         }
 
         private DateTime m_headerLastClicked;

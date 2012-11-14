@@ -1,4 +1,5 @@
-﻿using System;
+﻿using booruReader.Helpers.DebugUtils;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -126,7 +127,8 @@ namespace booruReader.Model
                 }
                 catch (Exception e)
                 {
-                    e.Message.ToString();
+                    //This occasionally dumps out, I think when downloading times out, need to handle this on the correct ways.
+                    Logger.Instance.LogEvent("GetSmallImage", e.Message.ToString());
                 }
 
                 return null;

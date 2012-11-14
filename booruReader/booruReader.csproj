@@ -38,7 +38,7 @@
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>9</ApplicationRevision>
+    <ApplicationRevision>10</ApplicationRevision>
     <ApplicationVersion>0.3.0.%2a</ApplicationVersion>
     <UseApplicationTrust>true</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -131,6 +131,7 @@
     </ApplicationDefinition>
     <Compile Include="CustomControls\LabelTextBox.cs" />
     <Compile Include="CustomControls\SuggestionTextBox.cs" />
+    <Compile Include="Helpers\DebugUtils\Logger.cs" />
     <Compile Include="Helpers\MetroMessagebox.xaml.cs">
       <DependentUpon>MetroMessagebox.xaml</DependentUpon>
     </Compile>
