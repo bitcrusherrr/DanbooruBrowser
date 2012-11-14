@@ -31,9 +31,18 @@ namespace booruReader.ViewModels
 
         private void BackButtonClick(object sender, RoutedEventArgs e)
         {
-            //viewModel.Closing();
             Visibility = System.Windows.Visibility.Hidden;
             IsEnabled = false;
+        }
+
+        protected void HandleDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var item = ImageList.Items.CurrentItem as BasePost;
+
+            if (item != null && item.DownloadProgress == 100)
+            {
+                System.Diagnostics.Process.Start(item.GetFileLocation());
+            }
         }
     }
 }

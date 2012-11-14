@@ -12,6 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using booruReader.Model;
 using booruReader.Helpers;
+using System.Collections.ObjectModel;
 
 namespace booruReader.Preview_Screen
 {
@@ -22,11 +23,11 @@ namespace booruReader.Preview_Screen
     {
         PreviewScreenVM PreviewVM;
 
-        public PrviewScreenView(BasePost post)
+        public PrviewScreenView(BasePost post, ObservableCollection<BasePost> DowloadList)
         {
             InitializeComponent();
 
-            PreviewVM = new PreviewScreenVM(post);
+            PreviewVM = new PreviewScreenVM(post, DowloadList);
             DataContext = PreviewVM;
 
             if (GlobalSettings.Instance.PreviewScreenWidth > 0)

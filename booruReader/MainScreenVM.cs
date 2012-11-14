@@ -28,7 +28,7 @@ namespace booruReader
         //private bool _tagsChanged = false;
         private List<BasePost> _threadList;
         private bool _settingsOpen;
-
+        private bool _showedLastPageWarning;
         //This list is used to keep track of all open preview screens
         private List<PrviewScreenView> _previewList;
 
@@ -100,6 +100,7 @@ namespace booruReader
             _imageLoader.DoWork += BackgroundLoaderWork;
             _imageLoader.RunWorkerCompleted += ServerListLoadWorkerCompleted;
             _imageLoader.WorkerSupportsCancellation = true;
+            _showedLastPageWarning = false;
             //Ugly hack for settings vm
             GlobalSettings.Instance.MainScreenVM = this;
             SettingsOpen = false;
@@ -165,7 +166,16 @@ namespace booruReader
         {
             if (e.Error != null)
             {
-                new MetroMessagebox("Fetch Error", e.Error.Message).ShowDialog();
+                //Stop end of posts message appearing more then once
+                if (e.Error.Message == "End of posts.")
+                {
+                    if(!_showedLastPageWarning)
+                        new MetroMessagebox("Fetch Error", e.Error.Message).ShowDialog();
+
+                    _showedLastPageWarning = true;
+                }
+                else
+                    new MetroMessagebox("Fetch Error", e.Error.Message).ShowDialog();
             }
             else
             {
@@ -194,6 +204,7 @@ namespace booruReader
             if (GlobalSettings.Instance.ProviderChanged)
             {
                 GlobalSettings.Instance.ProviderChanged = false;
+                _showedLastPageWarning = false;
                 FetchImages();
             }
         }
@@ -210,6 +221,7 @@ namespace booruReader
             _imageList.Add(new BasePost());
             _imageList[0].IsSelected = true;
             _imageList.Clear();
+            _showedLastPageWarning = false;
 
             if (GlobalSettings.Instance.CurrentBooru.ProviderType == ProviderAccessType.Gelbooru)
                 CurrentPage = 0;
@@ -296,7 +308,7 @@ namespace booruReader
             var post = _imageList.FirstOrDefault(x => x.PreviewURL == filepath);
             if (post != null)
             {
-                PrviewScreenView preview = new PrviewScreenView(post);
+                PrviewScreenView preview = new PrviewScreenView(post, DowloadList);
                 _previewList.Add(preview);
                 preview.Show();
             }

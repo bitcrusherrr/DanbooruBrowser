@@ -94,6 +94,9 @@ namespace booruReader.Model
             }
         }
 
+        /// <summary>
+        /// We need this for the tracker UI as preview URL gets emptied wehn image is out of visible area
+        /// </summary>
         public string URLStore
         {
             get { return urlStore; }
@@ -161,13 +164,7 @@ namespace booruReader.Model
 
             if (isUIImage)
             {
-                if (post.PreviewURL.ToLowerInvariant().Contains("jpg") || post.PreviewURL.ToLowerInvariant().Contains("jpeg"))
-                    _extension = ".jpg";
-                else if (post.PreviewURL.ToLowerInvariant().Contains("png"))
-                    _extension = ".png";
-                else if (post.PreviewURL.ToLowerInvariant().Contains("gif"))
-                    _extension = ".gif";
-
+                _extension = UtilityFunctions.GetUrlExtension(post.PreviewURL);
                 urlStore = PreviewURL = _cache.GetImage(post.FileMD, post.PreviewURL, LateFilePath, false);
             }
             else
@@ -238,24 +235,21 @@ namespace booruReader.Model
         /// </summary>
         public void SaveImage(string imageLcoation)
         {
-            string extension = null;
-
-            if (FullPictureURL.ToLowerInvariant().Contains("jpg") || FullPictureURL.ToLowerInvariant().Contains("jpeg"))
-                extension = ".jpg";
-            else if (FullPictureURL.ToLowerInvariant().Contains("png"))
-                extension = ".png";
-            else if (FullPictureURL.ToLowerInvariant().Contains("gif"))
-                extension = ".gif";
-
             if (GlobalSettings.Instance.DoUseHumanReadableNames)
-                _saveLocation = string.Format(GlobalSettings.Instance.SavePath + GetHumanFilename(extension));
+                _saveLocation = string.Format(GlobalSettings.Instance.SavePath + GetHumanFilename(UtilityFunctions.GetUrlExtension(FullPictureURL)));
             else
-                _saveLocation = string.Format(GlobalSettings.Instance.SavePath + FileMD + extension);
+                _saveLocation = string.Format(GlobalSettings.Instance.SavePath + FileMD + UtilityFunctions.GetUrlExtension(FullPictureURL));
 
-            if (extension != null && !File.Exists(_saveLocation))
+            if (UtilityFunctions.GetUrlExtension(FullPictureURL) != null && !File.Exists(_saveLocation))
             {
                 File.Copy(imageLcoation, _saveLocation, false);
 
+                ProgressBarVisible = Visibility.Visible;
+                DownloadProgress = 100;
+            }
+            else if (File.Exists(_saveLocation) && _downloadClient == null)
+            {
+                //File already exists set the bar to visible and full
                 ProgressBarVisible = Visibility.Visible;
                 DownloadProgress = 100;
             }
@@ -266,23 +260,12 @@ namespace booruReader.Model
         /// </summary>
         public void SaveImage()
         {
-            string extension;
-
-            if (FullPictureURL.ToLowerInvariant().Contains("jpg") || FullPictureURL.ToLowerInvariant().Contains("jpeg"))
-                extension = ".jpg";
-            else if (FullPictureURL.ToLowerInvariant().Contains("png"))
-                extension = ".png";
-            else if (FullPictureURL.ToLowerInvariant().Contains("gif"))
-                extension = ".gif";
-            else
-                extension = null;
-
-            if (extension != null)
+            if (UtilityFunctions.GetUrlExtension(FullPictureURL) != null)
             {
                 if(GlobalSettings.Instance.DoUseHumanReadableNames)
-                    _saveLocation = string.Format(GlobalSettings.Instance.SavePath + GetHumanFilename(extension));
+                    _saveLocation = string.Format(GlobalSettings.Instance.SavePath + GetHumanFilename(UtilityFunctions.GetUrlExtension(FullPictureURL)));
                 else
-                    _saveLocation = string.Format(GlobalSettings.Instance.SavePath + FileMD + extension);
+                    _saveLocation = string.Format(GlobalSettings.Instance.SavePath + FileMD + UtilityFunctions.GetUrlExtension(FullPictureURL));
 
                 if (!File.Exists(_saveLocation) && Directory.Exists(GlobalSettings.Instance.SavePath))
                 {
@@ -350,6 +333,14 @@ namespace booruReader.Model
             DownloadProgress = int.Parse(Math.Truncate(percentage).ToString());
         }
         #endregion
+
+        /// <summary>
+        /// This will return empty string if file was not downloaded yet
+        /// </summary>
+        internal string GetFileLocation()
+        {
+            return _saveLocation;
+        }
 
         #region INotifyPropertyChanged Members
 

@@ -27,8 +27,8 @@
                              BorderBrush="{StaticResource MetroBackground}" SelectionMode="Extended" Style="{StaticResource MetroListBox}" 
                              ItemsSource="{Binding DownloadsList}"
                              IsSynchronizedWithCurrentItem="True" SelectedItem="{Binding SelectedPostsList}"
-                             Margin="8,38,8,8">
-
+                             MouseDoubleClick="HandleDoubleClick"
+                             Margin="8,38,8,8" >
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <Grid Margin="1">

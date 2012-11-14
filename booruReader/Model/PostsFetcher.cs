@@ -133,16 +133,7 @@ namespace booruReader.Model
                                 }
                                 else
                                 {
-                                    string extension = null;
-
-                                    if (post.FullPictureURL.ToLowerInvariant().Contains("jpg") || post.FullPictureURL.ToLowerInvariant().Contains("jpeg"))
-                                        extension = ".jpg";
-                                    else if (post.FullPictureURL.ToLowerInvariant().Contains("png"))
-                                        extension = ".png";
-                                    else if (post.FullPictureURL.ToLowerInvariant().Contains("gif"))
-                                        extension = ".gif";
-
-                                    if (extension != null)
+                                    if (UtilityFunctions.GetUrlExtension(post.FullPictureURL) != null)
                                         ImageList.Add(post);
                                 }
 
@@ -305,16 +296,7 @@ namespace booruReader.Model
 
                             #endregion
 
-                            string extension = null;
-
-                            if (post.FullPictureURL.ToLowerInvariant().Contains("jpg") || post.FullPictureURL.ToLowerInvariant().Contains("jpeg"))
-                                extension = ".jpg";
-                            else if (post.FullPictureURL.ToLowerInvariant().Contains("png"))
-                                extension = ".png";
-                            else if (post.FullPictureURL.ToLowerInvariant().Contains("gif"))
-                                extension = ".gif";
-
-                            if (extension != null)
+                            if (UtilityFunctions.GetUrlExtension(post.FullPictureURL) != null)
                                 ImageList.Add(post);
                         }
 

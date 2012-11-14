@@ -17,7 +17,7 @@ namespace booruReader.Preview_Screen
         private ObservableCollection<string> _taglist;
         private Visibility _showTaglist;
         private bool CopyWhenReady = false;
-
+        private ObservableCollection<BasePost> _dowloadList;
         public ObservableCollection<string> TagList { get { return _taglist; } }
 
         public string ImageSource
@@ -59,10 +59,10 @@ namespace booruReader.Preview_Screen
             }
         }
 
-        public PreviewScreenVM(BasePost post)
+        public PreviewScreenVM(BasePost post, ObservableCollection<BasePost> dowloadList)
         {
             _post = post;
-
+            _dowloadList = dowloadList;
             ImageCache cache = new ImageCache();
 
             ImageSource = cache.GetImage(post.FileMD, post.FullPictureURL, LateFilePath);
@@ -87,8 +87,13 @@ namespace booruReader.Preview_Screen
 
             ImageSource = cache.GetImage(_post.FileMD, _post.FullPictureURL, LateFilePath);
 
-            if(CopyWhenReady)
+            if (CopyWhenReady)
+            {
                 _post.SaveImage(ImageSource);
+
+                if (_dowloadList.FirstOrDefault(x => x == _post) == null)
+                    _dowloadList.Add(_post);
+            }
         }
 
         #region INotifyPropertyChanged Members
@@ -114,7 +119,12 @@ namespace booruReader.Preview_Screen
             else
             {
                 if (ImageSource != null)
+                {
                     _post.SaveImage(ImageSource);
+
+                    if (_dowloadList.FirstOrDefault(x => x == _post) == null)
+                        _dowloadList.Add(_post);
+                }
                 else
                     CopyWhenReady = true;
             }

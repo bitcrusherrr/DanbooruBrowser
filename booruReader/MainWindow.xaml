@@ -112,7 +112,7 @@
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Margin="1">
-                        <Border Width="140" Height="140" BorderThickness="2" BorderBrush="#52524B">
+                        <Border Width="150" Height="150" BorderThickness="2" BorderBrush="#52524B">
                             <Grid ToolTip="{Binding Path=Dimensions}" Style="{StaticResource GridStyle}">
                                 <Image Source="{Binding Path=PreviewURL, Converter={StaticResource imageConverter}}" Stretch="Uniform"  MouseDown="Image_MouseDown" 
                                        SnapsToDevicePixels="True" RenderOptions.BitmapScalingMode="LowQuality"/>

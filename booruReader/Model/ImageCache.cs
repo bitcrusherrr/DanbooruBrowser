@@ -118,9 +118,16 @@ namespace booruReader.Model
                 return imagePath;
             else
             {
-                WebClient client = new WebClient();
-                client.DownloadFileCompleted += new AsyncCompletedEventHandler(finalFilePath);
-                client.DownloadFileAsync(new Uri(imageURL), imagePath);
+                try
+                {
+                    WebClient client = new WebClient();
+                    client.DownloadFileCompleted += new AsyncCompletedEventHandler(finalFilePath);
+                    client.DownloadFileAsync(new Uri(imageURL), imagePath);
+                }
+                catch (Exception e)
+                {
+                    e.Message.ToString();
+                }
 
                 return null;
             }
