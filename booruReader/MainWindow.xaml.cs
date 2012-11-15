@@ -47,8 +47,8 @@ namespace booruReader
         //Attempt at catching all top level crashes.
         void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            if(e.IsTerminating)
-                booruReader.Helpers.DebugUtils.Logger.Instance.LogEvent("Crash", e.ExceptionObject.ToString(), e.ToString());
+            Exception exc = (Exception) args.ExceptionObject;
+            booruReader.Helpers.DebugUtils.Logger.Instance.LogEvent("Unhadled exception", exc.Message.ToString());
         }
 
         private DateTime m_headerLastClicked;
