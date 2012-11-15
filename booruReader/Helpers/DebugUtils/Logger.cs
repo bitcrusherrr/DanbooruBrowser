@@ -47,7 +47,7 @@ namespace booruReader.Helpers.DebugUtils
             if (extraDetails != null)
                 lineOut += " Misc details: " + extraDetails;
 
-            lineOut += ";";
+            lineOut += ";" + Environment.NewLine;
 
             File.AppendAllText(_path, lineOut);
         }

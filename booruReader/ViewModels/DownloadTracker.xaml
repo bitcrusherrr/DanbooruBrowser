@@ -7,55 +7,54 @@
              mc:Ignorable="d"
              MinWidth="350" MinHeight="250">
     <Grid Background="Transparent">
-            <Rectangle Opacity="0.5"
+        <Rectangle Opacity="0.5"
              Fill="{StaticResource MetroBackground}"/>
-            <Border BorderBrush="{StaticResource DatazbytesGray}" BorderThickness="2" Width="350">
-                <Grid Background="{StaticResource MetroBackground}" Width="350">                    
-                    <Button ToolTip="Return" Style="{StaticResource Metro}" Width="23" Height="23" Margin="0,8,8,0" VerticalAlignment="Top" 
+        <Border BorderBrush="{StaticResource DatazbytesGray}" BorderThickness="2" Width="350">
+            <Grid Background="{StaticResource MetroBackground}" Width="350">
+                <Button ToolTip="Return" Style="{StaticResource Metro}" Width="23" Height="23" Margin="0,8,8,0" VerticalAlignment="Top" 
                         HorizontalAlignment="Right" Click="BackButtonClick" IsEnabled="{Binding IsBackArrowEnabled}">
-                        <Image Source="Images\back.png"/>
-                    </Button>
-            
-                    <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top">
-                        <Button ToolTip="Clear completed downloads" Style="{StaticResource Metro}" Width="23" Height="23" Margin="8,8,8,0" VerticalAlignment="Top" 
+                    <Image Source="Images\back.png"/>
+                </Button>
+
+                <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top">
+                    <Button ToolTip="Clear completed downloads" Style="{StaticResource Metro}" Width="23" Height="23" Margin="8,8,8,0" VerticalAlignment="Top" 
                         HorizontalAlignment="Right" Command="{Binding ClearCompletedCommand}" IsEnabled="{Binding IsBackArrowEnabled}">
-                            <Image Source="Images\cancel.png"/>
-                        </Button>
-                    </StackPanel>
-            
-                    <ListBox Name="ImageList" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Background="{StaticResource MetroBackground}" 
+                        <Image Source="Images\cancel.png"/>
+                    </Button>
+                </StackPanel>
+
+                <ListBox Name="ImageList" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Background="{StaticResource MetroBackground}" 
                              BorderBrush="{StaticResource MetroBackground}" SelectionMode="Extended" Style="{StaticResource MetroListBox}" 
                              ItemsSource="{Binding DownloadsList}"
                              IsSynchronizedWithCurrentItem="True" SelectedItem="{Binding SelectedPostsList}"
                              MouseDoubleClick="HandleDoubleClick"
                              Margin="8,38,8,8" >
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <Grid Margin="1">
-                                <Border BorderThickness="1" BorderBrush="#52524B">
-                                        <Grid>
-                                        <ProgressBar Template="{StaticResource DeterminedProgressBar}" Margin="1"  Value="{Binding Path=DownloadProgress}" 
-                                                 Visibility="{Binding Path=ProgressBarVisible}" Height="13" Width="340" >
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="1">
+                                <StackPanel Orientation="Horizontal" Margin="0">
+                                    <Border BorderThickness="1" BorderBrush="#52524B">
+                                        <Image Width="55" Height="55" Margin="1" Source="{Binding Path=URLStore}" Stretch="Uniform" RenderOptions.BitmapScalingMode="LowQuality"/>
+                                    </Border>
+                                    <Border BorderThickness="1" BorderBrush="#52524B">
+                                        <Grid Margin="0">
+                                            <ProgressBar Template="{StaticResource DeterminedProgressBar}" Margin="1"  Value="{Binding Path=DownloadProgress}" 
+                                                 Visibility="{Binding Path=ProgressBarVisible}" Height="50" MinWidth="235" HorizontalAlignment="Stretch">
                                                 <ProgressBar.ToolTip>
                                                     <Border BorderBrush="{StaticResource DatazbytesGray}" BorderThickness="1">
-                                                        <Image Source="{Binding Path=URLStore}" Stretch="Uniform"
-                                                               SnapsToDevicePixels="True" RenderOptions.BitmapScalingMode="LowQuality"/>
+                                                        <Image Source="{Binding Path=URLStore}" Stretch="Uniform" RenderOptions.BitmapScalingMode="LowQuality"/>
                                                     </Border>
                                                 </ProgressBar.ToolTip>
-                                            <!--<ProgressBar.ContextMenu>
-                                                <ContextMenu>
-                                                    <MenuItem Header="Open File" Command="{Binding Path=OpenFile}"/>
-                                                </ContextMenu>
-                                            </ProgressBar.ContextMenu>-->
                                             </ProgressBar>
-                                        <TextBlock Text="{Binding Path=DownloadProgress}" HorizontalAlignment="Center" Foreground="White"/>
-                                    </Grid>
+                                            <TextBlock Text="{Binding Path=DownloadProgress}" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"/>
+                                        </Grid>
                                     </Border>
-                                </Grid>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                </Grid>
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
         </Border>
     </Grid>
 </UserControl>

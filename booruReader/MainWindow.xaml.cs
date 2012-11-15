@@ -31,6 +31,8 @@ namespace booruReader
         public MainWindow()
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+            Application.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
+            
             InitializeComponent();
             viewModel = new MainScreenVM();
             DataContext = viewModel;
@@ -44,11 +46,18 @@ namespace booruReader
             }
         }
 
+        //Attempt at catching all thread exceptions. As the Domain one doesnt always catch thread unhandled exceptions.
+        void Current_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            booruReader.Helpers.DebugUtils.Logger.Instance.LogEvent("Dispatcher exception", e.Exception.Message.ToString(), "Handled: " + e.Handled.ToString());
+        }
+
         //Attempt at catching all top level crashes.
         void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            Exception exc = (Exception) args.ExceptionObject;
-            booruReader.Helpers.DebugUtils.Logger.Instance.LogEvent("Unhadled exception", exc.Message.ToString());
+            Exception exc = (Exception) e.ExceptionObject;
+            if(exc != null)
+                booruReader.Helpers.DebugUtils.Logger.Instance.LogEvent("Unhadled exception", exc.Message.ToString(), "Terminating: " + e.IsTerminating);
         }
 
         private DateTime m_headerLastClicked;
