@@ -12,6 +12,7 @@ Rough list of some things that work and that dont:
 - Image previews.
 - Searching by tags.
 - Centralised download prorgess tracker.
+- Basic logging in case something crashes. Log can be found in: %UserName%\AppData\Roaming\BooruReader
 
 Things that dont but will eventually:
 - Local Favorites collection.
