@@ -313,7 +313,7 @@ namespace booruReader.Model
             }
 
             //Remove all illegal chars from filename
-            filename = Regex.Replace(filename, @"[^\w\.@-_& ]", "", RegexOptions.None);
+            filename = Regex.Replace(@filename, @"[^\w\@\-_&(). ]", "", RegexOptions.None);
 
             //Finally add extension
             filename += extension;
