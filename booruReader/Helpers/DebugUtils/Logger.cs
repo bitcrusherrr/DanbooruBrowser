@@ -42,7 +42,7 @@ namespace booruReader.Helpers.DebugUtils
         {
             CheckLogFile();
 
-            string lineOut = TimeStamp() + "Current call: " + functionName + " Result: " + message;
+            string lineOut = DateTime.Now.ToString() + ": Current call: " + functionName + " Result: " + message;
 
             if (extraDetails != null)
                 lineOut += " Misc details: " + extraDetails;
@@ -50,20 +50,6 @@ namespace booruReader.Helpers.DebugUtils
             lineOut += ";" + Environment.NewLine;
 
             File.AppendAllText(_path, lineOut);
-        }
-
-        /// <summary>
-        /// Log current event with current runtime parameters
-        /// </summary>
-        /// <param name="functionName">Name of the function that the call is in</param>
-        /// <param name="message">Error message</param>
-        /// <param name="extraDetails">Extra data</param>
-        public void LogEventWithRuntime(string functionName, string message, string extraDetails = null)
-        {
-            //Note:NOT DONE!
-            CheckLogFile();
-
-
         }
 
         /// <summary>
@@ -75,16 +61,6 @@ namespace booruReader.Helpers.DebugUtils
             {
                 File.Create(_path).Dispose();
             }
-        }
-
-        /// <summary>
-        /// Returns formatted current time and date timestamp
-        /// </summary>
-        private string TimeStamp()
-        {
-            string retVal = DateTime.Now.ToString() + ": ";
-
-            return retVal;
         }
     }
 }

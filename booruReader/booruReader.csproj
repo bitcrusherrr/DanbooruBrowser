@@ -129,8 +129,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="CustomControls\LabelTextBox.cs" />
-    <Compile Include="CustomControls\SuggestionTextBox.cs" />
     <Compile Include="Helpers\DebugUtils\Logger.cs" />
     <Compile Include="Helpers\MetroMessagebox.xaml.cs">
       <DependentUpon>MetroMessagebox.xaml</DependentUpon>
@@ -168,7 +166,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Helpers\Enums.cs" />
-    <Compile Include="Helpers\DelegateCommand.cs" />
     <Compile Include="MainScreenVM.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -317,6 +314,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Toolbar\list.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\dbz.UIComponents\dbz.UIComponents.csproj">
+      <Project>{34567eaa-4c03-409d-991e-7e03d01ac987}</Project>
+      <Name>dbz.UIComponents</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

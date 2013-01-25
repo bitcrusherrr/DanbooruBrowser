@@ -10,6 +10,7 @@ using System.Windows;
 using System.Threading;
 using System.Diagnostics;
 using booruReader.Preview_Screen;
+using dbz.UIComponents;
 
 namespace booruReader
 {

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using booruReader.Model;
 using booruReader.Helpers;
+using dbz.UIComponents;
 
 namespace booruReader.ViewModels
 {

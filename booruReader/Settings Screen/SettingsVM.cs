@@ -13,6 +13,7 @@ using System.Reflection;
 using System.Net;
 using System.Windows;
 using System.Xml.Serialization;
+using dbz.UIComponents;
 
 namespace booruReader.Settings_Screen
 {

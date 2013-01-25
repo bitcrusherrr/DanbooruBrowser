@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace booruReader.CustomControls
+namespace dbz.UIComponents.CustomControls
 {
-    class SuggestionTextBox : LabelTextBox
+    public class SuggestionTextBox : LabelTextBox
     {
     }
 }

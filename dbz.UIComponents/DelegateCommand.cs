@@ -4,7 +4,7 @@ using System.Windows.Input;
 /// <summary>
 /// Implements the ICommand and wraps up all the verbose stuff so that you can just pass 2 delegates 1 for the CanExecute and one for the Execute
 /// </summary>
-namespace booruReader.Helpers
+namespace dbz.UIComponents
 {
     public class DelegateCommand : ICommand
     {

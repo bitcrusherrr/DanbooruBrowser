@@ -4,7 +4,7 @@
         xmlns:Local="clr-namespace:booruReader"
         xmlns:Helpers="clr-namespace:booruReader.Helpers"
         xmlns:Settings="clr-namespace:booruReader.Settings_Screen"
-        xmlns:Controls="clr-namespace:booruReader.CustomControls"
+        xmlns:Controls="clr-namespace:dbz.UIComponents.CustomControls;assembly=dbz.UIComponents"
         xmlns:Views="clr-namespace:booruReader.ViewModels"
         TextOptions.TextFormattingMode="Display"
         TextOptions.TextRenderingMode="ClearType"

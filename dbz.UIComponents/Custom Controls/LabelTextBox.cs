@@ -7,9 +7,9 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 
-namespace booruReader.CustomControls
+namespace dbz.UIComponents.CustomControls
 {
-    class LabelTextBox : TextBox
+    public class LabelTextBox : TextBox
     {
         private bool _isWatermarked;
         private Binding _textBinding;
