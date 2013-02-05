@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using booruReader.Helpers;
+using System;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
-using System.Windows.Media;
-using booruReader.Helpers;
 
 namespace booruReader.Model
 {
@@ -339,7 +336,10 @@ namespace booruReader.Model
         /// </summary>
         internal string GetFileLocation()
         {
-            return _saveLocation;
+            if (_saveLocation != null)
+                return _saveLocation;
+            else
+                return string.Empty;
         }
 
         #region INotifyPropertyChanged Members

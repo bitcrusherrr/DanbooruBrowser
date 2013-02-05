@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using booruReader.Model;
+using dbz.UIComponents;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using booruReader.Model;
-using booruReader.Helpers;
-using dbz.UIComponents;
 
 namespace booruReader.ViewModels
 {

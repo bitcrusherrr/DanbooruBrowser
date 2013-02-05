@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using booruReader.Helpers;
+using System;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using System.Xml.Serialization;
-using booruReader.Helpers;
 
 namespace booruReader.Model
 {

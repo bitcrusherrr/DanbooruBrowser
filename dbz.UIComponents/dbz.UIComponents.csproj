@@ -45,10 +45,18 @@
   <ItemGroup>
     <Compile Include="Custom Controls\LabelTextBox.cs" />
     <Compile Include="Custom Controls\SuggestionTextBox.cs" />
+    <Compile Include="Debug utils\Logger.cs" />
     <Compile Include="DelegateCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>if $(ConfigurationName) == Debug goto :debug
+
+xcopy /Q /Y "$(TargetDir)$(TargetName).dll" "$(SolutionDir)"
+
+:debug</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

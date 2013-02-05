@@ -1,16 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Collections.ObjectModel;
 using booruReader.Helpers;
 using booruReader.Model;
-using System.ComponentModel;
-using System.Windows;
-using System.Threading;
-using System.Diagnostics;
 using booruReader.Preview_Screen;
 using dbz.UIComponents;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
+using System.Windows;
 
 namespace booruReader
 {

@@ -1,18 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using booruReader.Model;
+using dbz.UIComponents.Debug_utils;
+using System;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using booruReader.Model;
 
 namespace booruReader.ViewModels
 {
@@ -37,11 +29,21 @@ namespace booruReader.ViewModels
 
         protected void HandleDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            var item = ImageList.Items.CurrentItem as BasePost;
-
-            if (item != null && item.DownloadProgress == 100)
+            if (ImageList.Items.CurrentItem != null)
             {
-                System.Diagnostics.Process.Start(item.GetFileLocation());
+                var item = ImageList.Items.CurrentItem as BasePost;
+
+                if (item != null && item.DownloadProgress == 100)
+                {
+                    try
+                    {
+                        System.Diagnostics.Process.Start(item.GetFileLocation());
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Instance.LogEvent("HandleDoubleClick", ex.Message);
+                    }
+                }
             }
         }
     }

@@ -1,19 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using booruReader.Helpers;
 using booruReader.Model;
-using booruReader.Helpers;
+using dbz.UIComponents;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
-using System.Windows.Forms;
-using System.Xml;
+using System.Linq;
 using System.Reflection;
-using System.Net;
 using System.Windows;
+using System.Windows.Forms;
 using System.Xml.Serialization;
-using dbz.UIComponents;
 
 namespace booruReader.Settings_Screen
 {

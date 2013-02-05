@@ -1,22 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using booruReader.Model;
+using booruReader.ViewModels;
+using dbz.UIComponents.Debug_utils;
+using System;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Windows.Controls.Primitives;
-using booruReader.Helpers;
-using booruReader.Model;
-using booruReader.ViewModels;
 
 namespace booruReader
 {
@@ -49,7 +39,7 @@ namespace booruReader
         //Attempt at catching all thread exceptions. As the Domain one doesnt always catch thread unhandled exceptions.
         void Current_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
-            booruReader.Helpers.DebugUtils.Logger.Instance.LogEvent("Dispatcher exception", e.Exception.Message.ToString(), "Handled: " + e.Handled.ToString());
+            Logger.Instance.LogEvent("Dispatcher exception", e.Exception.Message.ToString(), "Handled: " + e.Handled.ToString());
         }
 
         //Attempt at catching all top level crashes.
@@ -57,7 +47,7 @@ namespace booruReader
         {
             Exception exc = (Exception) e.ExceptionObject;
             if(exc != null)
-                booruReader.Helpers.DebugUtils.Logger.Instance.LogEvent("Unhadled exception", exc.Message.ToString(), "Terminating: " + e.IsTerminating);
+                Logger.Instance.LogEvent("Unhadled exception", exc.Message.ToString(), "Terminating: " + e.IsTerminating);
         }
 
         private DateTime m_headerLastClicked;

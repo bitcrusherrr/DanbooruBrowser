@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace booruReader.Helpers.DebugUtils
+namespace dbz.UIComponents.Debug_utils
 {
     /// <summary>
     /// This class is used to log the events throughout the booruReader
     /// </summary>
-    class Logger
+    public class Logger
     {
         private static Logger instance;
         private string _path;

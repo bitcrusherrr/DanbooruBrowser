@@ -96,8 +96,7 @@
         <ListBox Name="ImageList" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Background="{StaticResource MetroBackground}" 
                  BorderBrush="{StaticResource MetroBackground}" SelectionMode="Extended" Style="{StaticResource MetroListBox}" 
                  ItemsSource="{Binding MainImageList}" ScrollViewer.ScrollChanged="ImageList_ScrollChanged_1"
-                 IsSynchronizedWithCurrentItem="True" SelectedItem="{Binding SelectedPostsList}" 
-                 Margin="8,38,8,8">
+                 IsSynchronizedWithCurrentItem="True" Margin="8,38,8,8">
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <WrapPanel />

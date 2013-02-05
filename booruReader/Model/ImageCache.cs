@@ -1,11 +1,10 @@
-﻿using booruReader.Helpers.DebugUtils;
+﻿using dbz.UIComponents.Debug_utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
 
 namespace booruReader.Model
 {

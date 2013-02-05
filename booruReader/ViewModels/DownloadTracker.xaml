@@ -12,13 +12,13 @@
         <Border BorderBrush="{StaticResource DatazbytesGray}" BorderThickness="2" Width="350">
             <Grid Background="{StaticResource MetroBackground}" Width="350">
                 <Button ToolTip="Return" Style="{StaticResource Metro}" Width="23" Height="23" Margin="0,8,8,0" VerticalAlignment="Top" 
-                        HorizontalAlignment="Right" Click="BackButtonClick" IsEnabled="{Binding IsBackArrowEnabled}">
+                        HorizontalAlignment="Right" Click="BackButtonClick">
                     <Image Source="Images\back.png"/>
                 </Button>
 
                 <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top">
                     <Button ToolTip="Clear completed downloads" Style="{StaticResource Metro}" Width="23" Height="23" Margin="8,8,8,0" VerticalAlignment="Top" 
-                        HorizontalAlignment="Right" Command="{Binding ClearCompletedCommand}" IsEnabled="{Binding IsBackArrowEnabled}">
+                        HorizontalAlignment="Right" Command="{Binding ClearCompletedCommand}">
                         <Image Source="Images\cancel.png"/>
                     </Button>
                 </StackPanel>
@@ -26,8 +26,7 @@
                 <ListBox Name="ImageList" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Background="{StaticResource MetroBackground}" 
                              BorderBrush="{StaticResource MetroBackground}" SelectionMode="Extended" Style="{StaticResource MetroListBox}" 
                              ItemsSource="{Binding DownloadsList}"
-                             IsSynchronizedWithCurrentItem="True" SelectedItem="{Binding SelectedPostsList}"
-                             MouseDoubleClick="HandleDoubleClick"
+                             IsSynchronizedWithCurrentItem="True" MouseDoubleClick="HandleDoubleClick"
                              Margin="8,38,8,8" >
                     <ListBox.ItemTemplate>
                         <DataTemplate>
