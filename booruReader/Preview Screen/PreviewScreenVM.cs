@@ -17,6 +17,8 @@ namespace booruReader.Preview_Screen
         private bool CopyWhenReady = false;
         private ObservableCollection<BasePost> _dowloadList;
         public ObservableCollection<string> TagList { get { return _taglist; } }
+        private FavoriteHandler _favoriteshandler;
+        private bool _favoriteWhenReady = false;
 
         public string ImageSource
         {
@@ -62,7 +64,7 @@ namespace booruReader.Preview_Screen
             _post = post;
             _dowloadList = dowloadList;
             ImageCache cache = new ImageCache();
-
+            _favoriteshandler = new FavoriteHandler();
             ImageSource = cache.GetImage(post.FileMD, post.FullPictureURL, LateFilePath);
 
             PreviewPost = post;
@@ -92,6 +94,9 @@ namespace booruReader.Preview_Screen
                 if (_dowloadList.FirstOrDefault(x => x == _post) == null)
                     _dowloadList.Add(_post);
             }
+
+            if (_favoriteWhenReady)
+                _favoriteshandler.AddToFavorites(_post, ImageSource);
         }
 
         #region INotifyPropertyChanged Members
@@ -134,6 +139,19 @@ namespace booruReader.Preview_Screen
                 ShowTagList = Visibility.Visible;
             else
                 ShowTagList = Visibility.Collapsed;
+        }
+
+        internal void AddToFavorites()
+        {
+            if (ImageSource != null)
+                _favoriteshandler.AddToFavorites(_post, ImageSource);
+            else
+                _favoriteWhenReady = true;
+        }
+
+        internal void RemoveFromFavorites()
+        {
+            _favoriteshandler.RemoveFromFavorites(_post);
         }
     }
 }

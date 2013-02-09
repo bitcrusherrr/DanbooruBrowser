@@ -39,6 +39,8 @@ namespace booruReader.Model
         [XmlElement("CacheSizeMb")]
         public long CacheSizeMb;
 
+        public string ApplicationFolder;
+
         //This 2 are related. One keeps track of posts loaded and another one keeps track of post offset.
         public int TotalPosts;
         public int PostsOffset;
@@ -81,10 +83,7 @@ namespace booruReader.Model
         /// </summary>
         public void SaveSettings()
         {
-            string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            path = Path.Combine(path, "BooruReader");
-
-            TextWriter textWriter = new StreamWriter(path + @"\settings.xml");
+            TextWriter textWriter = new StreamWriter(ApplicationFolder + @"\settings.xml");
 
             XmlSerializer x = new XmlSerializer(this.GetType());
             x.Serialize(textWriter, this);
@@ -96,8 +95,10 @@ namespace booruReader.Model
         /// </summary>
         private void LoadSettings()
         {
-            string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            path = Path.Combine(path, "BooruReader") + @"\settings.xml";
+            ApplicationFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            ApplicationFolder = Path.Combine(ApplicationFolder, "BooruReader");
+
+            string path = ApplicationFolder + @"\settings.xml";
 
             //Try loading xml file if one exists
             if (File.Exists(path))

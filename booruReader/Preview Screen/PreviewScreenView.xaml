@@ -66,8 +66,12 @@
                         <Image Source="Images\Toolbar\list.png"/>
                     </Button>
                     
-                    <Button Visibility="Collapsed" ToolTip="Favorite. NOT IMPLEMENTED" IsEnabled="False" Margin="3" Height="23" Width="23" Style="{StaticResource Metro}">
+                    <Button ToolTip="Add this image to favorites." Margin="3" Height="23" Width="23" Style="{StaticResource Metro}" Click="AddToFavorites">
                         <Image Source="Images\Toolbar\heart.png"/>
+                    </Button>
+
+                    <Button ToolTip="Remove this image from favorites." Margin="3" Height="23" Width="23" Style="{StaticResource Metro}" Click="RemoveFromFavorites">
+                        <Image Source="Images\Toolbar\exit.png"/>
                     </Button>
                 </StackPanel>
                 

@@ -145,7 +145,12 @@
                     HorizontalAlignment="Left" Style="{StaticResource Metro}" Click="Tracker_Button_Click">
                 <Image Source="Images\Toolbar\list.png"/>
             </Button>
-            
+
+            <Button ToolTip="Favorites" Margin="5,0,0,0" Height="23" Width="23" VerticalAlignment="Top" 
+                    HorizontalAlignment="Left" Style="{StaticResource Metro}" Command="{Binding SetFavoritesModeCommand}">
+                <Image Source="Images\Toolbar\heart.png"/>
+            </Button>
+
         </StackPanel>
 
         

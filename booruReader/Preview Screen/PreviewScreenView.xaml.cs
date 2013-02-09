@@ -88,5 +88,15 @@ namespace booruReader.Preview_Screen
                 GlobalSettings.Instance.PreviewScreenHeight = this.Height;
             }
         }
+
+        private void AddToFavorites(object sender, RoutedEventArgs e)
+        {
+            PreviewVM.AddToFavorites();
+        }
+
+        private void RemoveFromFavorites(object sender, RoutedEventArgs e)
+        {
+            PreviewVM.RemoveFromFavorites();
+        }
     }
 }

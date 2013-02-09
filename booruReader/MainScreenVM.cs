@@ -13,13 +13,15 @@ namespace booruReader
     public class MainScreenVM : INotifyPropertyChanged
     {
         #region Private variables
-        private ObservableCollection<BasePost> _imageList;
+        private ObservableCollection<BasePost> _imageList; 
+        private ObservableCollection<BasePost> _imageListCache;
         PostsFetcher _postFetcher;
         private string _tagsBox;
         private DelegateCommand _performFetchCommand;
         private DelegateCommand _performSelectedImagesDownloadCommand; 
         private DelegateCommand _clearSelectionCommand;
         private DelegateCommand _openSettingsCommand;
+        private DelegateCommand _setFavoritesModeCommand;
         private BackgroundWorker _imageLoader;
         private Visibility _progressBarVisibility;
         //private bool _tagsChanged = false;
@@ -33,6 +35,8 @@ namespace booruReader
         private int CurrentPage; //Keep track of the last loaded pages
 
         private ImageCache _cache;
+        private bool _isFavoritesMode;
+        FavoriteHandler _favorites;
         #endregion
 
         #region Public variables
@@ -40,10 +44,7 @@ namespace booruReader
         public ObservableCollection<BasePost> DowloadList { get; set; }
 
         //UI list for the images
-        public ObservableCollection<BasePost> MainImageList
-        {
-            get { return _imageList; }
-        }
+        public ObservableCollection<BasePost> MainImageList { get { return _imageList; } }
 
         public string TagsBox
         {
@@ -80,6 +81,30 @@ namespace booruReader
             }
         }
 
+        public bool IsFavoritesMode 
+        {
+            get 
+            {
+                return _isFavoritesMode;
+            }
+            set
+            {
+                _isFavoritesMode = value;
+
+                if (_isFavoritesMode)
+                {
+                    _imageListCache = new ObservableCollection<BasePost>(_imageList);
+                    _imageList = new ObservableCollection<BasePost>(_favorites.FetchFavorites(_tagsBox));
+                }
+                else if (_imageListCache != null)
+                {
+                    _imageList = new ObservableCollection<BasePost>(_imageListCache);
+                    _imageListCache = null;
+                }
+
+                RaisePropertyChanged("MainImageList");
+            }
+        }
         #endregion
 
         /// <summary>
@@ -101,6 +126,9 @@ namespace booruReader
             //Ugly hack for settings vm
             GlobalSettings.Instance.MainScreenVM = this;
             SettingsOpen = false;
+            IsFavoritesMode = false;
+
+            _favorites = new FavoriteHandler();
 
             ProgressBarVisibility = Visibility.Hidden;
 
@@ -112,7 +140,7 @@ namespace booruReader
 
             _performSelectedImagesDownloadCommand = new DelegateCommand
             {
-                CanExecuteDelegate = x => true,
+                CanExecuteDelegate = x => !IsFavoritesMode,
                 ExecuteDelegate = x => SaveImages()
             };
 
@@ -127,11 +155,23 @@ namespace booruReader
                 CanExecuteDelegate = x => true,
                 ExecuteDelegate = x => OpenSettings()
             };
+
+            _setFavoritesModeCommand = new DelegateCommand
+            {
+                CanExecuteDelegate = x => true,
+                ExecuteDelegate = x => 
+                {
+                    if (IsFavoritesMode)
+                        IsFavoritesMode = false;
+                    else
+                        IsFavoritesMode = true;
+                }
+            };
         }
 
         public void TriggerImageLoading()
         {
-            if (!_imageLoader.IsBusy && !_imageLoader.CancellationPending)
+            if (!IsFavoritesMode && !_imageLoader.IsBusy && !_imageLoader.CancellationPending)
             {
                 ProgressBarVisibility = Visibility.Visible;
                 _threadList.Clear();
@@ -198,7 +238,7 @@ namespace booruReader
 
         private void CheckForChangedSettings()
         {
-            if (GlobalSettings.Instance.ProviderChanged)
+            if (!IsFavoritesMode && GlobalSettings.Instance.ProviderChanged)
             {
                 GlobalSettings.Instance.ProviderChanged = false;
                 _showedLastPageWarning = false;
@@ -207,32 +247,41 @@ namespace booruReader
         }
         #region Commands
 
+        public DelegateCommand SetFavoritesModeCommand { get { return _setFavoritesModeCommand; } }
+
         public DelegateCommand PerformFetchCommand { get { return _performFetchCommand; } }
 
         private void FetchImages()
         {
-            ProgressBarVisibility = Visibility.Visible;
-            //Clear image list 
-            _imageList.Clear();
+            if (!IsFavoritesMode)
+            {
+                ProgressBarVisibility = Visibility.Visible;
+                //Clear image list 
+                _imageList.Clear();
+                RaisePropertyChanged("MainImageList");
+                _imageList.Add(new BasePost());
+                _imageList[0].IsSelected = true;
+                _imageList.Clear();
+                _showedLastPageWarning = false;
+
+                if (GlobalSettings.Instance.CurrentBooru.ProviderType == ProviderAccessType.Gelbooru)
+                    CurrentPage = 0;
+                else
+                    CurrentPage = 1;
+
+                if (_imageLoader.IsBusy)
+                {
+                    _imageLoader.CancelAsync();
+                }
+                else
+                {
+                    _imageLoader.RunWorkerAsync();
+                }
+            }
+            else
+                _imageList = new ObservableCollection<BasePost>(_favorites.FetchFavorites(_tagsBox));
+
             RaisePropertyChanged("MainImageList");
-            _imageList.Add(new BasePost());
-            _imageList[0].IsSelected = true;
-            _imageList.Clear();
-            _showedLastPageWarning = false;
-
-            if (GlobalSettings.Instance.CurrentBooru.ProviderType == ProviderAccessType.Gelbooru)
-                CurrentPage = 0;
-            else
-                CurrentPage = 1;
-
-            if (_imageLoader.IsBusy)
-            {
-                _imageLoader.CancelAsync();
-            }
-            else
-            {
-                _imageLoader.RunWorkerAsync();
-            }
         }
 
         public DelegateCommand PerformSelectedImagesDownloadCommand { get { return _performSelectedImagesDownloadCommand; } }
