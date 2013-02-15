@@ -47,7 +47,7 @@
             <Image Source="Images\exit.png" Height="12" Width="12"/>
         </Button>
         
-<Button Width="100" Height="25" Style="{StaticResource Metro}" BorderBrush="{StaticResource DatazbytesGray}" 
+        <Button Width="100" Height="25" Style="{StaticResource Metro}" BorderBrush="{StaticResource DatazbytesGray}" IsDefault="True"
                 Margin="125,2,125,8" VerticalAlignment="Bottom" Foreground="White" Content="Ok" Click="ExitButtonClick"></Button>
         <TextBlock Height="25" Margin="2,2,0,0"  VerticalAlignment="Top" HorizontalAlignment="Left" Width="200" Background="{StaticResource DatazbytesGreen}" Foreground="White" Text="{Binding Caption}"></TextBlock>
         <TextBlock Margin="20,50" Foreground="White" Text="{Binding Message}"/>

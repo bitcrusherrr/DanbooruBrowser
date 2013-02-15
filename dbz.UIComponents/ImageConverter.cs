@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media.Imaging;
 
-namespace booruReader.Helpers
+namespace dbz.UIComponents
 {
     public class ImageConverter : IValueConverter
     {
@@ -16,7 +16,7 @@ namespace booruReader.Helpers
             if (!(value is String))
                 throw new ApplicationException("Value must be string!");
 
-            if(string.IsNullOrEmpty(value as string))
+            if (string.IsNullOrEmpty(value as string))
                 return DependencyProperty.UnsetValue;
 
             try

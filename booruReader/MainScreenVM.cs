@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Shell;
 
 namespace booruReader
 {
@@ -119,6 +120,7 @@ namespace booruReader
             _imageLoader = new BackgroundWorker();
             _cache = new ImageCache();
             DowloadList = new ObservableCollection<BasePost>();
+            DowloadList.CollectionChanged += DowloadList_CollectionChanged;
             _imageLoader.DoWork += BackgroundLoaderWork;
             _imageLoader.RunWorkerCompleted += ServerListLoadWorkerCompleted;
             _imageLoader.WorkerSupportsCancellation = true;
@@ -286,6 +288,34 @@ namespace booruReader
 
         public DelegateCommand PerformSelectedImagesDownloadCommand { get { return _performSelectedImagesDownloadCommand; } }
 
+        //NOTE: Hacky test code
+        int _itemsDownloadingCount = 0;
+        void post_DownloadCompleted(object sender, System.EventArgs e)
+        {
+            var taskbar = Application.Current.MainWindow.TaskbarItemInfo;
+
+            (sender as BasePost).DownloadCompleted -= post_DownloadCompleted;
+
+            if (taskbar != null)
+            {
+                _itemsDownloadingCount++;
+
+                taskbar.ProgressState = TaskbarItemProgressState.Normal;
+                taskbar.ProgressValue = ((double)_itemsDownloadingCount / (double)DowloadList.Count);
+
+                if (_itemsDownloadingCount >= DowloadList.Count)
+                    taskbar.ProgressState = TaskbarItemProgressState.None;
+            }
+        }
+
+        void DowloadList_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            //Check if item have been removed, if so it was completed and we want to decrease the counter
+            if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove && _itemsDownloadingCount > 0)
+                _itemsDownloadingCount--;
+        }
+
+
         private void SaveImages()
         {
             if (string.IsNullOrEmpty(GlobalSettings.Instance.SavePath))
@@ -296,15 +326,23 @@ namespace booruReader
             {
                 var selected = MainImageList.Where(x => x.IsSelected == true);
 
+                if (DowloadList.Count == 0)
+                    _itemsDownloadingCount = 0;
+
                 foreach (BasePost post in selected)
                 {
-                    if (post.IsSelected)
+                    if (post.IsSelected && DowloadList.IndexOf(post) == -1)
                     {
-                        post.SaveImage();
-
-                        if (DowloadList.IndexOf(post) == -1)
-                            DowloadList.Add(post);
+                        post.DownloadCompleted += post_DownloadCompleted;
+                        DowloadList.Add(post);
                     }
+                }
+
+                //Fire the save for each file after all files have been added to the list.
+                //Otherwise the completed even could be fired ar incorrect times and cause progress bar to be off sometimes and/or jump around
+                foreach (BasePost post in DowloadList)
+                {
+                    post.SaveImage();
                 }
             }
         }

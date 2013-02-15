@@ -33,6 +33,8 @@ namespace booruReader.Model
         public int _width;
         public int _height;
 
+        public event EventHandler DownloadCompleted;
+
         public PostRating ImageRating;
 
         public bool IsSelected
@@ -253,7 +255,7 @@ namespace booruReader.Model
         }
 
         /// <summary>
-        /// This call will try to save the image
+        /// This call will try to save the image and report its completion
         /// </summary>
         public void SaveImage()
         {
@@ -268,16 +270,31 @@ namespace booruReader.Model
                 {
                     ProgressBarVisible = Visibility.Visible;
                     _downloadClient = new WebClient();
-                    _downloadClient.DownloadProgressChanged += new DownloadProgressChangedEventHandler(client_DownloadProgressChanged);
+                    _downloadClient.DownloadProgressChanged += client_DownloadProgressChanged;
                     _downloadClient.DownloadFileAsync(new Uri(FullPictureURL), _saveLocation);
+                    _downloadClient.DownloadFileCompleted += _downloadClient_DownloadFileCompleted;
                 }
                 else if (File.Exists(_saveLocation) && _downloadClient == null)
                 {
                     //File already exists set the bar to visible and full
                     ProgressBarVisible = Visibility.Visible;
                     DownloadProgress = 100;
+
+                    if (DownloadCompleted != null)
+                        DownloadCompleted(this, new EventArgs());
+                }
+                else if (File.Exists(_saveLocation) && DownloadProgress == 100)
+                {
+                    if (DownloadCompleted != null)
+                        DownloadCompleted(this, new EventArgs());
                 }
             }
+        }
+
+        void _downloadClient_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
+        {
+            if (DownloadCompleted != null)
+                DownloadCompleted(this, new EventArgs());
         }
 
         /// <summary>

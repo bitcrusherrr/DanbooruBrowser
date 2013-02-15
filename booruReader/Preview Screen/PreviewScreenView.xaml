@@ -1,7 +1,7 @@
 ﻿<Window x:Class="booruReader.Preview_Screen.PrviewScreenView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:Helpers="clr-namespace:booruReader.Helpers"
+        xmlns:Helpers="clr-namespace:dbz.UIComponents;assembly=dbz.UIComponents"
         Title="Preview" MinHeight="350" MinWidth="350"
         TextOptions.TextFormattingMode="Display"
         TextOptions.TextRenderingMode="ClearType"

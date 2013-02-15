@@ -69,15 +69,18 @@ namespace booruReader.Model
             BasePost favPost = new BasePost(webPost);
             string thumbPath = Path.Combine(_favoritesThumbFolder, Path.GetFileName(webPost.PreviewURL));
             string bigPath = Path.Combine(_favoritesFolder, Path.GetFileName(fileToCopy));
-            File.Copy(webPost.PreviewURL, thumbPath);
-            File.Copy(fileToCopy, bigPath);
+            File.Copy(webPost.PreviewURL, thumbPath, true);
+            File.Copy(fileToCopy, bigPath, true);
 
             favPost.PreviewURL = thumbPath;
             favPost.FullPictureURL = bigPath;
 
-            _favoritesList.Add(favPost);
+            if (_favoritesList.FirstOrDefault(x => x.PreviewURL == thumbPath && x.FullPictureURL == bigPath) == null)
+            {
+                _favoritesList.Add(favPost);
 
-            UpdateFavoritesConfigFile();
+                UpdateFavoritesConfigFile();
+            }
         }
 
         public void RemoveFromFavorites(BasePost post)

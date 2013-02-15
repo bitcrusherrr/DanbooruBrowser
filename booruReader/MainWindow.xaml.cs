@@ -20,6 +20,9 @@ namespace booruReader
 
         public MainWindow()
         {
+            TaskbarItemInfo = new System.Windows.Shell.TaskbarItemInfo();
+            TaskbarItemInfo.ProgressState = System.Windows.Shell.TaskbarItemProgressState.None;
+
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             Application.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
             

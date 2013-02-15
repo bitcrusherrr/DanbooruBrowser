@@ -136,7 +136,6 @@
       <DependentUpon>MetroMessagebox.xaml</DependentUpon>
     </Compile>
     <Compile Include="Helpers\MetroMessageBoxVM.cs" />
-    <Compile Include="Helpers\ImageConverter.cs" />
     <Compile Include="Helpers\UtilityFunctions.cs" />
     <Compile Include="Model\FavoriteHandler.cs" />
     <Compile Include="Model\ImageCache.cs" />
