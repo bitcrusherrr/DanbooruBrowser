@@ -8,11 +8,15 @@ namespace booruReader.Helpers
         Explicit
     };
 
+    /// <summary>
+    /// This aims to generalise some of the api structuring.
+    /// </summary>
     public enum ProviderAccessType
     {
         XML,
         JSON,
         Gelbooru,
+        DanbooruV2,
         INVALID
     };
 }

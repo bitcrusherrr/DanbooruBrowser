@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ArrayOfBooruBoard xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <BooruBoard>
-    <providerType>XML</providerType>
+    <providerType>DanbooruV2</providerType>
     <url>http://danbooru.donmai.us/</url>
     <name>Danbooru.donmai.us</name>
   </BooruBoard>

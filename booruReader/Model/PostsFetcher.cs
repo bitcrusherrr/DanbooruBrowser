@@ -26,7 +26,7 @@ namespace booruReader.Model
 
             if (GlobalSettings.Instance.CurrentBooru.ProviderType == ProviderAccessType.XML || GlobalSettings.Instance.CurrentBooru.ProviderType == ProviderAccessType.Gelbooru)
                 GetXMLImages(_PostFetcherImnageList, tags, page);
-            else if (GlobalSettings.Instance.CurrentBooru.ProviderType == ProviderAccessType.JSON)
+            else if (GlobalSettings.Instance.CurrentBooru.ProviderType == ProviderAccessType.JSON || GlobalSettings.Instance.CurrentBooru.ProviderType == ProviderAccessType.DanbooruV2)
                 GetJSONImages(_PostFetcherImnageList, tags, page);
 
             return _PostFetcherImnageList;
@@ -66,7 +66,6 @@ namespace booruReader.Model
                     finalURL = string.Format(finalURL + "&pid=" + page + "&tags=" + FormTags(tags));
                 }
             }
-
 
             try
             {
@@ -114,7 +113,7 @@ namespace booruReader.Model
                                             {
                                                 if (reader.Value.Contains("s"))
                                                     post.ImageRating = PostRating.Safe;
-                                                else if (reader.Value.Contains("q"))
+                                                else if (reader.Value.Contains("e"))
                                                     post.ImageRating = PostRating.Explicit;
                                                 else
                                                     post.ImageRating = PostRating.Questionable;
@@ -163,8 +162,26 @@ namespace booruReader.Model
                 tags = string.Empty;
             }
 
-            finalURL = GlobalSettings.Instance.CurrentBooru.URL + "post/index.json"; //+ tags from search field
-            finalURL = string.Format(finalURL + "?page=" + page + "&tags=" + FormTags(tags) + "&limit=" + Limit);
+            //NOTE: refractor
+            //Manual exception for danbooru as it requires user for logging in
+            if (GlobalSettings.Instance.CurrentBooru.URL.ToLowerInvariant().Contains(".donmai.us"))
+            {
+                finalURL = GlobalSettings.Instance.CurrentBooru.URL + "posts.json/"; //+ tags from searchfield
+
+                //danbooru HAS to be logged in to fetch shit which is pain in the ass
+                finalURL = string.Format(finalURL + "?login=booruReader" + "&password_hash=70de755c930112801ef5e002aff10cfe4cafd76d");
+                finalURL = string.Format(finalURL + "&page=" + page + "&tags=" + FormTags(tags));
+            }
+            else if (GlobalSettings.Instance.CurrentBooru.ProviderType == ProviderAccessType.DanbooruV2)
+            {
+                finalURL = GlobalSettings.Instance.CurrentBooru.URL + "posts.json/"; //+ tags from searchfield
+                finalURL = string.Format(finalURL + "?page=" + page + "&tags=" + FormTags(tags));
+            }
+            else
+            {
+                finalURL = GlobalSettings.Instance.CurrentBooru.URL + "post/index.json"; //+ tags from search field
+                finalURL = string.Format(finalURL + "?page=" + page + "&tags=" + FormTags(tags) + "&limit=" + Limit);
+            }
 
             try
             {
@@ -211,7 +228,7 @@ namespace booruReader.Model
                                 case "\"rating\"":
                                     if (val[1].Contains("s"))
                                         post.ImageRating = PostRating.Safe;
-                                    else if (val[1].Contains("q"))
+                                    else if (val[1].Contains("e"))
                                         post.ImageRating = PostRating.Explicit;
                                     else
                                         post.ImageRating = PostRating.Questionable;
@@ -221,6 +238,19 @@ namespace booruReader.Model
                                     break;
                                 case "\"preview_url\"":
                                     post.PreviewURL = NormaliseURL(val[1].Replace("\"", ""));
+                                    break;
+                                // This values have been added in danbooru v2 format so we can safely override some of the post values
+                                case "\"tag_string\"": 
+                                    post.Tags = val[1].Replace("\"", ""); 
+                                    break;
+                                case "\"file_ext\"": 
+                                    post.FileExtension = val[1].Replace("\"", ""); 
+                                    break;
+                                case "\"image_width\"": 
+                                    int.TryParse(val[1], out post._width); 
+                                    break;
+                                case "\"image_height\"": 
+                                    int.TryParse(val[1], out post._height); 
                                     break;
                                 default: break;
                             }
@@ -233,65 +263,15 @@ namespace booruReader.Model
                         }
                         else
                         {
-                            //Test bandaid for sankaku which didnt work.
-                            //Keeping this here for now
-                            #region Test
+                            //Check for V2 Danbooru, if it is we need to work out filepaths manually... Thanks for that...
+                            if (GlobalSettings.Instance.CurrentBooru.ProviderType == ProviderAccessType.DanbooruV2)
+                            {
+                                string fullFilepath = "/data/" + post.FileMD + "." + post.FileExtension;
+                                post.FullPictureURL = NormaliseURL(fullFilepath);
 
-                            ////Sankaku have been messing with returns and API, bandaid solution for current as of 30/10/12 state of API
-                            //if (post.PreviewURL.ToLowerInvariant().Contains("sankakustatic"))
-                            //{
-                            //    string tempURL = post.PreviewURL.Replace("preview/", "");
-                            //    //bool carryon = false;
-                            //    //This isnt going to always work because not all images jpg, so lets check for gif and png as well
-                            //    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(tempURL);
-                            //    request.Method = "GET";
-                            //    try
-                            //    {
-                            //        request.GetResponse();
-                            //        post.FullPictureURL = tempURL;
-                            //    }
-                            //    catch (Exception ex)
-                            //    {
-                            //        //carryon = true;
-                            //    }
-
-                            //    //Test for PNG now
-                            //    if (carryon)
-                            //    {
-                            //        request = (HttpWebRequest)WebRequest.Create(tempURL.Replace(".jpg", ".png"));
-
-                            //        try
-                            //        {
-                            //            request.GetResponse();
-                            //            post.FullPictureURL = tempURL.ToLowerInvariant().Replace(".jpg", ".png");
-                            //            carryon = false;
-                            //        }
-                            //        catch (Exception ex)
-                            //        {
-                            //            ex.Message.ToString();
-                            //            carryon = true;
-                            //        }
-                            //    }
-
-                            //    //Test for GIF now
-                            //    if (carryon)
-                            //    {
-                            //        request = (HttpWebRequest)WebRequest.Create(tempURL.Replace(".jpg", ".gif"));
-
-                            //        try
-                            //        {
-                            //            request.GetResponse();
-                            //            post.FullPictureURL = tempURL.ToLowerInvariant().Replace(".jpg", ".gif");
-                            //            carryon = false;
-                            //        }
-                            //        catch (Exception ex)
-                            //        {
-                            //            ex.Message.ToString();
-                            //        }
-                            //    }
-                            //}
-
-                            #endregion
+                                string thumbFilepath = "/data/preview/" + post.FileMD + ".jpg";
+                                post.PreviewURL = NormaliseURL(thumbFilepath); ;
+                            }
 
                             if (UtilityFunctions.GetUrlExtension(post.FullPictureURL) != null)
                                 ImageList.Add(post);

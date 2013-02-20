@@ -67,19 +67,40 @@ namespace booruReader.Model
         {
             // Replace http paths with the drive paths to the images, ideally caching should solve this problem, but this needs testing
             BasePost favPost = new BasePost(webPost);
-            string thumbPath = Path.Combine(_favoritesThumbFolder, Path.GetFileName(webPost.PreviewURL));
-            string bigPath = Path.Combine(_favoritesFolder, Path.GetFileName(fileToCopy));
-            File.Copy(webPost.PreviewURL, thumbPath, true);
-            File.Copy(fileToCopy, bigPath, true);
 
-            favPost.PreviewURL = thumbPath;
-            favPost.FullPictureURL = bigPath;
-
-            if (_favoritesList.FirstOrDefault(x => x.PreviewURL == thumbPath && x.FullPictureURL == bigPath) == null)
+            string thumbPath = string.Empty;
+            string bigPath = string.Empty;
+            try
             {
-                _favoritesList.Add(favPost);
+                if (!string.IsNullOrEmpty(webPost.PreviewURL))
+                {
+                    thumbPath = Path.Combine(_favoritesThumbFolder, Path.GetFileName(webPost.PreviewURL));
+                    File.Copy(webPost.PreviewURL, thumbPath, true);
+                    favPost.PreviewURL = thumbPath;
+                }
+                else if (!string.IsNullOrEmpty(webPost.URLStore))
+                {
+                    thumbPath = Path.Combine(_favoritesThumbFolder, Path.GetFileName(webPost.URLStore));
+                    File.Copy(webPost.URLStore, thumbPath, true);
+                    favPost.PreviewURL = thumbPath;
+                }
 
-                UpdateFavoritesConfigFile();
+                bigPath = Path.Combine(_favoritesFolder, Path.GetFileName(fileToCopy));
+                File.Copy(fileToCopy, bigPath, true);
+                favPost.FullPictureURL = bigPath;
+            }
+            catch
+            {
+                new Helpers.MetroMessagebox("Favorites Error", "Unable to add to favorites.").Show();
+            }
+            finally
+            {
+                if (!string.IsNullOrEmpty(thumbPath) && !string.IsNullOrEmpty(bigPath) && _favoritesList.FirstOrDefault(x => x.PreviewURL == thumbPath && x.FullPictureURL == bigPath) == null)
+                {
+                    _favoritesList.Add(favPost);
+
+                    UpdateFavoritesConfigFile();
+                }
             }
         }
 

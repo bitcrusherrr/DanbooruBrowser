@@ -148,6 +148,8 @@ namespace booruReader.Model
                 }
             }
         }
+
+        public string FileExtension { get; set; }
         #endregion
 
         /// <summary>
