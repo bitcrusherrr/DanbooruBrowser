@@ -99,6 +99,7 @@ namespace booruReader.Model
         public string URLStore
         {
             get { return urlStore; }
+            set { urlStore = value; }
         }
 
         public string FullPictureURL
