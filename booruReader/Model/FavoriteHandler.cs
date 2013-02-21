@@ -77,30 +77,38 @@ namespace booruReader.Model
                     thumbPath = Path.Combine(_favoritesThumbFolder, Path.GetFileName(webPost.PreviewURL));
                     File.Copy(webPost.PreviewURL, thumbPath, true);
                     favPost.PreviewURL = thumbPath;
+                    favPost.URLStore = thumbPath;
                 }
                 else if (!string.IsNullOrEmpty(webPost.URLStore))
                 {
                     thumbPath = Path.Combine(_favoritesThumbFolder, Path.GetFileName(webPost.URLStore));
                     File.Copy(webPost.URLStore, thumbPath, true);
                     favPost.PreviewURL = thumbPath;
+                    favPost.URLStore = thumbPath;
                 }
+            }
+            catch
+            {
+                //
+            }
 
+            try
+            {
                 bigPath = Path.Combine(_favoritesFolder, Path.GetFileName(fileToCopy));
                 File.Copy(fileToCopy, bigPath, true);
                 favPost.FullPictureURL = bigPath;
             }
             catch
             {
-                new Helpers.MetroMessagebox("Favorites Error", "Unable to add to favorites.").Show();
+                //
             }
-            finally
-            {
-                if (!string.IsNullOrEmpty(thumbPath) && !string.IsNullOrEmpty(bigPath) && _favoritesList.FirstOrDefault(x => x.PreviewURL == thumbPath && x.FullPictureURL == bigPath) == null)
-                {
-                    _favoritesList.Add(favPost);
 
-                    UpdateFavoritesConfigFile();
-                }
+            //We can ignore the fails, file access for thumbnails isnt always instantly freed if same file is being added/removed 
+            if (!string.IsNullOrEmpty(thumbPath) && !string.IsNullOrEmpty(bigPath) && _favoritesList.FirstOrDefault(x => x.PreviewURL == thumbPath && x.FullPictureURL == bigPath) == null)
+            {
+                _favoritesList.Add(favPost);
+
+                UpdateFavoritesConfigFile();
             }
         }
 
@@ -110,12 +118,7 @@ namespace booruReader.Model
             var favPost = _favoritesList.FirstOrDefault(x => x.FileMD == post.FileMD);
 
             if (favPost != null)
-            {
                 _favoritesList.Remove(favPost);
-                //Todo:fix
-                //File.Delete(favPost.PreviewURL);
-                //File.Delete(favPost.FullPictureURL);           
-            }
 
             UpdateFavoritesConfigFile();
         }
@@ -164,6 +167,36 @@ namespace booruReader.Model
         }
 
         #endregion
+
+        internal void CheckForRemovedFavorites()
+        {
+
+            DirectoryInfo Dir = new DirectoryInfo(_favoritesThumbFolder);
+            FileInfo[] FileList = Dir.GetFiles();
+
+            foreach (FileInfo file in FileList)
+            {
+                try
+                {
+                    if (_favoritesList.FirstOrDefault(x => Path.GetFileName(x.PreviewURL) == Path.GetFileName(file.FullName)) == null)
+                        file.Delete();
+                }
+                catch { }
+            }
+
+            Dir = new DirectoryInfo(_favoritesFolder);
+            FileList = Dir.GetFiles();
+
+            foreach (FileInfo file in FileList)
+            {
+                try
+                {
+                    if (_favoritesList.FirstOrDefault(x => Path.GetFileName(x.FullPictureURL) == Path.GetFileName(file.FullName)) == null)
+                        file.Delete();
+                }
+                catch { }
+            }
+        }
 
     }
 }

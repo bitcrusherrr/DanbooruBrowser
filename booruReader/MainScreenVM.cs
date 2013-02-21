@@ -394,6 +394,8 @@ namespace booruReader
             {
                 PrviewScreenView preview = new PrviewScreenView(post, DowloadList);
                 _previewList.Add(preview);
+                preview.AddedImageToFavorites += preview_AddedImageToFavorites;
+                preview.RemovedImageFromFavorites += preview_RemovedImageFromFavorites;
                 preview.Show();
             }
 
@@ -403,6 +405,8 @@ namespace booruReader
             {
                 if (_previewList[index].IsLoaded == false)
                 {
+                    _previewList[index].AddedImageToFavorites -= preview_AddedImageToFavorites;
+                    _previewList[index].RemovedImageFromFavorites -= preview_RemovedImageFromFavorites;
                     _previewList.RemoveAt(index);
                 }
                 else
@@ -410,6 +414,20 @@ namespace booruReader
                     index++;
                 }
             }
+        }
+
+        void preview_RemovedImageFromFavorites(object sender, System.EventArgs e)
+        {
+            if(IsFavoritesMode)
+                _imageList = new ObservableCollection<BasePost>(_favorites.FetchFavorites(_tagsBox));
+            RaisePropertyChanged("MainImageList");
+        }
+
+        void preview_AddedImageToFavorites(object sender, System.EventArgs e)
+        {
+            if (IsFavoritesMode)
+                _imageList = new ObservableCollection<BasePost>(_favorites.FetchFavorites(_tagsBox));
+            RaisePropertyChanged("MainImageList");
         }
 
         #region Close Command
@@ -421,6 +439,7 @@ namespace booruReader
             CloseAllPreviews();
             GlobalSettings.Instance.SaveSettings();
             _cache.CleanCache();
+            _favorites.CheckForRemovedFavorites();
         }
 
         #endregion

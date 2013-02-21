@@ -19,6 +19,8 @@ namespace booruReader.Preview_Screen
         public ObservableCollection<string> TagList { get { return _taglist; } }
         private FavoriteHandler _favoriteshandler;
         private bool _favoriteWhenReady = false;
+        public event EventHandler AddedImageToFavorites;
+        public event EventHandler RemovedImageFromFavorites;
 
         public string ImageSource
         {
@@ -147,11 +149,17 @@ namespace booruReader.Preview_Screen
                 _favoriteshandler.AddToFavorites(_post, ImageSource);
             else
                 _favoriteWhenReady = true;
+
+            if(AddedImageToFavorites != null)
+                AddedImageToFavorites(_post, new EventArgs());
         }
 
         internal void RemoveFromFavorites()
         {
             _favoriteshandler.RemoveFromFavorites(_post);
+
+            if (RemovedImageFromFavorites != null)
+                RemovedImageFromFavorites(_post, new EventArgs());
         }
     }
 }

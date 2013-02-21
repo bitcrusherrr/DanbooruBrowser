@@ -13,6 +13,10 @@ namespace booruReader.Preview_Screen
     {
         PreviewScreenVM PreviewVM;
 
+        public event EventHandler ScreenClosing;
+        public event EventHandler AddedImageToFavorites;
+        public event EventHandler RemovedImageFromFavorites;
+
         public PrviewScreenView(BasePost post, ObservableCollection<BasePost> DowloadList)
         {
             InitializeComponent();
@@ -20,11 +24,26 @@ namespace booruReader.Preview_Screen
             PreviewVM = new PreviewScreenVM(post, DowloadList);
             DataContext = PreviewVM;
 
+            PreviewVM.AddedImageToFavorites += PreviewVM_AddedImageToFavorites;
+            PreviewVM.RemovedImageFromFavorites += PreviewVM_RemovedImageFromFavorites;
+
             if (GlobalSettings.Instance.PreviewScreenWidth > 0)
             {
                 this.Width = GlobalSettings.Instance.PreviewScreenWidth;
                 this.Height = GlobalSettings.Instance.PreviewScreenHeight;
             }
+        }
+
+        void PreviewVM_RemovedImageFromFavorites(object sender, EventArgs e)
+        {
+            if (RemovedImageFromFavorites != null)
+                RemovedImageFromFavorites(sender, e);
+        }
+
+        void PreviewVM_AddedImageToFavorites(object sender, EventArgs e)
+        {
+            if (AddedImageToFavorites != null)
+                AddedImageToFavorites(sender, e);
         }
 
         private DateTime m_headerLastClicked;
@@ -55,6 +74,13 @@ namespace booruReader.Preview_Screen
                 GlobalSettings.Instance.PreviewScreenWidth = this.Width;
                 GlobalSettings.Instance.PreviewScreenHeight = this.Height;
             }
+
+            if (ScreenClosing != null)
+                ScreenClosing(this, new EventArgs());
+
+            PreviewVM.AddedImageToFavorites -= PreviewVM_AddedImageToFavorites;
+            PreviewVM.RemovedImageFromFavorites -= PreviewVM_RemovedImageFromFavorites;
+
             this.Hide();
             this.Close();
         }
