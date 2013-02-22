@@ -348,6 +348,20 @@ namespace booruReader.Settings_Screen
                     //Now we try and fetch a page until we get result... or an exception
                     PostsFetcher posts = new PostsFetcher(true);
 
+                    if (hadErrors)
+                    {
+                        try
+                        {
+                            CurrentSelectedBoard.ProviderType = ProviderAccessType.DanbooruV2;
+                            if (posts.GetImages(1).Count > 0)
+                                hadErrors = false;
+                        }
+                        catch
+                        {
+                            hadErrors = true;
+                        }
+                    }
+
                     try
                     {
                         CurrentSelectedBoard.ProviderType = ProviderAccessType.XML;
@@ -363,7 +377,7 @@ namespace booruReader.Settings_Screen
                     {
                         try
                         {
-                            CurrentSelectedBoard.ProviderType = ProviderAccessType.Gelbooru;
+                            CurrentSelectedBoard.ProviderType = ProviderAccessType.JSON;
                             if (posts.GetImages(1).Count > 0)
                                 hadErrors = false;
                         }
@@ -377,7 +391,7 @@ namespace booruReader.Settings_Screen
                     {
                         try
                         {
-                            CurrentSelectedBoard.ProviderType = ProviderAccessType.JSON;
+                            CurrentSelectedBoard.ProviderType = ProviderAccessType.Gelbooru;
                             if (posts.GetImages(1).Count > 0)
                                 hadErrors = false;
                         }
