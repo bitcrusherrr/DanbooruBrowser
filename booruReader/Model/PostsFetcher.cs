@@ -48,7 +48,10 @@ namespace booruReader.Model
                 finalURL = GlobalSettings.Instance.CurrentBooru.URL + "post/index.xml"; //+ tags from searchfield
 
                 //danbooru HAS to be logged in to fetch shit which is pain in the ass
-                finalURL = string.Format(finalURL + "?login=booruReader" + "&password_hash=70de755c930112801ef5e002aff10cfe4cafd76d");
+                if (!string.IsNullOrEmpty(GlobalSettings.Instance.CurrentBooru.UserName) && !string.IsNullOrEmpty(GlobalSettings.Instance.CurrentBooru.Password))
+                    finalURL = string.Format(finalURL + "?login=" + GlobalSettings.Instance.CurrentBooru.UserName + "&password=");
+                else
+                    finalURL = string.Format(finalURL + "?login=booruReader" + "&password_hash=70de755c930112801ef5e002aff10cfe4cafd76d");
                 finalURL = string.Format(finalURL + "&page=" + page + "&tags=" + FormTags(tags));
             }
             else
@@ -57,13 +60,19 @@ namespace booruReader.Model
                 if (GlobalSettings.Instance.CurrentBooru.ProviderType == ProviderAccessType.XML)
                 {
                     finalURL = GlobalSettings.Instance.CurrentBooru.URL + "post/index.xml"; //+ tags from searchfield
-                    finalURL = string.Format(finalURL + "?page=" + page + "&tags=" + FormTags(tags));
+                    if (!string.IsNullOrEmpty(GlobalSettings.Instance.CurrentBooru.UserName) && !string.IsNullOrEmpty(GlobalSettings.Instance.CurrentBooru.Password))
+                        finalURL = string.Format(finalURL + "?login=" + GlobalSettings.Instance.CurrentBooru.UserName + "&password=" + GlobalSettings.Instance.CurrentBooru.Password + "&page=" + page + "&tags=" + FormTags(tags));
+                    else
+                        finalURL = string.Format(finalURL + "?page=" + page + "&tags=" + FormTags(tags));
                 }
                 //Gelbooru api based sites
                 else if (GlobalSettings.Instance.CurrentBooru.ProviderType == ProviderAccessType.Gelbooru)
                 {
                     finalURL = GlobalSettings.Instance.CurrentBooru.URL + "index.php?page=dapi&s=post&q=index";
-                    finalURL = string.Format(finalURL + "&pid=" + page + "&tags=" + FormTags(tags));
+                    if (!string.IsNullOrEmpty(GlobalSettings.Instance.CurrentBooru.UserName) && !string.IsNullOrEmpty(GlobalSettings.Instance.CurrentBooru.Password))
+                        finalURL = string.Format(finalURL + "&login=" + GlobalSettings.Instance.CurrentBooru.UserName + "&password=" + GlobalSettings.Instance.CurrentBooru.Password + "&pid=" + page + "&tags=" + FormTags(tags));
+                    else
+                         finalURL = string.Format(finalURL + "&pid=" + page + "&tags=" + FormTags(tags));
                 }
             }
 
@@ -169,18 +178,28 @@ namespace booruReader.Model
                 finalURL = GlobalSettings.Instance.CurrentBooru.URL + "posts.json/"; //+ tags from searchfield
 
                 //danbooru HAS to be logged in to fetch shit which is pain in the ass
-                finalURL = string.Format(finalURL + "?login=booruReader" + "&password_hash=70de755c930112801ef5e002aff10cfe4cafd76d");
+                if (!string.IsNullOrEmpty(GlobalSettings.Instance.CurrentBooru.UserName) && !string.IsNullOrEmpty(GlobalSettings.Instance.CurrentBooru.Password))
+                    finalURL = string.Format(finalURL + "?login=" + GlobalSettings.Instance.CurrentBooru.UserName + "&password=" + GlobalSettings.Instance.CurrentBooru.Password);
+                else
+                    finalURL = string.Format(finalURL + "?login=booruReader" + "&password_hash=70de755c930112801ef5e002aff10cfe4cafd76d");
+
                 finalURL = string.Format(finalURL + "&page=" + page + "&tags=" + FormTags(tags));
             }
             else if (GlobalSettings.Instance.CurrentBooru.ProviderType == ProviderAccessType.DanbooruV2)
             {
                 finalURL = GlobalSettings.Instance.CurrentBooru.URL + "posts.json/"; //+ tags from searchfield
-                finalURL = string.Format(finalURL + "?page=" + page + "&tags=" + FormTags(tags));
+                if (!string.IsNullOrEmpty(GlobalSettings.Instance.CurrentBooru.UserName) && !string.IsNullOrEmpty(GlobalSettings.Instance.CurrentBooru.Password))
+                    finalURL = string.Format(finalURL + "?login=" + GlobalSettings.Instance.CurrentBooru.UserName + "&password=" + GlobalSettings.Instance.CurrentBooru.Password + "&page=" + page + "&tags=" + FormTags(tags));
+                else
+                    finalURL = string.Format(finalURL + "?page=" + page + "&tags=" + FormTags(tags));
             }
             else
             {
                 finalURL = GlobalSettings.Instance.CurrentBooru.URL + "post/index.json"; //+ tags from search field
-                finalURL = string.Format(finalURL + "?page=" + page + "&tags=" + FormTags(tags) + "&limit=" + Limit);
+                if (!string.IsNullOrEmpty(GlobalSettings.Instance.CurrentBooru.UserName) && !string.IsNullOrEmpty(GlobalSettings.Instance.CurrentBooru.Password))
+                    finalURL = string.Format(finalURL + "?login=" + GlobalSettings.Instance.CurrentBooru.UserName + "&password=" + GlobalSettings.Instance.CurrentBooru.Password + "&page=" + page + "&tags=" + FormTags(tags));
+                else
+                    finalURL = string.Format(finalURL + "?page=" + page + "&tags=" + FormTags(tags));
             }
 
             try

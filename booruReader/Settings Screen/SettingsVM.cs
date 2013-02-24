@@ -77,7 +77,7 @@ namespace booruReader.Settings_Screen
 
         public string VersionInfo
         {
-            get { return "v"+Assembly.GetExecutingAssembly().GetName().Version.ToString(); }
+            get { return "v" + Assembly.GetExecutingAssembly().GetName().Version.ToString(); }
         }
 
         public ObservableCollection<BooruBoard> ProviderList
@@ -348,11 +348,22 @@ namespace booruReader.Settings_Screen
                     //Now we try and fetch a page until we get result... or an exception
                     PostsFetcher posts = new PostsFetcher(true);
 
+                    try
+                    {
+                        CurrentSelectedBoard.ProviderType = ProviderAccessType.DanbooruV2;
+                        if (posts.GetImages(1).Count > 0)
+                            hadErrors = false;
+                    }
+                    catch
+                    {
+                        hadErrors = true;
+                    }
+
                     if (hadErrors)
                     {
                         try
                         {
-                            CurrentSelectedBoard.ProviderType = ProviderAccessType.DanbooruV2;
+                            CurrentSelectedBoard.ProviderType = ProviderAccessType.XML;
                             if (posts.GetImages(1).Count > 0)
                                 hadErrors = false;
                         }
@@ -360,17 +371,6 @@ namespace booruReader.Settings_Screen
                         {
                             hadErrors = true;
                         }
-                    }
-
-                    try
-                    {
-                        CurrentSelectedBoard.ProviderType = ProviderAccessType.XML;
-                        if (posts.GetImages(1).Count > 0)
-                            hadErrors = false;
-                    }
-                    catch
-                    {
-                        hadErrors = true;
                     }
 
                     if (hadErrors)

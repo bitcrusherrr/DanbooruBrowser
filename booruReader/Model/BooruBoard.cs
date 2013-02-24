@@ -51,13 +51,13 @@ namespace booruReader.Model
         }
         
         [XmlElement("password")]
-        public string Pasword
+        public string Password
         {
             get { return _password; }
             set
             {
                 _password = value;
-                RaisePropertyChanged("Pasword");
+                RaisePropertyChanged("Password");
             }
         }
         
@@ -74,6 +74,8 @@ namespace booruReader.Model
         {
             URL = board.URL;
             Name = board.Name;
+            Password = board.Password;
+            UserName = board.UserName;
             ProviderType = board.ProviderType;
         }
 
