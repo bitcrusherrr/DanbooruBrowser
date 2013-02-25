@@ -38,5 +38,13 @@ namespace booruReader.Settings_Screen
                 e.Handled = true;
             }
         }
+
+        private void LabelTextBox_TextChanged_1(object sender, TextChangedEventArgs e)
+        {
+            if ((sender as TextBox).Text != null && (sender as TextBox).Text.Contains("!PASSWORD!"))
+                viewModel.CanUseLoginDetails = true;
+            else
+                viewModel.CanUseLoginDetails = false;
+        }
     }
 }

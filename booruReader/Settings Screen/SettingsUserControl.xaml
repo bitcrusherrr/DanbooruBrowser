@@ -82,17 +82,23 @@
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                <Controls:LabelTextBox Label="Username" ToolTip="Site URL" Margin="0,2,0,2" IsEnabled="{Binding EnableEditing}" Height="23" Width="240" 
+                <Controls:LabelTextBox Label="Username" IsEnabled="{Binding CanUseLoginDetails}" ToolTip="Site URL" Margin="0,2,0,2" Height="23" Width="240" 
                     Text="{Binding Path=CurrentSelectedBoard.UserName}" Foreground="White" Background="{StaticResource MetroBackground}" 
                     BorderBrush="{StaticResource DatazbytesGreen}" />
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                <Controls:LabelTextBox Label="Password" ToolTip="Site URL" Margin="0,2,0,2" IsEnabled="{Binding EnableEditing}" Height="23" Width="240" 
+                <Controls:LabelTextBox Label="Password" IsEnabled="{Binding CanUseLoginDetails}" ToolTip="Site URL" Margin="0,2,0,2" Height="23" Width="240" 
                     Text="{Binding Path=CurrentSelectedBoard.Password}" Foreground="White" Background="{StaticResource MetroBackground}" 
                     BorderBrush="{StaticResource DatazbytesGreen}" />
             </StackPanel>
 
+            <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                <Controls:LabelTextBox Label="Password Salt" ToolTip="Site URL" Margin="0,2,0,2" IsEnabled="{Binding EnableEditing}" Height="23" Width="240" 
+                    Text="{Binding Path=CurrentSelectedBoard.PasswordSalt}" Foreground="White" Background="{StaticResource MetroBackground}" 
+                    BorderBrush="{StaticResource DatazbytesGreen}" TextChanged="LabelTextBox_TextChanged_1"/>
+            </StackPanel>
+            
             <StackPanel Orientation="Horizontal" Margin="0,15,0,0">
                 <Button ToolTip="Save this booru" Style="{StaticResource Metro}" IsEnabled="{Binding EnableEditing}" Width="23" Height="23" Margin="0,2,0,2" VerticalAlignment="Top"
                 HorizontalAlignment="Left" Command="{Binding FinalizeBooruCommand}">

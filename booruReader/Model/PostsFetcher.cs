@@ -41,39 +41,23 @@ namespace booruReader.Model
                 tags = string.Empty;
             }
 
-            //NOTE: refractor
-            //Manual exception for danbooru as it requires user for logging in
-            if (GlobalSettings.Instance.CurrentBooru.URL.ToLowerInvariant().Contains(".donmai.us"))
+            //Danbooru api based sites
+            if (GlobalSettings.Instance.CurrentBooru.ProviderType == ProviderAccessType.XML)
             {
                 finalURL = GlobalSettings.Instance.CurrentBooru.URL + "post/index.xml"; //+ tags from searchfield
-
-                //danbooru HAS to be logged in to fetch shit which is pain in the ass
                 if (!string.IsNullOrEmpty(GlobalSettings.Instance.CurrentBooru.UserName) && !string.IsNullOrEmpty(GlobalSettings.Instance.CurrentBooru.Password))
-                    finalURL = string.Format(finalURL + "?login=" + GlobalSettings.Instance.CurrentBooru.UserName + "&password=");
+                    finalURL = string.Format(finalURL + "?login=" + GlobalSettings.Instance.CurrentBooru.UserName + "&password_hash=" + GlobalSettings.Instance.CurrentBooru.Password + "&page=" + page + "&tags=" + FormTags(tags));
                 else
-                    finalURL = string.Format(finalURL + "?login=booruReader" + "&password_hash=70de755c930112801ef5e002aff10cfe4cafd76d");
-                finalURL = string.Format(finalURL + "&page=" + page + "&tags=" + FormTags(tags));
+                    finalURL = string.Format(finalURL + "?page=" + page + "&tags=" + FormTags(tags));
             }
-            else
+            //Gelbooru api based sites
+            else if (GlobalSettings.Instance.CurrentBooru.ProviderType == ProviderAccessType.Gelbooru)
             {
-                //Danbooru api based sites
-                if (GlobalSettings.Instance.CurrentBooru.ProviderType == ProviderAccessType.XML)
-                {
-                    finalURL = GlobalSettings.Instance.CurrentBooru.URL + "post/index.xml"; //+ tags from searchfield
-                    if (!string.IsNullOrEmpty(GlobalSettings.Instance.CurrentBooru.UserName) && !string.IsNullOrEmpty(GlobalSettings.Instance.CurrentBooru.Password))
-                        finalURL = string.Format(finalURL + "?login=" + GlobalSettings.Instance.CurrentBooru.UserName + "&password=" + GlobalSettings.Instance.CurrentBooru.Password + "&page=" + page + "&tags=" + FormTags(tags));
-                    else
-                        finalURL = string.Format(finalURL + "?page=" + page + "&tags=" + FormTags(tags));
-                }
-                //Gelbooru api based sites
-                else if (GlobalSettings.Instance.CurrentBooru.ProviderType == ProviderAccessType.Gelbooru)
-                {
-                    finalURL = GlobalSettings.Instance.CurrentBooru.URL + "index.php?page=dapi&s=post&q=index";
-                    if (!string.IsNullOrEmpty(GlobalSettings.Instance.CurrentBooru.UserName) && !string.IsNullOrEmpty(GlobalSettings.Instance.CurrentBooru.Password))
-                        finalURL = string.Format(finalURL + "&login=" + GlobalSettings.Instance.CurrentBooru.UserName + "&password=" + GlobalSettings.Instance.CurrentBooru.Password + "&pid=" + page + "&tags=" + FormTags(tags));
-                    else
-                         finalURL = string.Format(finalURL + "&pid=" + page + "&tags=" + FormTags(tags));
-                }
+                finalURL = GlobalSettings.Instance.CurrentBooru.URL + "index.php?page=dapi&s=post&q=index";
+                if (!string.IsNullOrEmpty(GlobalSettings.Instance.CurrentBooru.UserName) && !string.IsNullOrEmpty(GlobalSettings.Instance.CurrentBooru.Password))
+                    finalURL = string.Format(finalURL + "&login=" + GlobalSettings.Instance.CurrentBooru.UserName + "&password_hash=" + GlobalSettings.Instance.CurrentBooru.Password + "&pid=" + page + "&tags=" + FormTags(tags));
+                else
+                        finalURL = string.Format(finalURL + "&pid=" + page + "&tags=" + FormTags(tags));
             }
 
             try
@@ -171,25 +155,11 @@ namespace booruReader.Model
                 tags = string.Empty;
             }
 
-            //NOTE: refractor
-            //Manual exception for danbooru as it requires user for logging in
-            if (GlobalSettings.Instance.CurrentBooru.URL.ToLowerInvariant().Contains(".donmai.us"))
-            {
-                finalURL = GlobalSettings.Instance.CurrentBooru.URL + "posts.json/"; //+ tags from searchfield
-
-                //danbooru HAS to be logged in to fetch shit which is pain in the ass
-                if (!string.IsNullOrEmpty(GlobalSettings.Instance.CurrentBooru.UserName) && !string.IsNullOrEmpty(GlobalSettings.Instance.CurrentBooru.Password))
-                    finalURL = string.Format(finalURL + "?login=" + GlobalSettings.Instance.CurrentBooru.UserName + "&password=" + GlobalSettings.Instance.CurrentBooru.Password);
-                else
-                    finalURL = string.Format(finalURL + "?login=booruReader" + "&password_hash=70de755c930112801ef5e002aff10cfe4cafd76d");
-
-                finalURL = string.Format(finalURL + "&page=" + page + "&tags=" + FormTags(tags));
-            }
-            else if (GlobalSettings.Instance.CurrentBooru.ProviderType == ProviderAccessType.DanbooruV2)
+            if (GlobalSettings.Instance.CurrentBooru.ProviderType == ProviderAccessType.DanbooruV2)
             {
                 finalURL = GlobalSettings.Instance.CurrentBooru.URL + "posts.json/"; //+ tags from searchfield
                 if (!string.IsNullOrEmpty(GlobalSettings.Instance.CurrentBooru.UserName) && !string.IsNullOrEmpty(GlobalSettings.Instance.CurrentBooru.Password))
-                    finalURL = string.Format(finalURL + "?login=" + GlobalSettings.Instance.CurrentBooru.UserName + "&password=" + GlobalSettings.Instance.CurrentBooru.Password + "&page=" + page + "&tags=" + FormTags(tags));
+                    finalURL = string.Format(finalURL + "?login=" + GlobalSettings.Instance.CurrentBooru.UserName + "&password_hash=" + GlobalSettings.Instance.CurrentBooru.Password + "&page=" + page + "&tags=" + FormTags(tags));
                 else
                     finalURL = string.Format(finalURL + "?page=" + page + "&tags=" + FormTags(tags));
             }
@@ -197,7 +167,7 @@ namespace booruReader.Model
             {
                 finalURL = GlobalSettings.Instance.CurrentBooru.URL + "post/index.json"; //+ tags from search field
                 if (!string.IsNullOrEmpty(GlobalSettings.Instance.CurrentBooru.UserName) && !string.IsNullOrEmpty(GlobalSettings.Instance.CurrentBooru.Password))
-                    finalURL = string.Format(finalURL + "?login=" + GlobalSettings.Instance.CurrentBooru.UserName + "&password=" + GlobalSettings.Instance.CurrentBooru.Password + "&page=" + page + "&tags=" + FormTags(tags));
+                    finalURL = string.Format(finalURL + "?login=" + GlobalSettings.Instance.CurrentBooru.UserName + "&password_hash=" + GlobalSettings.Instance.CurrentBooru.Password + "&page=" + page + "&tags=" + FormTags(tags));
                 else
                     finalURL = string.Format(finalURL + "?page=" + page + "&tags=" + FormTags(tags));
             }

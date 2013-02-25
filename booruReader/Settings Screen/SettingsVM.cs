@@ -33,6 +33,7 @@ namespace booruReader.Settings_Screen
         private Visibility _doShowProgressBar;
         bool _isValidBooru;
         bool _isBackArrowEnabled;
+        private bool _canUseLoginDetails;
         #endregion
 
         #region Public Variables
@@ -155,6 +156,15 @@ namespace booruReader.Settings_Screen
             }
         }
 
+        public bool CanUseLoginDetails
+        {
+            get { return _canUseLoginDetails; }
+            set
+            {
+                _canUseLoginDetails = value;
+                RaisePropertyChanged("CanUseLoginDetails");
+            }
+        }
         //public string NewBooruName;
         //public string NewBooruURL;
         #endregion
@@ -165,6 +175,7 @@ namespace booruReader.Settings_Screen
             SafeModeBrowsing = GlobalSettings.Instance.IsSafeMode;
             _providerList = new ObservableCollection<BooruBoard>();
             EnableEditing = false;
+            CanUseLoginDetails = false;
             DoShowNewBooru = Visibility.Collapsed;
             DoShowProgressBar = Visibility.Hidden;
 
@@ -174,6 +185,9 @@ namespace booruReader.Settings_Screen
             }
 
             FolderPath = GlobalSettings.Instance.SavePath;
+
+            if (GlobalSettings.Instance.CurrentBooruIndex >= _providerList.Count)
+                GlobalSettings.Instance.CurrentBooruIndex = 0;
 
             var index = _providerList.ElementAt(GlobalSettings.Instance.CurrentBooruIndex);
             if (index != null)
@@ -264,6 +278,7 @@ namespace booruReader.Settings_Screen
 
         private void AddBooru()
         {
+            CanUseLoginDetails = false;
             _previousBoard = CurrentSelectedBoard;
             CurrentSelectedBoard = new BooruBoard();
             EnableEditing = true;
@@ -290,6 +305,7 @@ namespace booruReader.Settings_Screen
             booruValidator.DoWork += booruValidator_DoWork;
             booruValidator.RunWorkerCompleted += booruValidator_RunWorkerCompleted;
 
+            CurrentSelectedBoard.HashPassword();
             booruValidator.RunWorkerAsync();
         }
 
