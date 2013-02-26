@@ -19,7 +19,6 @@ namespace booruReader.Settings_Screen
         #region Private variables
         private bool _safeModeBrowsing;
         private ObservableCollection<BooruBoard> _providerList;
-        private BooruBoard _currentSelectedBoard;
         private string _folderPath;
         private DelegateCommand _selectFolderCommand;
         private bool _enableEditing;
@@ -28,12 +27,14 @@ namespace booruReader.Settings_Screen
         private DelegateCommand _removeBooruCommand;
         private DelegateCommand _finalizeBooruCommand;
         private DelegateCommand _cancelBooruCommand;
+        private DelegateCommand _editBooruCommand;
         private Visibility _doShowNewBooru;
         private string _sizeString;
         private Visibility _doShowProgressBar;
         bool _isValidBooru;
         bool _isBackArrowEnabled;
         private bool _canUseLoginDetails;
+        private bool _editingCurrentMode;
         #endregion
 
         #region Public Variables
@@ -51,10 +52,9 @@ namespace booruReader.Settings_Screen
 
         public BooruBoard CurrentSelectedBoard
         {
-            get { return _currentSelectedBoard; }
+            get { return GlobalSettings.Instance.CurrentBooru; }
             set
             {
-                _currentSelectedBoard = value;
                 //reset our current page as we changing provider
                 GlobalSettings.Instance.CurrentBooru = value;
                 RaisePropertyChanged("CurrentSelectedBoard");
@@ -178,6 +178,7 @@ namespace booruReader.Settings_Screen
             CanUseLoginDetails = false;
             DoShowNewBooru = Visibility.Collapsed;
             DoShowProgressBar = Visibility.Hidden;
+            _editingCurrentMode = false;
 
             foreach (BooruBoard board in GetProviders())
             {
@@ -225,6 +226,12 @@ namespace booruReader.Settings_Screen
             {
                 CanExecuteDelegate = x => true,
                 ExecuteDelegate = x => CancelBooru()
+            };
+
+            _editBooruCommand = new DelegateCommand
+            {
+                CanExecuteDelegate = x => true,
+                ExecuteDelegate = x => EditBooru()
             };
 
             #endregion
@@ -296,17 +303,35 @@ namespace booruReader.Settings_Screen
 
         private void FinalizeBooru()
         {
-            DoShowProgressBar = Visibility.Visible;
-            _isValidBooru = false;
-            EnableEditing = false;
-            IsBackArrowEnabled = false;
+            if (_editingCurrentMode)
+            {
+                if (string.IsNullOrEmpty(_previousBoard.Password) || _previousBoard.Password != CurrentSelectedBoard.Password)
+                    CurrentSelectedBoard.HashPassword();
 
-            BackgroundWorker booruValidator = new BackgroundWorker();
-            booruValidator.DoWork += booruValidator_DoWork;
-            booruValidator.RunWorkerCompleted += booruValidator_RunWorkerCompleted;
+                _providerList.Insert(_providerList.IndexOf(_previousBoard), CurrentSelectedBoard);
+                _providerList.Remove(_previousBoard);
 
-            CurrentSelectedBoard.HashPassword();
-            booruValidator.RunWorkerAsync();
+                EnableEditing = false;
+                DoShowNewBooru = Visibility.Collapsed;
+                _editingCurrentMode = false;
+
+                RaisePropertyChanged("ProviderList");
+                RaisePropertyChanged("CurrentSelectedBoard");
+            }
+            else
+            {
+                DoShowProgressBar = Visibility.Visible;
+                _isValidBooru = false;
+                EnableEditing = false;
+                IsBackArrowEnabled = false;
+
+                BackgroundWorker booruValidator = new BackgroundWorker();
+                booruValidator.DoWork += booruValidator_DoWork;
+                booruValidator.RunWorkerCompleted += booruValidator_RunWorkerCompleted;
+
+                CurrentSelectedBoard.HashPassword();
+                booruValidator.RunWorkerAsync();
+            }
         }
 
         void booruValidator_DoWork(object sender, DoWorkEventArgs e)
@@ -326,9 +351,9 @@ namespace booruReader.Settings_Screen
             if (_isValidBooru)
             {
                 _providerList.Add(CurrentSelectedBoard);
-                CurrentSelectedBoard = CurrentSelectedBoard;
                 EnableEditing = false;
                 DoShowNewBooru = Visibility.Collapsed;
+                RaisePropertyChanged("CurrentSelectedBoard");
             }
             else
             {
@@ -345,6 +370,23 @@ namespace booruReader.Settings_Screen
             CurrentSelectedBoard = _previousBoard;
             EnableEditing = false;
             DoShowNewBooru = Visibility.Collapsed;
+        }
+
+        public DelegateCommand EditBooruCommand { get { return _editBooruCommand; } }
+
+        private void EditBooru()
+        {
+            _editingCurrentMode = true;
+            _previousBoard = CurrentSelectedBoard;
+            CurrentSelectedBoard = new BooruBoard(_previousBoard);
+            EnableEditing = true;
+
+            if (string.IsNullOrEmpty(CurrentSelectedBoard.PasswordSalt))
+                CanUseLoginDetails = false;
+            else
+                CanUseLoginDetails = true;
+
+            DoShowNewBooru = Visibility.Visible;
         }
 
         /// <summary>

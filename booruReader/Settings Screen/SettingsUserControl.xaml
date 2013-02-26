@@ -31,20 +31,29 @@
         </Border>
 
         <!--booru selector-->
-        <ComboBox IsSynchronizedWithCurrentItem="True" Width="216" Height="20" Margin="8,87,0,0" VerticalAlignment="Top" ItemsSource="{Binding ProviderList}"
+        <StackPanel Height="23" Margin="8,87,8,0" VerticalAlignment="Top" Orientation="Horizontal">
+            <ComboBox IsSynchronizedWithCurrentItem="True" Width="195" Height="20" VerticalAlignment="Center" ItemsSource="{Binding ProviderList}"
             SelectedItem="{Binding CurrentSelectedBoard}" DisplayMemberPath="Name" Foreground="White"
             BorderBrush="{StaticResource DatazbytesGray}" HorizontalAlignment="Left"  />
 
-        <!--Add booru button-->
-        <Button ToolTip="Add new booru" Style="{StaticResource Metro}" Width="23" Height="23" Margin="235,85,0,0" VerticalAlignment="Top"
+            <!--Add booru button-->
+            <Button ToolTip="Add new booru" Style="{StaticResource Metro}" Width="23" Height="23" Margin="5,0,0,0" VerticalAlignment="Top"
             HorizontalAlignment="Left" Command="{Binding AddBooruCommand}">
-            <Image Source="Images\add.png"/>
-        </Button>
-        <!--Remove selected booru button-->
-        <Button ToolTip="Remove this booru" Style="{StaticResource Metro}" Width="23" Height="23" Margin="265,85,0,0" VerticalAlignment="Top"
+                <Image Source="Images\add.png"/>
+            </Button>
+
+            <!--Edit selected booru button-->
+            <Button ToolTip="Edit this booru" Style="{StaticResource Metro}" Width="23" Height="23" Margin="5,0,0,0" VerticalAlignment="Top"
+            HorizontalAlignment="Left" Command="{Binding EditBooruCommand}">
+                <Image Source="Images\settings_circle.png"/>
+            </Button>
+
+            <!--Remove selected booru button-->
+            <Button ToolTip="Remove this booru" Style="{StaticResource Metro}" Width="23" Height="23" Margin="5,0,0,0" VerticalAlignment="Top"
             HorizontalAlignment="Left" Command="{Binding RemoveBooruCommand}">
-            <Image Source="Images\cancel.png"/>
-        </Button>
+                <Image Source="Images\cancel.png"/>
+            </Button>
+        </StackPanel>
 
         <!--Filename type checkbox-->
         <CheckBox Style="{StaticResource MetroCheckbox}" VerticalAlignment="Top" 
@@ -66,7 +75,7 @@
         <!--Visibility="{Binding DoShowNewBooru}"    Visibility="Collapsed"-->
         <StackPanel Margin="5,33,0,0" Background="{StaticResource MetroBackground}" Visibility="{Binding DoShowNewBooru}">
             <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                <TextBlock Margin="0,2,0,2" Foreground="White">Enter new booru details:</TextBlock>
+                <TextBlock Margin="0,2,0,2" Foreground="White">Booru details:</TextBlock>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Margin="0,15,0,0">

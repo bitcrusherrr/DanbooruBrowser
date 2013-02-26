@@ -3,6 +3,7 @@ using System;
 using System.ComponentModel;
 using System.Xml.Serialization;
 using System.Security.Cryptography;
+using System.Text;
 
 namespace booruReader.Model
 {
@@ -14,7 +15,6 @@ namespace booruReader.Model
         private string _userName;
         private string _password;
         private string _password_salt;
-        private string _password_hash;
 
         #region Public variables
         [XmlElement("url")]
@@ -104,17 +104,15 @@ namespace booruReader.Model
         public bool HashPassword()
         {
             bool result = true;
+            string _password_hash = string.Empty;
 
             try
             {
                 if (!string.IsNullOrEmpty(_password_salt) && _password_salt.Contains("!PASSWORD!"))
                 {
                     System.Security.Cryptography.SHA1 hash = System.Security.Cryptography.SHA1.Create();
-                    System.Text.ASCIIEncoding encoder = new System.Text.ASCIIEncoding();
                     string str = _password_salt.Replace("!PASSWORD!", _password);
-                    byte[] combined = encoder.GetBytes(str);
-                    hash.ComputeHash(combined);
-                    _password_hash = Convert.ToBase64String(hash.Hash);
+                    _password_hash = BitConverter.ToString(hash.ComputeHash(Encoding.ASCII.GetBytes(str))).Replace("-", "").ToLower();
                 }
                 else
                     result = false;
