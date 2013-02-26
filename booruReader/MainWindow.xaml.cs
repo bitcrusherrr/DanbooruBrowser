@@ -29,7 +29,7 @@ namespace booruReader
             InitializeComponent();
             viewModel = new MainScreenVM();
             DataContext = viewModel;
-
+            viewModel.SearchBoxChanged += viewModel_SearchBoxChanged;
             ImageList.SelectedItem = null;
 
             if (GlobalSettings.Instance.MainScreenWidth > 0)
@@ -37,6 +37,12 @@ namespace booruReader
                 this.Width = GlobalSettings.Instance.MainScreenWidth;
                 this.Height = GlobalSettings.Instance.MainScreenHeight;
             }
+        }
+
+        //Manually hide label.
+        void viewModel_SearchBoxChanged(object sender, EventArgs e)
+        {
+            SearchBox.HideLabel();
         }
 
         //Attempt at catching all thread exceptions. As the Domain one doesnt always catch thread unhandled exceptions.

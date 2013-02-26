@@ -202,7 +202,6 @@ namespace booruReader.Model
                 urlStore = _cache.GetImage(FileMD + _extension, null, LateFilePath, false);
         }
 
-        //Note:rewrite this to use Enviroment.LineBreak
         private void TagFormatter(string myString)
         {
             string[] words = myString.Split(' ');
@@ -213,14 +212,14 @@ namespace booruReader.Model
             {
                 if (counter == 6)
                 {
-                    if (tag.Count() > 0)
-                        newTags += tag + " \n";
+                    if (tag.Replace(" ", "").Count() > 1)
+                        newTags += tag + Environment.NewLine;
 
                     counter = 0;
                 }
                 else
                 {
-                    if (tag.Count() > 0)
+                    if (tag.Replace(" ", "").Count() >1)
                         newTags += tag + " ";
                 }
                 counter++;

@@ -5,8 +5,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "booruReader", "booruReader\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8687B369-7D37-477E-8CF3-3E633F8732BB}"
 	ProjectSection(SolutionItems) = preProject
-		Cheatsheet.txt = Cheatsheet.txt
-		Responce Examples\index.xml = Responce Examples\index.xml
+		README = README
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dbz.UIComponents", "dbz.UIComponents\dbz.UIComponents.csproj", "{34567EAA-4C03-409D-991E-7E03D01AC987}"

@@ -2,6 +2,7 @@ using booruReader.Helpers;
 using booruReader.Model;
 using booruReader.Preview_Screen;
 using dbz.UIComponents;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -396,6 +397,7 @@ namespace booruReader
                 _previewList.Add(preview);
                 preview.AddedImageToFavorites += preview_AddedImageToFavorites;
                 preview.RemovedImageFromFavorites += preview_RemovedImageFromFavorites;
+                preview.UserTagSelection += preview_UserTagSelection;
                 preview.Show();
             }
 
@@ -405,6 +407,7 @@ namespace booruReader
             {
                 if (_previewList[index].IsLoaded == false)
                 {
+                    _previewList[index].UserTagSelection -= preview_UserTagSelection;
                     _previewList[index].AddedImageToFavorites -= preview_AddedImageToFavorites;
                     _previewList[index].RemovedImageFromFavorites -= preview_RemovedImageFromFavorites;
                     _previewList.RemoveAt(index);
@@ -414,6 +417,20 @@ namespace booruReader
                     index++;
                 }
             }
+        }
+
+        //This is a terrible hack... Untill I figure this one out...
+        public event EventHandler SearchBoxChanged;
+
+        private void preview_UserTagSelection(object sender, System.EventArgs e)
+        {
+            if (sender != null && sender is string && (TagsBox == null || !TagsBox.Contains(sender as string)))
+                TagsBox += " " + sender as string;
+
+            if (SearchBoxChanged != null)
+                SearchBoxChanged(null, null);
+
+            RaisePropertyChanged("TagsBox");
         }
 
         void preview_RemovedImageFromFavorites(object sender, System.EventArgs e)

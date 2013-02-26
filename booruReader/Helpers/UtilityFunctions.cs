@@ -1,4 +1,5 @@
 ﻿
+using booruReader.Model;
 namespace booruReader.Helpers
 {
     public static class UtilityFunctions
@@ -18,6 +19,28 @@ namespace booruReader.Helpers
                 retval = ".gif";
 
             return retval;
+        }
+
+        public static string NormaliseURL(string url)
+        {
+            if (!url.Contains("http"))
+            {
+                url = GlobalSettings.Instance.CurrentBooru.URL + url;
+            }
+
+            return url;
+        }
+
+        public static string FormTags(string tags)
+        {
+            string returnTags = tags;
+
+            if (!string.IsNullOrEmpty(tags))
+            {
+                returnTags = tags.Replace(" ", "+");
+            }
+
+            return returnTags;
         }
     }
 }

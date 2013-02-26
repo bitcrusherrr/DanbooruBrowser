@@ -50,17 +50,19 @@ namespace dbz.UIComponents.CustomControls
             base.OnLostFocus(e);
         }
 
-        private void HideLabel()
+        public void HideLabel()
         {
             if (_isWatermarked)
             {
                 _isWatermarked = false;
                 ClearValue(ForegroundProperty);
 
-                Text = "";
-
                 if (_textBinding != null) 
                     SetBinding(TextProperty, _textBinding);
+
+                var sourceText = GetBindingExpression(TextBox.TextProperty);
+                if (sourceText != null)
+                    sourceText.UpdateSource();
 
                 FontStyle = FontStyles.Normal;
 

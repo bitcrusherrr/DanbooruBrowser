@@ -1,4 +1,5 @@
-﻿using dbz.UIComponents.Debug_utils;
+﻿using booruReader.Helpers;
+using dbz.UIComponents.Debug_utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -86,7 +87,7 @@ namespace booruReader.Model
         /// <returns>Path to the full image</returns>
         private string GetBigImage(string imageName, string imageURL, Action<object, AsyncCompletedEventArgs> finalFilePath)
         {
-            string imagePath = Path.Combine(BigCachePath, FormFilename(imageName, imageURL));
+            string imagePath = Path.Combine(BigCachePath, string.Format(imageName + UtilityFunctions.GetUrlExtension(imageURL)));
 
             if (File.Exists(imagePath) && FileIsNotZero(imagePath))
                 return imagePath;
@@ -110,7 +111,7 @@ namespace booruReader.Model
 
             //This is a bit hacky and is based on assumption that if we get passed in null url that file was already loaded and this is a call for a thumbnail.
             if (imageURL != null)
-                imagePath = Path.Combine(ThumbCachePath, FormFilename(imageName, imageURL));
+                imagePath = Path.Combine(ThumbCachePath, string.Format(imageName + UtilityFunctions.GetUrlExtension(imageURL)));
             else
                 imagePath = Path.Combine(ThumbCachePath, imageName);
 
@@ -187,25 +188,5 @@ namespace booruReader.Model
                 }
             }
         }
-
-        /// <summary>
-        /// MD5 based filename builder
-        /// </summary>
-        private string FormFilename(string md5, string FullPictureURL)
-        {
-            string filename;
-
-            if (FullPictureURL.ToLowerInvariant().Contains("jpg") || FullPictureURL.ToLowerInvariant().Contains("jpeg"))
-                filename = ".jpg";
-            else if (FullPictureURL.ToLowerInvariant().Contains("png"))
-                filename = ".png";
-            else if (FullPictureURL.ToLowerInvariant().Contains("gif"))
-                filename = ".gif";
-            else // This shouldn't happen
-                filename = null;
-
-            return md5 + filename;
-        }
-
     }
 }

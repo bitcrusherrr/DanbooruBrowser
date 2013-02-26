@@ -16,6 +16,7 @@ namespace booruReader.Preview_Screen
         public event EventHandler ScreenClosing;
         public event EventHandler AddedImageToFavorites;
         public event EventHandler RemovedImageFromFavorites;
+        public event EventHandler UserTagSelection;
 
         public PrviewScreenView(BasePost post, ObservableCollection<BasePost> DowloadList)
         {
@@ -123,6 +124,17 @@ namespace booruReader.Preview_Screen
         private void RemoveFromFavorites(object sender, RoutedEventArgs e)
         {
             PreviewVM.RemoveFromFavorites();
+        }
+
+        protected void HandleDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (TagList.SelectedItem != null)
+            {
+                var item = TagList.SelectedItem as string;
+
+                if (item != null && UserTagSelection != null)
+                    UserTagSelection(item, new EventArgs());
+            }
         }
     }
 }

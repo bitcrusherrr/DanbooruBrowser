@@ -89,8 +89,8 @@
             </StackPanel>
         </Button>
 
-        <Controls:LabelTextBox Label="Tags to search for" Height="25" Width="155" Margin="86,7,0,0" Style="{StaticResource MetroTextBox}" 
-                 ToolTip="Enter tags to search for." Text="{Binding TagsBox, Mode=TwoWay}"
+        <Controls:LabelTextBox Name="SearchBox" Label="Tags to search for" Height="25" Width="155" Margin="86,7,0,0" Style="{StaticResource MetroTextBox}" 
+                 ToolTip="Enter tags to search for." Text="{Binding TagsBox, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                  VerticalAlignment="Top" HorizontalAlignment="Left" KeyUp="TextboxKeypres" />
         
         <ListBox Name="ImageList" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Background="{StaticResource MetroBackground}" 

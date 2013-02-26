@@ -72,12 +72,11 @@ namespace booruReader.Preview_Screen
             PreviewPost = post;
             //ImageSource = _post.FullPictureURL;
             ShowTagList = Visibility.Collapsed;
-            char[] splitter = { ' ' };
 
-            string tags = post.Tags.Replace("\n\n", "");
+            string[] splitter = { " ", Environment.NewLine, "\r" };
 
             if (!string.IsNullOrEmpty(post.Tags))
-                _taglist = new ObservableCollection<string>(tags.Split(splitter, StringSplitOptions.RemoveEmptyEntries));
+                _taglist = new ObservableCollection<string>(post.Tags.Split(splitter, StringSplitOptions.RemoveEmptyEntries));
             else
                 _taglist = new ObservableCollection<string>();
         }
