@@ -1,4 +1,5 @@
-This tool grew out from simple wpf exercise into something useable to browse and grab pictures from danbooru like image sites.
+Application to browse and grab images of danbooru-like websites.
+Currently its tested against danbooru, gelbooru, yande.re and konachan.
 
 You can grab compiled exe straight from here and also you will need to grab dbz.UIComponents.dll. 
 Both files will get updated whenever I feel that changes are stable enough.
@@ -10,7 +11,7 @@ Once all features are done I will provide a centralised ClickOnce installer for 
 You can now add login details to the boards, you will have to input salt for the board.
 For example danbooeu has password salt of choujin-steiner--!PASSWORD!--
 booruBrowser looks for !PASSWORD! to put your plaintext password into and convert into hash format.
-Other boards might have different salt, you just nbeed to add the !PASSWORD! to the location where password should go.
+Other boards might have different salt, you just need to add the !PASSWORD! to the location where password should go.
 
 
 Rough list of some things that work and that dont:
