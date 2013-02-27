@@ -1,8 +1,8 @@
-﻿using System.ComponentModel;
+﻿using dbz.UIComponents;
 
 namespace booruReader.Helpers
 {
-    public class MetroMessageBoxVM : INotifyPropertyChanged
+    public class MetroMessageBoxVM : BaseIObservable
     {
         private string _caption;
         private string _message;
@@ -32,19 +32,5 @@ namespace booruReader.Helpers
             Message = message;
             Caption = caption;
         }
-
-        #region INotifyPropertyChanged Members
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void RaisePropertyChanged(string property)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(property));
-            }
-        }
-
-        #endregion
     }
 }

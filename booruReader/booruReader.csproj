@@ -132,6 +132,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Delegates.cs">
+      <DependentUpon>MainScreenVM.cs</DependentUpon>
+    </Compile>
     <Compile Include="Helpers\MetroMessagebox.xaml.cs">
       <DependentUpon>MetroMessagebox.xaml</DependentUpon>
     </Compile>

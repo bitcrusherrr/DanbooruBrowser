@@ -12,18 +12,13 @@ using System.Windows.Shell;
 
 namespace booruReader
 {
-    public class MainScreenVM : INotifyPropertyChanged
+    public partial class MainScreenVM : BaseIObservable
     {
         #region Private variables
         private ObservableCollection<BasePost> _imageList; 
         private ObservableCollection<BasePost> _imageListCache;
         PostsFetcher _postFetcher;
         private string _tagsBox;
-        private DelegateCommand _performFetchCommand;
-        private DelegateCommand _performSelectedImagesDownloadCommand; 
-        private DelegateCommand _clearSelectionCommand;
-        private DelegateCommand _openSettingsCommand;
-        private DelegateCommand _setFavoritesModeCommand;
         private BackgroundWorker _imageLoader;
         private Visibility _progressBarVisibility;
         //private bool _tagsChanged = false;
@@ -112,7 +107,7 @@ namespace booruReader
         /// <summary>
         /// Main view model for the BooruReader window
         /// </summary>
-        public MainScreenVM()
+        public MainScreenVM() : base()
         {
             _imageList = new ObservableCollection<BasePost>();
             _previewList = new List<PrviewScreenView>();
@@ -130,46 +125,11 @@ namespace booruReader
             GlobalSettings.Instance.MainScreenVM = this;
             SettingsOpen = false;
             IsFavoritesMode = false;
-
             _favorites = new FavoriteHandler();
 
+            InitialiseDelegates();
+
             ProgressBarVisibility = Visibility.Hidden;
-
-            _performFetchCommand = new DelegateCommand
-            {
-                CanExecuteDelegate = x => true,
-                ExecuteDelegate = x => FetchImages()
-            };
-
-            _performSelectedImagesDownloadCommand = new DelegateCommand
-            {
-                CanExecuteDelegate = x => !IsFavoritesMode,
-                ExecuteDelegate = x => SaveImages()
-            };
-
-            _clearSelectionCommand = new DelegateCommand
-            {
-                CanExecuteDelegate = x => true,
-                ExecuteDelegate = x => RemoveSelection()
-            };
-
-            _openSettingsCommand = new DelegateCommand
-            {
-                CanExecuteDelegate = x => true,
-                ExecuteDelegate = x => OpenSettings()
-            };
-
-            _setFavoritesModeCommand = new DelegateCommand
-            {
-                CanExecuteDelegate = x => true,
-                ExecuteDelegate = x => 
-                {
-                    if (IsFavoritesMode)
-                        IsFavoritesMode = false;
-                    else
-                        IsFavoritesMode = true;
-                }
-            };
         }
 
         public void TriggerImageLoading()
@@ -249,11 +209,6 @@ namespace booruReader
             }
         }
         #region Commands
-
-        public DelegateCommand SetFavoritesModeCommand { get { return _setFavoritesModeCommand; } }
-
-        public DelegateCommand PerformFetchCommand { get { return _performFetchCommand; } }
-
         private void FetchImages()
         {
             if (!IsFavoritesMode)
@@ -286,8 +241,6 @@ namespace booruReader
 
             RaisePropertyChanged("MainImageList");
         }
-
-        public DelegateCommand PerformSelectedImagesDownloadCommand { get { return _performSelectedImagesDownloadCommand; } }
 
         //NOTE: Hacky test code
         int _itemsDownloadingCount = 0;
@@ -348,8 +301,6 @@ namespace booruReader
             }
         }
 
-        public DelegateCommand ClearSelectionCommand { get { return _clearSelectionCommand; } }
-
         private void RemoveSelection()
         {
             foreach (BasePost post in MainImageList)
@@ -358,8 +309,6 @@ namespace booruReader
                     post.IsSelected = false;
             }
         }
-
-        public DelegateCommand OpenSettingsCommand { get { return _openSettingsCommand; } }
 
         private void OpenSettings()
         {
@@ -460,20 +409,6 @@ namespace booruReader
         }
 
         #endregion
-
-        #endregion
-
-        #region INotifyPropertyChanged Members
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void RaisePropertyChanged(string property)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(property));
-            }
-        }
 
         #endregion
 

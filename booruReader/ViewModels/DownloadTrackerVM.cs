@@ -1,11 +1,10 @@
 ﻿using booruReader.Model;
 using dbz.UIComponents;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 
 namespace booruReader.ViewModels
 {
-    public class DownloadTrackerVM : INotifyPropertyChanged
+    public class DownloadTrackerVM
     {
         private ObservableCollection<BasePost> _downloadsList;
         private DelegateCommand _clearCompletedCommand;
@@ -43,19 +42,5 @@ namespace booruReader.ViewModels
                 }
             }
         }
-
-        #region INotifyPropertyChanged Members
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void RaisePropertyChanged(string property)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(property));
-            }
-        }
-
-        #endregion
     }
 }

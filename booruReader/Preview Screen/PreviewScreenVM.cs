@@ -1,5 +1,6 @@
 ﻿using booruReader.Helpers;
 using booruReader.Model;
+using dbz.UIComponents;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -8,7 +9,7 @@ using System.Windows;
 
 namespace booruReader.Preview_Screen
 {
-    class PreviewScreenVM : INotifyPropertyChanged
+    class PreviewScreenVM : BaseIObservable
     {
         private BasePost _post;
         private string _imageSource;
@@ -99,20 +100,6 @@ namespace booruReader.Preview_Screen
             if (_favoriteWhenReady)
                 _favoriteshandler.AddToFavorites(_post, ImageSource);
         }
-
-        #region INotifyPropertyChanged Members
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void RaisePropertyChanged(string property)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(property));
-            }
-        }
-
-        #endregion
 
         internal void Download()
         {

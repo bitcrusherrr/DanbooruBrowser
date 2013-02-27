@@ -1,14 +1,13 @@
 ﻿using booruReader.Helpers;
+using dbz.UIComponents;
 using System;
-using System.ComponentModel;
-using System.Xml.Serialization;
-using System.Security.Cryptography;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace booruReader.Model
 {
     [Serializable]
-    public class BooruBoard : INotifyPropertyChanged
+    public class BooruBoard : BaseIObservable
     {
         private string _name;
         private string _URL;
@@ -130,19 +129,5 @@ namespace booruReader.Model
 
             return result;
         }
-
-        #region INotifyPropertyChanged Members
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void RaisePropertyChanged(string property)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(property));
-            }
-        }
-
-        #endregion
     }
 }

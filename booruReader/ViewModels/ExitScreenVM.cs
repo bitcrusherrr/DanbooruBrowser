@@ -1,8 +1,8 @@
-﻿using System.ComponentModel;
+﻿using dbz.UIComponents;
 
 namespace booruReader.ViewModels
 {
-    class ExitScreenVM : INotifyPropertyChanged
+    class ExitScreenVM : BaseIObservable
     {
         private bool _carryOnExit = false;
         public bool CarryOnExit
@@ -14,19 +14,5 @@ namespace booruReader.ViewModels
                 RaisePropertyChanged("CarryOnExit");
             }
         }
-
-        #region INotifyPropertyChanged Members
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void RaisePropertyChanged(string property)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(property));
-            }
-        }
-
-        #endregion
     }
 }

@@ -14,7 +14,7 @@ using System.Xml.Serialization;
 
 namespace booruReader.Settings_Screen
 {
-    class SettingsVM : INotifyPropertyChanged
+    class SettingsVM : BaseIObservable
     {
         #region Private variables
         private bool _safeModeBrowsing;
@@ -566,19 +566,5 @@ namespace booruReader.Settings_Screen
             }
             GlobalSettings.Instance.SaveSettings();
         }
-
-        #region INotifyPropertyChanged Members
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void RaisePropertyChanged(string property)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(property));
-            }
-        }
-
-        #endregion
     }
 }

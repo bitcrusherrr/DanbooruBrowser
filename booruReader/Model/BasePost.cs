@@ -1,4 +1,5 @@
 ﻿using booruReader.Helpers;
+using dbz.UIComponents;
 using System;
 using System.ComponentModel;
 using System.IO;
@@ -9,7 +10,7 @@ using System.Windows;
 
 namespace booruReader.Model
 {
-    public class BasePost : INotifyPropertyChanged  
+    public class BasePost : BaseIObservable  
     {
         #region Private Fields
 
@@ -360,19 +361,5 @@ namespace booruReader.Model
             else
                 return string.Empty;
         }
-
-        #region INotifyPropertyChanged Members
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void RaisePropertyChanged(string property)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(property));
-            }
-        }
-
-        #endregion
     }
 }

@@ -1,9 +1,7 @@
 ﻿using booruReader.Helpers;
+using booruReader.Model.Site_Parsers;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Xml;
-using booruReader.Model.Site_Parsers;
 
 namespace booruReader.Model
 {
