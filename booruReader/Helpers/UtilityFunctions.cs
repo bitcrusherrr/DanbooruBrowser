@@ -1,5 +1,9 @@
 ﻿
 using booruReader.Model;
+using System;
+using System.IO;
+using System.Security.Cryptography;
+using System.Text;
 namespace booruReader.Helpers
 {
     public static class UtilityFunctions
@@ -42,5 +46,19 @@ namespace booruReader.Helpers
 
             return returnTags;
         }
+
+        public static string GetMD5HashFromFile(string file)
+        {
+            using (MD5CryptoServiceProvider md5hasher = new MD5CryptoServiceProvider())
+            {
+                using (FileStream stream = File.OpenRead(file))
+                {
+                    byte[] checksum = new MD5CryptoServiceProvider().ComputeHash(stream);
+                    return (BitConverter.ToString(checksum).Replace("-", string.Empty)).ToLower();
+                }
+            }
+        }
+
+
     }
 }

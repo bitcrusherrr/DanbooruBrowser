@@ -17,6 +17,7 @@ namespace booruReader.Helpers
         JSON,
         Gelbooru,
         DanbooruV2,
+        Sankaku,
         INVALID
     };
 }

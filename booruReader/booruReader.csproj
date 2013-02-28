@@ -109,6 +109,9 @@
     <ManifestKeyFile>booruReader_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="HtmlAgilityPack">
+      <HintPath>..\packages\HtmlAgilityPack.1.4.6\lib\Net45\HtmlAgilityPack.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.JScript" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -142,6 +145,7 @@
     <Compile Include="Helpers\UtilityFunctions.cs" />
     <Compile Include="Model\FavoriteHandler.cs" />
     <Compile Include="Model\ImageCache.cs" />
+    <Compile Include="Model\NewDownloads\FolderCache.cs" />
     <Compile Include="Model\Site Parsers\JSONParser.cs" />
     <Compile Include="Model\Site Parsers\SankakuParser.cs" />
     <Compile Include="Model\Site Parsers\XMLParser.cs" />
@@ -227,6 +231,7 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="app.config" />
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

@@ -14,12 +14,8 @@ namespace booruReader.Model.Site_Parsers
             _booruTestMode = testMode;
         }
 
-
-        #region JSON Fetch routines
         internal void GetImages(List<BasePost> ImageList, string tags, int page)
         {
-            const int Limit = 20;
-
             string finalURL = GetRequestURL(tags, page);
 
             try
@@ -29,8 +25,6 @@ namespace booruReader.Model.Site_Parsers
                 String json = "";
                 json = reader.ReadToEnd();
                 reader.Close();
-
-                int actualCount = 0;
 
                 if (json.Length > 4)
                 {
@@ -119,8 +113,6 @@ namespace booruReader.Model.Site_Parsers
                             if (UtilityFunctions.GetUrlExtension(post.FullPictureURL) != null)
                                 ImageList.Add(post);
                         }
-
-                        actualCount++;
                     }
                 }
             }
@@ -131,9 +123,9 @@ namespace booruReader.Model.Site_Parsers
 
             if (!_booruTestMode)
             {
-                GlobalSettings.Instance.PostsOffset = page * Limit;
+                GlobalSettings.Instance.PostsOffset = page * 20;
 
-                //A shitty workaround as json queries don't return total post count from the imageboard
+                //A crappy workaround as json queries don't return total post count from the imageboard
                 if (ImageList.Count > 0)
                 {
                     GlobalSettings.Instance.TotalPosts = GlobalSettings.Instance.TotalPosts + GlobalSettings.Instance.PostsOffset + 1;
@@ -169,6 +161,5 @@ namespace booruReader.Model.Site_Parsers
 
             return returnURL;
         }
-        #endregion
     }
 }

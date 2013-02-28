@@ -1,5 +1,6 @@
 using booruReader.Helpers;
 using booruReader.Model;
+using booruReader.Model.NewDownloads;
 using booruReader.Preview_Screen;
 using dbz.UIComponents;
 using System;
