@@ -95,8 +95,8 @@ namespace booruReader.Model.Site_Parsers
                         }
 
 
-                        //post.FullPictureURL = GetBigImageURL(post.PostId);
-                        post.FullPictureURL = post.PreviewURL;
+                        post.FullPictureURL = GetBigImageURL(post.PostId);
+                        //post.FullPictureURL = post.PreviewURL;
                         post.FileExtension = UtilityFunctions.GetUrlExtension(post.FullPictureURL);
 
 
@@ -153,6 +153,7 @@ namespace booruReader.Model.Site_Parsers
             // Open a connection
             try
             {
+                System.Threading.Thread.Sleep(1000);
                 HttpWebRequest WebRequestObject = (HttpWebRequest)HttpWebRequest.Create(Url);
 
                 // You can also specify additional header values like 
