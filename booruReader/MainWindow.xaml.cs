@@ -3,10 +3,12 @@ using booruReader.ViewModels;
 using dbz.UIComponents.Debug_utils;
 using System;
 using System.Collections.ObjectModel;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Interop;
 
 namespace booruReader
 {
@@ -17,6 +19,23 @@ namespace booruReader
     {
         ObservableCollection<string> testcollection = new ObservableCollection<string>();
         MainScreenVM viewModel;
+        private const int WM_SYSCOMMAND = 0x112;
+        private HwndSource hwndSource;
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        private static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+
+        private enum ResizeDirection
+        {
+            Left = 1,
+            Right = 2,
+            Top = 3,
+            TopLeft = 4,
+            TopRight = 5,
+            Bottom = 6,
+            BottomLeft = 7,
+            BottomRight = 8,
+        }
 
         public MainWindow()
         {
@@ -60,6 +79,65 @@ namespace booruReader
         }
 
         private DateTime m_headerLastClicked;
+
+        #region Window resize handling
+
+        private void HandleTopResize(Object sender, MouseButtonEventArgs e)
+        {
+            SendMessage(hwndSource.Handle, WM_SYSCOMMAND, (IntPtr)(61440 + ResizeDirection.Top), IntPtr.Zero);
+        }
+
+        private void HandleLeftResize(Object sender, MouseButtonEventArgs e)
+        {
+            SendMessage(hwndSource.Handle, WM_SYSCOMMAND, (IntPtr)(61440 + ResizeDirection.Left), IntPtr.Zero);
+        }
+
+        private void HandleBottomResize(Object sender, MouseButtonEventArgs e)
+        {
+            SendMessage(hwndSource.Handle, WM_SYSCOMMAND, (IntPtr)(61440 + ResizeDirection.Bottom), IntPtr.Zero);
+        }
+
+        private void HandleRightResize(Object sender, MouseButtonEventArgs e)
+        {
+            SendMessage(hwndSource.Handle, WM_SYSCOMMAND, (IntPtr)(61440 + ResizeDirection.Right), IntPtr.Zero);
+        }
+
+        private void HandleULBR(Object sender, MouseButtonEventArgs e)
+        {
+
+        }
+
+        private void HandleURBL(Object sender, MouseButtonEventArgs e)
+        {
+
+        }
+
+        private void ResizeMouseTopBottom(object sender, MouseEventArgs e)
+        {
+            Cursor = Cursors.SizeNS;
+        }
+
+        private void ResizeMouseLeftRight(object sender, MouseEventArgs e)
+        {
+            Cursor = Cursors.SizeWE;
+        }
+
+        private void ResizeMouseLeft(object sender, MouseEventArgs e)
+        {
+            Cursor = Cursors.Arrow;
+        }
+
+        private void ResizeMouseULBR(object sender, MouseEventArgs e)
+        {
+            Cursor = Cursors.SizeNWSE;
+        }
+
+        private void ResizeMouseURBL(object sender, MouseEventArgs e)
+        {
+            Cursor = Cursors.SizeNESW;
+        }
+
+        #endregion
 
         private void HandleHeaderPreviewMouseDown(Object sender, MouseButtonEventArgs e)
         {
@@ -133,6 +211,8 @@ namespace booruReader
                 this.WindowState = System.Windows.WindowState.Normal;
         }
 
+        #region Scrollview handling
+
         private void ShowVisibleItems(object sender)
         {
             var scrollViewer = (FrameworkElement)sender;
@@ -174,6 +254,8 @@ namespace booruReader
         {
             ShowVisibleItems(sender);
         }
+
+        #endregion
 
         private void TextboxKeypres(object sender, KeyEventArgs e)
         {
@@ -238,6 +320,11 @@ namespace booruReader
             this.Hide();
             viewModel.Closing();
             this.Close();
+        }
+
+        private void Window_Loaded_1(object sender, RoutedEventArgs e)
+        {
+            hwndSource = PresentationSource.FromVisual((Visual)sender) as HwndSource;
         }
 
     }

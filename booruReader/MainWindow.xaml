@@ -12,66 +12,63 @@
         Background="{x:Null}"
         BorderThickness="1"
         BorderBrush="#FF3F3F3F"
-        WindowStyle="None"
+        WindowStyle="None" Loaded="Window_Loaded_1"
         ResizeMode="CanResizeWithGrip"
         Title="booruBrowser" Height="300" Width="525" MinHeight="300" MinWidth="420">
-    <Grid Name="MainGrid">
-        <Grid.Resources>
-            <Helpers:ImageConverter x:Key="imageConverter"/>
-        </Grid.Resources>
-        <Border
+    <Grid>
+        <Rectangle Fill="{StaticResource MetroBackground}"/>
+        <Grid Name="MainGrid" Margin="1.5">
+            <Grid.Resources>
+                <Helpers:ImageConverter x:Key="imageConverter"/>
+            </Grid.Resources>
+            
+            <Border
              x:Name="m_edgeBorder"
              x:FieldModifier="private"
              Margin="0"
              Background="{StaticResource MetroBackground}"
              IsHitTestVisible="False"
              IsEnabled="True">
-            <Border.Effect>
-                <DropShadowEffect
-                   Opacity="0.999"
-                   BlurRadius="16" />
-            </Border.Effect>
-            
-        </Border>
-        
-        <Rectangle
+            </Border>
+
+            <Rectangle
              Height="38"
              VerticalAlignment="Top"
              Fill="{StaticResource MetroBackground}"
              PreviewMouseDown="HandleHeaderPreviewMouseDown" />
-        <Rectangle Height="3" VerticalAlignment="Top" PreviewMouseDown="HandleHeaderPreviewMouseDown" Fill="{StaticResource DatazbytesGreen}" />
+            <Rectangle Height="3" VerticalAlignment="Top" PreviewMouseDown="HandleHeaderPreviewMouseDown" Fill="{StaticResource DatazbytesGreen}" />
 
-        <Button
+            <Button
              HorizontalAlignment="Right"
              Margin="0,8,8,0"
              VerticalAlignment="Top"
              ToolTip="Exit"
              Style="{StaticResource Metro}"
              Click="ExitButtonClick" Height="16" Width="16">
-            <Image Source="Images\Toolbar\exit.png" Height="12" Width="12"/>
-        </Button>
+                <Image Source="Images\Toolbar\exit.png" Height="12" Width="12"/>
+            </Button>
 
-        <Button
+            <Button
              VerticalAlignment="Top"
              HorizontalAlignment="Right"
              Margin="0,8,28,0"
              Style="{StaticResource Metro}"
              ToolTip="Maximise"
              Click="MaximiseButtonClick"  Height="16" Width="16">
-            <Image Source="Images\Toolbar\maximise.png" Height="12" Width="12" />
-        </Button>
+                <Image Source="Images\Toolbar\maximise.png" Height="12" Width="12" />
+            </Button>
 
-        <Button
+            <Button
              HorizontalAlignment="Right"
              Margin="0,8,48,0"
              VerticalAlignment="Top"
              Style="{StaticResource Metro}"
              ToolTip="Minimize"
              Click="MinimiseButtonClick" Height="16" Width="16">
-            <Image Source="Images\Toolbar\minimise.png" Height="12" Width="12"/>
-        </Button>
+                <Image Source="Images\Toolbar\minimise.png" Height="12" Width="12"/>
+            </Button>
 
-        <Button
+            <Button
              Name="SettingsButton"
              HorizontalAlignment="Left"
              Margin="0,3,48,0"
@@ -83,85 +80,104 @@
              ToolTip="Settings"
              Width="80"
              Command="{Binding OpenSettingsCommand}">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Image Source="Images\Toolbar\settings.png" Height="20" Width="16" Margin="6,1,0,0"/>
-                <TextBlock FontWeight="Bold" FontSize="12" Height="14" Width="60">SETTINGS</TextBlock>
-            </StackPanel>
-        </Button>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Image Source="Images\Toolbar\settings.png" Height="20" Width="16" Margin="6,1,0,0"/>
+                    <TextBlock FontWeight="Bold" FontSize="12" Height="14" Width="60">SETTINGS</TextBlock>
+                </StackPanel>
+            </Button>
 
-        <Controls:LabelTextBox Name="SearchBox" Label="Tags to search for" Height="25" Width="155" Margin="86,7,0,0" Style="{StaticResource MetroTextBox}" 
+            <Controls:LabelTextBox Name="SearchBox" Label="Tags to search for" Height="25" Width="155" Margin="86,7,0,0" Style="{StaticResource MetroTextBox}" 
                  ToolTip="Enter tags to search for." Text="{Binding TagsBox, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                  VerticalAlignment="Top" HorizontalAlignment="Left" KeyUp="TextboxKeypres" />
-        
-        <ListBox Name="ImageList" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Background="{StaticResource MetroBackground}" 
+
+            <ListBox Name="ImageList" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Background="{StaticResource MetroBackground}" 
                  BorderBrush="{StaticResource MetroBackground}" SelectionMode="Extended" Style="{StaticResource MetroListBox}" 
                  ItemsSource="{Binding MainImageList}" ScrollViewer.ScrollChanged="ImageList_ScrollChanged_1"
                  IsSynchronizedWithCurrentItem="True" Margin="8,38,8,8">
-            <ListBox.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <WrapPanel />
-                </ItemsPanelTemplate>
-            </ListBox.ItemsPanel>
-            <ListBox.ItemContainerStyle>
-                <Style TargetType="{x:Type ListBoxItem}">
-                    <Setter Property="IsSelected" Value="{Binding Path=IsSelected, Mode=TwoWay}"/>
-                </Style>
-            </ListBox.ItemContainerStyle>
-            
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Margin="1">
-                        <Border Width="150" Height="150" BorderThickness="2" BorderBrush="#52524B">
-                            <Grid ToolTip="{Binding Path=Dimensions}" Style="{StaticResource GridStyle}">
-                                <Image Source="{Binding Path=PreviewURL, Converter={StaticResource imageConverter}}" Stretch="Uniform"  MouseDown="Image_MouseDown" 
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel />
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListBoxItem}">
+                        <Setter Property="IsSelected" Value="{Binding Path=IsSelected, Mode=TwoWay}"/>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Margin="1">
+                            <Border Width="150" Height="150" BorderThickness="2" BorderBrush="#52524B">
+                                <Grid ToolTip="{Binding Path=Dimensions}" Style="{StaticResource GridStyle}">
+                                    <Image Source="{Binding Path=PreviewURL, Converter={StaticResource imageConverter}}" Stretch="Uniform"  MouseDown="Image_MouseDown" 
                                        SnapsToDevicePixels="True" RenderOptions.BitmapScalingMode="LowQuality"/>
-                                <ProgressBar VerticalAlignment="Top" Height="3" Template="{StaticResource DeterminedProgressBar}" 
+                                    <ProgressBar VerticalAlignment="Top" Height="3" Template="{StaticResource DeterminedProgressBar}" 
                                              Value="{Binding Path=DownloadProgress}" Visibility="{Binding Path=ProgressBarVisible}"></ProgressBar>
-                            </Grid>
-                        </Border>
-                    </StackPanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+                                </Grid>
+                            </Border>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
 
-        <StackPanel Orientation="Horizontal" Margin="250,8,75,0" Height="25" VerticalAlignment="Top">
-        
-            <Button ToolTip="Fetch Posts" Margin="0,0,0,0" Height="23" Width="23" VerticalAlignment="Top" 
+            <StackPanel Orientation="Horizontal" Margin="250,8,75,0" Height="25" VerticalAlignment="Top">
+
+                <Button ToolTip="Fetch Posts" Margin="0,0,0,0" Height="23" Width="23" VerticalAlignment="Top" 
                    Command="{Binding PerformFetchCommand}" HorizontalAlignment="Left" Style="{StaticResource Metro}">
-                <Image Source="Images\Toolbar\search.png"/>
-            </Button>
-        
-            <Button ToolTip="Download Selected" Margin="5,0,0,0" Height="23" Width="23" VerticalAlignment="Top" 
+                    <Image Source="Images\Toolbar\search.png"/>
+                </Button>
+
+                <Button ToolTip="Download Selected" Margin="5,0,0,0" Height="23" Width="23" VerticalAlignment="Top" 
                     Command="{Binding PerformSelectedImagesDownloadCommand}" HorizontalAlignment="Left" Style="{StaticResource Metro}">
-                <Image Source="Images\Toolbar\download.png"/>
-            </Button>
-        
-            <Button ToolTip="Remove Selection" Margin="5,0,0,0" Height="23" Width="23" VerticalAlignment="Top" 
+                    <Image Source="Images\Toolbar\download.png"/>
+                </Button>
+
+                <Button ToolTip="Remove Selection" Margin="5,0,0,0" Height="23" Width="23" VerticalAlignment="Top" 
                     Command="{Binding ClearSelectionCommand}" HorizontalAlignment="Left" Style="{StaticResource Metro}">
-                <Image Source="Images\Toolbar\cancel.png"/>
-            </Button> 
-        
-            <Button ToolTip="Download progress" Margin="5,0,0,0" Height="23" Width="23" VerticalAlignment="Top" 
+                    <Image Source="Images\Toolbar\cancel.png"/>
+                </Button>
+
+                <Button ToolTip="Download progress" Margin="5,0,0,0" Height="23" Width="23" VerticalAlignment="Top" 
                     HorizontalAlignment="Left" Style="{StaticResource Metro}" Click="Tracker_Button_Click">
-                <Image Source="Images\Toolbar\list.png"/>
-            </Button>
+                    <Image Source="Images\Toolbar\list.png"/>
+                </Button>
 
-            <Button ToolTip="Favorites" Margin="5,0,0,0" Height="23" Width="23" VerticalAlignment="Top" 
+                <Button ToolTip="Favorites" Margin="5,0,0,0" Height="23" Width="23" VerticalAlignment="Top" 
                     HorizontalAlignment="Left" Style="{StaticResource Metro}" Command="{Binding SetFavoritesModeCommand}">
-                <Image Source="Images\Toolbar\heart.png"/>
-            </Button>
+                    <Image Source="Images\Toolbar\heart.png"/>
+                </Button>
 
-        </StackPanel>
+            </StackPanel>
 
-        
 
-        <ProgressBar Visibility="{Binding ProgressBarVisibility}" Name="MainScreenProgressBar" Height="3" VerticalAlignment="Top" Template="{StaticResource CustomProgressBar}" 
+
+            <ProgressBar Visibility="{Binding ProgressBarVisibility}" Name="MainScreenProgressBar" Height="3" VerticalAlignment="Top" Template="{StaticResource CustomProgressBar}" 
                      IsIndeterminate="True" />
-       
-        <Grid IsEnabled="{Binding SettingsOpen}" Style="{StaticResource GridStyle}" Margin="0,0,0,0">
-            <Grid Opacity="0.5" Background="{StaticResource MetroBackground}"></Grid>
-            <Settings:SettingsUserControl Width="300" />
+
+            <Grid IsEnabled="{Binding SettingsOpen}" Style="{StaticResource GridStyle}" Margin="0,0,0,0">
+                <Grid Opacity="0.5" Background="{StaticResource MetroBackground}"></Grid>
+                <Settings:SettingsUserControl Width="300" />
+            </Grid>
         </Grid>
-       
+        
+        <Rectangle VerticalAlignment="Top" Height="1.5" Fill="{StaticResource DatazbytesGray}" 
+                   PreviewMouseDown="HandleTopResize" MouseEnter="ResizeMouseTopBottom" MouseLeave="ResizeMouseLeft"/>
+        <Rectangle VerticalAlignment="Bottom" Height="1.5" Fill="{StaticResource DatazbytesGray}" 
+                   PreviewMouseDown="HandleBottomResize" MouseEnter="ResizeMouseTopBottom" MouseLeave="ResizeMouseLeft"/>
+        <Rectangle HorizontalAlignment="Left" Width="1.5" Fill="{StaticResource DatazbytesGray}" 
+                   PreviewMouseDown="HandleLeftResize" MouseEnter="ResizeMouseLeftRight" MouseLeave="ResizeMouseLeft"/>
+        <Rectangle HorizontalAlignment="Right" Width="1.5" Fill="{StaticResource DatazbytesGray}" 
+                   PreviewMouseDown="HandleRightResize" MouseEnter="ResizeMouseLeftRight" MouseLeave="ResizeMouseLeft"/>
+
+        <Rectangle HorizontalAlignment="Right" VerticalAlignment="Top" Width="5" Height="5" Fill="Transparent" 
+                   PreviewMouseDown="HandleURBL" MouseEnter="ResizeMouseURBL" MouseLeave="ResizeMouseLeft"/>
+        <Rectangle HorizontalAlignment="Left" VerticalAlignment="Top" Width="5" Height="5" Fill="Transparent" 
+                   PreviewMouseDown="HandleULBR" MouseEnter="ResizeMouseULBR" MouseLeave="ResizeMouseLeft"/>
+
+        <Rectangle HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="2" Height="5" Fill="Transparent" 
+                   PreviewMouseDown="HandleURBL" MouseEnter="ResizeMouseURBL" MouseLeave="ResizeMouseLeft"/>
+        <Rectangle HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="2" Height="5" Fill="Transparent" 
+                   PreviewMouseDown="HandleULBR" MouseEnter="ResizeMouseULBR" MouseLeave="ResizeMouseLeft"/>
     </Grid>
 </Window>
