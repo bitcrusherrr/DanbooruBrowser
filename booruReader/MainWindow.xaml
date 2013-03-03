@@ -161,23 +161,23 @@
             </Grid>
         </Grid>
         
-        <Rectangle VerticalAlignment="Top" Height="1.5" Fill="{StaticResource DatazbytesGray}" 
-                   PreviewMouseDown="HandleTopResize" MouseEnter="ResizeMouseTopBottom" MouseLeave="ResizeMouseLeft"/>
-        <Rectangle VerticalAlignment="Bottom" Height="1.5" Fill="{StaticResource DatazbytesGray}" 
-                   PreviewMouseDown="HandleBottomResize" MouseEnter="ResizeMouseTopBottom" MouseLeave="ResizeMouseLeft"/>
-        <Rectangle HorizontalAlignment="Left" Width="1.5" Fill="{StaticResource DatazbytesGray}" 
-                   PreviewMouseDown="HandleLeftResize" MouseEnter="ResizeMouseLeftRight" MouseLeave="ResizeMouseLeft"/>
-        <Rectangle HorizontalAlignment="Right" Width="1.5" Fill="{StaticResource DatazbytesGray}" 
-                   PreviewMouseDown="HandleRightResize" MouseEnter="ResizeMouseLeftRight" MouseLeave="ResizeMouseLeft"/>
+        <Rectangle Name="TopMargin" VerticalAlignment="Top" Height="1.5" Fill="{StaticResource DatazbytesGray}" 
+                   PreviewMouseDown="HandleResize" MouseEnter="ResizeMouseEnter" MouseLeave="ResizeMouseLeft"/>
+        <Rectangle Name="BottomMargin" VerticalAlignment="Bottom" Height="1.5" Fill="{StaticResource DatazbytesGray}" 
+                   PreviewMouseDown="HandleResize" MouseEnter="ResizeMouseEnter" MouseLeave="ResizeMouseLeft"/>
+        <Rectangle Name="LeftMargin" HorizontalAlignment="Left" Width="1.5" Fill="{StaticResource DatazbytesGray}" 
+                   PreviewMouseDown="HandleResize" MouseEnter="ResizeMouseEnter" MouseLeave="ResizeMouseLeft"/>
+        <Rectangle Name="RightMargin"  HorizontalAlignment="Right" Width="1.5" Fill="{StaticResource DatazbytesGray}" 
+                   PreviewMouseDown="HandleResize" MouseEnter="ResizeMouseEnter" MouseLeave="ResizeMouseLeft"/>
 
-        <Rectangle HorizontalAlignment="Right" VerticalAlignment="Top" Width="5" Height="5" Fill="Transparent" 
-                   PreviewMouseDown="HandleURBL" MouseEnter="ResizeMouseURBL" MouseLeave="ResizeMouseLeft"/>
-        <Rectangle HorizontalAlignment="Left" VerticalAlignment="Top" Width="5" Height="5" Fill="Transparent" 
-                   PreviewMouseDown="HandleULBR" MouseEnter="ResizeMouseULBR" MouseLeave="ResizeMouseLeft"/>
+        <Rectangle Name="TopRight"  HorizontalAlignment="Right" VerticalAlignment="Top" Width="5" Height="5" Fill="Transparent" 
+                   PreviewMouseDown="HandleResize" MouseEnter="ResizeMouseEnter" MouseLeave="ResizeMouseLeft"/>
+        <Rectangle Name="TopLeft" HorizontalAlignment="Left" VerticalAlignment="Top" Width="5" Height="5" Fill="Transparent" 
+                   PreviewMouseDown="HandleResize" MouseEnter="ResizeMouseEnter" MouseLeave="ResizeMouseLeft"/>
 
-        <Rectangle HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="2" Height="5" Fill="Transparent" 
-                   PreviewMouseDown="HandleURBL" MouseEnter="ResizeMouseURBL" MouseLeave="ResizeMouseLeft"/>
-        <Rectangle HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="2" Height="5" Fill="Transparent" 
-                   PreviewMouseDown="HandleULBR" MouseEnter="ResizeMouseULBR" MouseLeave="ResizeMouseLeft"/>
+        <Rectangle Name="BottomLeft" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="5" Height="5" Fill="Transparent" 
+                   PreviewMouseDown="HandleResize" MouseEnter="ResizeMouseEnter" MouseLeave="ResizeMouseLeft"/>
+        <Rectangle Name="BottomRight"  HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="5" Height="5" Fill="Transparent" 
+                   PreviewMouseDown="HandleResize" MouseEnter="ResizeMouseEnter" MouseLeave="ResizeMouseLeft"/>
     </Grid>
 </Window>

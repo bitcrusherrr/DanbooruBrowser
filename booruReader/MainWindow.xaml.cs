@@ -82,59 +82,81 @@ namespace booruReader
 
         #region Window resize handling
 
-        private void HandleTopResize(Object sender, MouseButtonEventArgs e)
+        private void HandleResize(Object sender, MouseButtonEventArgs e)
         {
-            SendMessage(hwndSource.Handle, WM_SYSCOMMAND, (IntPtr)(61440 + ResizeDirection.Top), IntPtr.Zero);
+            var rectangle = sender as System.Windows.Shapes.Rectangle;
+
+            if (rectangle != null)
+            {
+                switch (rectangle.Name)
+                {
+                    case "TopMargin":
+                        SendMessage(hwndSource.Handle, WM_SYSCOMMAND, (IntPtr)(61440 + ResizeDirection.Top), IntPtr.Zero);
+                        break;
+                    case "BottomMargin":
+                        SendMessage(hwndSource.Handle, WM_SYSCOMMAND, (IntPtr)(61440 + ResizeDirection.Bottom), IntPtr.Zero);
+                        break;
+                    case "LeftMargin":
+                        SendMessage(hwndSource.Handle, WM_SYSCOMMAND, (IntPtr)(61440 + ResizeDirection.Left), IntPtr.Zero);
+                        break;
+                    case "RightMargin":
+                        SendMessage(hwndSource.Handle, WM_SYSCOMMAND, (IntPtr)(61440 + ResizeDirection.Right), IntPtr.Zero);
+                        break;
+                    case "BottomRight":
+                        SendMessage(hwndSource.Handle, WM_SYSCOMMAND, (IntPtr)(61440 + ResizeDirection.BottomRight), IntPtr.Zero);
+                        break;
+                    case "BottomLeft":
+                        SendMessage(hwndSource.Handle, WM_SYSCOMMAND, (IntPtr)(61440 + ResizeDirection.BottomLeft), IntPtr.Zero);
+                        break;
+                    case "TopRight":
+                        SendMessage(hwndSource.Handle, WM_SYSCOMMAND, (IntPtr)(61440 + ResizeDirection.TopRight), IntPtr.Zero);
+                        break;
+                    case "TopLeft":
+                        SendMessage(hwndSource.Handle, WM_SYSCOMMAND, (IntPtr)(61440 + ResizeDirection.TopLeft), IntPtr.Zero);
+                        break;
+                }
+            }
         }
 
-        private void HandleLeftResize(Object sender, MouseButtonEventArgs e)
+        private void ResizeMouseEnter(object sender, MouseEventArgs e)
         {
-            SendMessage(hwndSource.Handle, WM_SYSCOMMAND, (IntPtr)(61440 + ResizeDirection.Left), IntPtr.Zero);
-        }
+            var rectangle = sender as System.Windows.Shapes.Rectangle;
 
-        private void HandleBottomResize(Object sender, MouseButtonEventArgs e)
-        {
-            SendMessage(hwndSource.Handle, WM_SYSCOMMAND, (IntPtr)(61440 + ResizeDirection.Bottom), IntPtr.Zero);
-        }
-
-        private void HandleRightResize(Object sender, MouseButtonEventArgs e)
-        {
-            SendMessage(hwndSource.Handle, WM_SYSCOMMAND, (IntPtr)(61440 + ResizeDirection.Right), IntPtr.Zero);
-        }
-
-        private void HandleULBR(Object sender, MouseButtonEventArgs e)
-        {
-
-        }
-
-        private void HandleURBL(Object sender, MouseButtonEventArgs e)
-        {
-
-        }
-
-        private void ResizeMouseTopBottom(object sender, MouseEventArgs e)
-        {
-            Cursor = Cursors.SizeNS;
-        }
-
-        private void ResizeMouseLeftRight(object sender, MouseEventArgs e)
-        {
-            Cursor = Cursors.SizeWE;
+            if (rectangle != null)
+            {
+                switch (rectangle.Name)
+                {
+                    case "TopMargin":
+                        Cursor = Cursors.SizeNS;
+                        break;
+                    case "BottomMargin":
+                        Cursor = Cursors.SizeNS;
+                        break;
+                    case "LeftMargin":
+                        Cursor = Cursors.SizeWE;
+                        break;
+                    case "RightMargin":
+                        Cursor = Cursors.SizeWE;
+                        break;
+                    case "BottomRight":
+                        Cursor = Cursors.SizeNWSE;
+                        break;
+                    case "BottomLeft":
+                        Cursor = Cursors.SizeNESW;
+                        break;
+                    case "TopRight":
+                        Cursor = Cursors.SizeNESW;
+                        break;
+                    case "TopLeft":
+                        Cursor = Cursors.SizeNWSE;
+                        break;
+                }
+            }
         }
 
         private void ResizeMouseLeft(object sender, MouseEventArgs e)
         {
             Cursor = Cursors.Arrow;
-        }
-
-        private void ResizeMouseULBR(object sender, MouseEventArgs e)
-        {
-            Cursor = Cursors.SizeNWSE;
-        }
-
-        private void ResizeMouseURBL(object sender, MouseEventArgs e)
-        {
-            Cursor = Cursors.SizeNESW;
         }
 
         #endregion
@@ -145,13 +167,13 @@ namespace booruReader
             if (Mouse.LeftButton == MouseButtonState.Pressed)
             {
                 //Unmaximise window
-                if (this.WindowState != System.Windows.WindowState.Normal)
+                if (WindowState != System.Windows.WindowState.Normal)
                 {
-                    this.WindowState = System.Windows.WindowState.Normal;
+                    WindowState = System.Windows.WindowState.Normal;
 
                     //Move window to the cursor
-                    this.Left = Mouse.GetPosition(this).X - 15;
-                    this.Top = Mouse.GetPosition(this).Y - 15;
+                    Left = Mouse.GetPosition(this).X - 15;
+                    Top = Mouse.GetPosition(this).Y - 15;
                 }
 
                 DragMove();
@@ -325,6 +347,11 @@ namespace booruReader
         private void Window_Loaded_1(object sender, RoutedEventArgs e)
         {
             hwndSource = PresentationSource.FromVisual((Visual)sender) as HwndSource;
+        }
+
+        private void Top_MouseEnter_1(object sender, MouseEventArgs e)
+        {
+
         }
 
     }
