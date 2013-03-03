@@ -22,15 +22,6 @@
                 <Helpers:ImageConverter x:Key="imageConverter"/>
             </Grid.Resources>
             
-            <Border
-             x:Name="m_edgeBorder"
-             x:FieldModifier="private"
-             Margin="0"
-             Background="{StaticResource MetroBackground}"
-             IsHitTestVisible="False"
-             IsEnabled="True">
-            </Border>
-
             <Rectangle
              Height="38"
              VerticalAlignment="Top"
