@@ -84,7 +84,8 @@ namespace booruReader.Model.Site_Parsers
                         string tagsAndRating = _image.GetAttributeValue("title", "");
                         if (!string.IsNullOrEmpty(tagsAndRating))
                         {
-                            post.Tags = tagsAndRating.Substring(0, tagsAndRating.IndexOf("rating"));
+                            // crashes when string is "Rating" (note capital R)
+                            post.Tags = tagsAndRating.Substring(0, tagsAndRating.IndexOf("rating",StringComparison.OrdinalIgnoreCase));
 
                             if (tagsAndRating.ToLower().Contains("explicit"))
                                 post.ImageRating = PostRating.Explicit;
@@ -177,7 +178,7 @@ namespace booruReader.Model.Site_Parsers
             //Danbooru api based sites
             if (GlobalSettings.Instance.CurrentBooru.ProviderType == ProviderAccessType.Sankaku || GlobalSettings.Instance.CurrentBooru.URL.ToLower().Contains("sankaku"))
             {
-                returnURL = GlobalSettings.Instance.CurrentBooru.URL + "post/index"; //+ tags from searchfield
+                returnURL = GlobalSettings.Instance.CurrentBooru.URL + "post/index.json"; //+ tags from searchfield
                 if (!string.IsNullOrEmpty(GlobalSettings.Instance.CurrentBooru.UserName) && !string.IsNullOrEmpty(GlobalSettings.Instance.CurrentBooru.Password))
                     returnURL = string.Format(returnURL + "?login=" + GlobalSettings.Instance.CurrentBooru.UserName + "&password_hash=" + GlobalSettings.Instance.CurrentBooru.Password + "&page=" + page + "&tags=" + UtilityFunctions.FormTags(tags));
                 else
