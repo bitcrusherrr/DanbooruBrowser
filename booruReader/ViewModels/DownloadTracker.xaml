@@ -45,6 +45,14 @@
                                                     </Border>
                                                 </ProgressBar.ToolTip>
                                             </ProgressBar>
+                                            <ProgressBar Template="{StaticResource FailedProgressBar}" Margin="1"  Value="{Binding Path=DownloadProgress}" 
+                                                 Visibility="{Binding Path=FailedProgressBarVisible}" Height="50" MinWidth="235" HorizontalAlignment="Stretch">
+                                                <ProgressBar.ToolTip>
+                                                    <Border BorderBrush="{StaticResource DatazbytesGray}" BorderThickness="1">
+                                                        <Image Source="{Binding Path=URLStore}" Stretch="Uniform" RenderOptions.BitmapScalingMode="LowQuality"/>
+                                                    </Border>
+                                                </ProgressBar.ToolTip>
+                                            </ProgressBar>
                                             <TextBlock Text="{Binding Path=DownloadProgress}" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"/>
                                         </Grid>
                                     </Border>

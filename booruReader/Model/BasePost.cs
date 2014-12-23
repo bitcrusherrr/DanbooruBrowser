@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Windows;
+using System.Collections.Generic;
 
 namespace booruReader.Model
 {
@@ -20,6 +21,7 @@ namespace booruReader.Model
         private bool _isSelected = false;
         private string _dimensions;
         private Visibility _progressBarVisibility;
+        private Visibility _failedBarVisibility;
         private int _downloadProgress = 0;
         private bool _isVisible = true;
         private string urlStore;
@@ -122,6 +124,19 @@ namespace booruReader.Model
             {
                 _progressBarVisibility = value;
                 RaisePropertyChanged("ProgressBarVisible");
+            }
+        }
+
+        public Visibility FailedProgressBarVisible
+        {
+            get
+            {
+                return _failedBarVisibility;
+            }
+            set
+            {
+                _failedBarVisibility = value;
+                RaisePropertyChanged("FailedProgressBarVisible");
             }
         }
 
@@ -257,12 +272,15 @@ namespace booruReader.Model
                 File.Copy(imageLocation, SaveLocation, false);
 
                 ProgressBarVisible = Visibility.Visible;
+                FailedProgressBarVisible = Visibility.Hidden;
+
                 DownloadProgress = 100;
             }
             else if (File.Exists(SaveLocation) && _downloadClient == null)
             {
                 //File already exists set the bar to visible and full
                 ProgressBarVisible = Visibility.Visible;
+                FailedProgressBarVisible = Visibility.Hidden;
                 DownloadProgress = 100;
             }
         }
@@ -282,6 +300,7 @@ namespace booruReader.Model
                 if (!File.Exists(SaveLocation) && Directory.Exists(GlobalSettings.Instance.SavePath))
                 {
                     ProgressBarVisible = Visibility.Visible;
+                    FailedProgressBarVisible = Visibility.Hidden;
                     _downloadClient = new WebClient();
                     _downloadClient.DownloadProgressChanged += client_DownloadProgressChanged;
                     _downloadClient.DownloadFileAsync(new Uri(FullPictureURL), SaveLocation);
@@ -291,6 +310,7 @@ namespace booruReader.Model
                 {
                     //File already exists set the bar to visible and full
                     ProgressBarVisible = Visibility.Visible;
+                    FailedProgressBarVisible = Visibility.Hidden;
                     DownloadProgress = 100;
 
                     if (DownloadCompleted != null)
@@ -306,6 +326,13 @@ namespace booruReader.Model
 
         void _downloadClient_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
         {
+            if (e.Error != null)
+            {
+                DownloadProgress = 100;
+                ProgressBarVisible = Visibility.Collapsed;
+                FailedProgressBarVisible = Visibility.Visible;
+                File.Delete(SaveLocation);
+            }
             if (DownloadCompleted != null)
                 DownloadCompleted(this, new EventArgs());
         }

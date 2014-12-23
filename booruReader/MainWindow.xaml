@@ -105,6 +105,8 @@
                                        SnapsToDevicePixels="True" RenderOptions.BitmapScalingMode="LowQuality"/>
                                     <ProgressBar VerticalAlignment="Top" Height="3" Template="{StaticResource DeterminedProgressBar}" 
                                              Value="{Binding Path=DownloadProgress}" Visibility="{Binding Path=ProgressBarVisible}"></ProgressBar>
+                                    <ProgressBar VerticalAlignment="Top" Height="3" Template="{StaticResource FailedProgressBar}" 
+                                             Value="{Binding Path=DownloadProgress}" Visibility="{Binding Path=FailedProgressBarVisible}"></ProgressBar>
                                 </Grid>
                             </Border>
                         </StackPanel>
@@ -141,9 +143,8 @@
 
             </StackPanel>
 
-
-
-            <ProgressBar Visibility="{Binding ProgressBarVisibility}" Name="MainScreenProgressBar" Height="3" VerticalAlignment="Top" Template="{StaticResource CustomProgressBar}" 
+            <ProgressBar Visibility="{Binding ProgressBarVisibility}" Name="MainScreenProgressBar" 
+                         Height="3" VerticalAlignment="Top" Template="{StaticResource CustomProgressBar}" 
                      IsIndeterminate="True" />
 
             <Grid IsEnabled="{Binding SettingsOpen}" Style="{StaticResource GridStyle}" Margin="0,0,0,0">

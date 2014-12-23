@@ -167,6 +167,37 @@
         </Grid>
     </ControlTemplate>
 
+    <ControlTemplate x:Key="FailedProgressBar" TargetType="ProgressBar" >
+        <ControlTemplate.Resources>
+            <Style BasedOn="{StaticResource MetroTooltip}" TargetType="{x:Type ToolTip}" />
+        </ControlTemplate.Resources>
+        <Grid Name="TemplateRoot" SnapsToDevicePixels="True">
+            <Rectangle RadiusX="2" RadiusY="2" Fill="Transparent" />
+            <Border CornerRadius="0,0,0,0" Margin="1,1,1,1">
+                <Border.Background>
+                    <SolidColorBrush Color="Transparent"/>
+                </Border.Background>
+            </Border>
+            <Border BorderThickness="0,0,0,0" BorderBrush="Transparent" Margin="0">
+                <Border.Background>
+                    <SolidColorBrush Color="Transparent"/>
+                </Border.Background>
+            </Border>
+            <Rectangle Name="PART_Track" Margin="0" />
+            <Decorator Name="PART_Indicator" Margin="0" HorizontalAlignment="Left">
+                <Grid Name="Foreground">
+                    <Rectangle Name="Indicator" Fill="{StaticResource DatazbytesRed}"/>
+                    <Grid Name="Animation" ClipToBounds="True">
+                        <Border Name="PART_GlowRect" Width="100"  Margin="0,0,0,0" HorizontalAlignment="Left" Background="{StaticResource DatazbytesRed}"/>
+                    </Grid>
+                    <Grid Name="Overlay">
+                    </Grid>
+                </Grid>
+            </Decorator>
+            <Border BorderThickness="0" CornerRadius="0,0,0,0" BorderBrush="Transparent" />
+        </Grid>
+    </ControlTemplate>
+
 
     <!--Checkbox style-->
     <Style x:Key="MetroCheckbox" TargetType="{x:Type CheckBox}">
