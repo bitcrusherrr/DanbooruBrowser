@@ -128,7 +128,7 @@ namespace booruReader.Preview_Screen
 
         protected void HandleDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if (TagList.SelectedItem != null)
+            if (TagList.SelectedItem != null && TagList.SelectedIndex >= 3) // assumes first 3 entries are resolution+labels
             {
                 var item = TagList.SelectedItem as string;
 

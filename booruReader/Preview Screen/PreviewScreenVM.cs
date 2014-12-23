@@ -13,11 +13,10 @@ namespace booruReader.Preview_Screen
     {
         private BasePost _post;
         private string _imageSource;
-        private ObservableCollection<string> _taglist;
         private Visibility _showTaglist;
         private bool CopyWhenReady = false;
-        private ObservableCollection<BasePost> _dowloadList;
-        public ObservableCollection<string> TagList { get { return _taglist; } }
+        private ObservableCollection<BasePost> _downloadList;
+        public ObservableCollection<string> TagList { get; set; }
         private FavoriteHandler _favoriteshandler;
         private bool _favoriteWhenReady = false;
         public event EventHandler AddedImageToFavorites;
@@ -62,10 +61,10 @@ namespace booruReader.Preview_Screen
             }
         }
 
-        public PreviewScreenVM(BasePost post, ObservableCollection<BasePost> dowloadList)
+        public PreviewScreenVM(BasePost post, ObservableCollection<BasePost> downloadList)
         {
             _post = post;
-            _dowloadList = dowloadList;
+            _downloadList = downloadList;
             ImageCache cache = new ImageCache();
             _favoriteshandler = new FavoriteHandler();
             ImageSource = cache.GetImage(post.FileMD, post.FullPictureURL, LateFilePath);
@@ -74,12 +73,12 @@ namespace booruReader.Preview_Screen
             //ImageSource = _post.FullPictureURL;
             ShowTagList = Visibility.Collapsed;
 
-            string[] splitter = { " ", Environment.NewLine, "\r" };
-
-            if (!string.IsNullOrEmpty(post.Tags))
-                _taglist = new ObservableCollection<string>(post.Tags.Split(splitter, StringSplitOptions.RemoveEmptyEntries));
-            else
-                _taglist = new ObservableCollection<string>();
+            string[] splitter = { " ", "\n", "\r" };
+            TagList = new ObservableCollection<string>(post.Dimensions.Split(splitter, StringSplitOptions.RemoveEmptyEntries));
+            //if (!string.IsNullOrEmpty(post.Tags))
+            //    _taglist = new ObservableCollection<string>(post.Tags.Split(splitter, StringSplitOptions.RemoveEmptyEntries));
+            //else
+            //    _taglist = new ObservableCollection<string>();
         }
 
         private void LateFilePath(object e, AsyncCompletedEventArgs args)
@@ -93,8 +92,8 @@ namespace booruReader.Preview_Screen
             {
                 _post.SaveImage(ImageSource);
 
-                if (_dowloadList.FirstOrDefault(x => x == _post) == null)
-                    _dowloadList.Add(_post);
+                if (_downloadList.FirstOrDefault(x => x == _post) == null)
+                    _downloadList.Add(_post);
             }
 
             if (_favoriteWhenReady)
@@ -113,8 +112,8 @@ namespace booruReader.Preview_Screen
                 {
                     _post.SaveImage(ImageSource);
 
-                    if (_dowloadList.FirstOrDefault(x => x == _post) == null)
-                        _dowloadList.Add(_post);
+                    if (_downloadList.FirstOrDefault(x => x == _post) == null)
+                        _downloadList.Add(_post);
                 }
                 else
                     CopyWhenReady = true;
