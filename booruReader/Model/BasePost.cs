@@ -70,7 +70,7 @@ namespace booruReader.Model
             get { return _tags; }
             set
             {
-                _tags = value;
+                _tags = (value == null) ? "" : value;
                 RaisePropertyChanged("Tags");
             }
         }
@@ -201,14 +201,11 @@ namespace booruReader.Model
                 urlStore = PreviewURL = post.PreviewURL;
 
             FileMD = post.FileMD;
-            Tags = post.Tags;
+            Tags = post.Tags.Trim();
             _width = post._width;
             _height = post._height;
             PostId = post.PostId;
             IsVisible = true;
-
-            if(!string.IsNullOrEmpty(Tags))
-                TagFormatter(Tags);
 
             Dimensions = "Resolution " + _width + "x" + _height + "\n" + "Tags: " + "\n" + Tags;
         }
@@ -227,33 +224,6 @@ namespace booruReader.Model
             if (IsVisible)
                 PreviewURL = urlStore;
         }
-
-        private void TagFormatter(string myString)
-        {
-            string[] words = myString.Split(' ');
-            string newTags = string.Empty;
-            int counter = 0;
-
-            foreach (string tag in words)
-            {
-                if (counter == 6)
-                {
-                    if (tag.Replace(" ", "").Count() > 1)
-                        newTags += tag + Environment.NewLine;
-
-                    counter = 0;
-                }
-                else
-                {
-                    if (tag.Replace(" ", "").Count() >1)
-                        newTags += tag + " ";
-                }
-                counter++;
-            }
-
-            Tags = newTags;
-        }
-
 
         #region Image saving stuff
         /// <summary>
@@ -351,7 +321,7 @@ namespace booruReader.Model
             //Check if we have tags
             if (!string.IsNullOrEmpty(Tags))
             {
-                string[] tags = Tags.Split(' ');
+                string[] tags = Tags.Split(new char[] {' ','\r','\n'});
 
                 //Try to append as many tags as we can within the filename size limit
                 foreach (string tag in tags)

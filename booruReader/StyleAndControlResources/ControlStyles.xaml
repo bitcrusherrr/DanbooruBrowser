@@ -6,6 +6,15 @@
         <Setter Property ="Background" Value="{StaticResource MetroBackground}"/>
         <Setter Property ="Foreground" Value="White"/>
         <Setter Property="Border.BorderBrush" Value="{StaticResource DatazbytesGray}"/>
+        <Setter Property="ContentTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <StackPanel>
+                        <TextBlock Text="{Binding}" Width="250" TextWrapping="Wrap"/>
+                    </StackPanel>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
     <!--Listbox styling-->
