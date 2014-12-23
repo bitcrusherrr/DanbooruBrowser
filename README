@@ -1,3 +1,15 @@
+A fork of earlnuclear's version: play with WPF, Danbooru, REST APIs, HTML/JSON parsing.
+
+- deal with a corrupt image scenario
+- fix buglets
+- fix spelling, code cleanup
+
+Things to do:
+- identify author/copyright tags; give these higher priority in file names
+- deal with Danbooru's two-tag limit
+- GIF animation playback in preview
+
+Original README:
 Application to browse and grab images of danbooru-like websites.
 Currently its tested against danbooru, gelbooru, yande.re and konachan.
 
