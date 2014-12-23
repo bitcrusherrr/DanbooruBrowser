@@ -50,7 +50,8 @@ namespace booruReader
             set
             {
                 _tagsBox = value;
-                RaisePropertyChanged("TagsBox");
+                OnPropertyChanged(() => TagsBox);
+//                RaisePropertyChanged("TagsBox");
             }
         }
 

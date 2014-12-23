@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
+using System.Linq.Expressions;
 
 namespace dbz.UIComponents
 {
@@ -17,6 +19,17 @@ namespace dbz.UIComponents
             }
         }
 
+        protected void OnPropertyChanged<T>(Expression<Func<T>> exp)
+        {
+            //the cast will always succeed
+            MemberExpression memberExpression = (MemberExpression)exp.Body;
+            string propertyName = memberExpression.Member.Name;
+
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
         #endregion
 
     }
