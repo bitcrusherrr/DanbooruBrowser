@@ -37,7 +37,7 @@ namespace booruReader.ViewModels
                 {
                     try
                     {
-                        System.Diagnostics.Process.Start(item.GetFileLocation());
+                        System.Diagnostics.Process.Start(item.SaveLocation);
                     }
                     catch (Exception ex)
                     {

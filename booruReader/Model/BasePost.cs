@@ -16,7 +16,6 @@ namespace booruReader.Model
 
         private string _previewURL;
         private string _fullPictureURL;
-        private string _saveLocation;
         private string _tags;
         private bool _isSelected = false;
         private string _dimensions;
@@ -152,6 +151,19 @@ namespace booruReader.Model
         }
 
         public string FileExtension { get; set; }
+
+        private string _saveLocation;
+        public string SaveLocation
+        {
+            get
+            {
+                return _saveLocation == null ? "" : _saveLocation;
+            }
+            set
+            {
+                _saveLocation = value;
+            }
+        }
         #endregion
 
         /// <summary>
@@ -233,21 +245,21 @@ namespace booruReader.Model
         /// This save method is invoked from preview screen.
         /// We already have full-size image downloaded so just copy it.
         /// </summary>
-        public void SaveImage(string imageLcoation)
+        public void SaveImage(string imageLocation)
         {
             if (GlobalSettings.Instance.DoUseHumanReadableNames)
-                _saveLocation = string.Format(GlobalSettings.Instance.SavePath + GetHumanFilename(UtilityFunctions.GetUrlExtension(FullPictureURL)));
+                SaveLocation = string.Format(GlobalSettings.Instance.SavePath + GetHumanFilename(UtilityFunctions.GetUrlExtension(FullPictureURL)));
             else
-                _saveLocation = string.Format(GlobalSettings.Instance.SavePath + FileMD + UtilityFunctions.GetUrlExtension(FullPictureURL));
+                SaveLocation = string.Format(GlobalSettings.Instance.SavePath + FileMD + UtilityFunctions.GetUrlExtension(FullPictureURL));
 
-            if (UtilityFunctions.GetUrlExtension(FullPictureURL) != null && !File.Exists(_saveLocation))
+            if (UtilityFunctions.GetUrlExtension(FullPictureURL) != null && !File.Exists(SaveLocation))
             {
-                File.Copy(imageLcoation, _saveLocation, false);
+                File.Copy(imageLocation, SaveLocation, false);
 
                 ProgressBarVisible = Visibility.Visible;
                 DownloadProgress = 100;
             }
-            else if (File.Exists(_saveLocation) && _downloadClient == null)
+            else if (File.Exists(SaveLocation) && _downloadClient == null)
             {
                 //File already exists set the bar to visible and full
                 ProgressBarVisible = Visibility.Visible;
@@ -263,19 +275,19 @@ namespace booruReader.Model
             if (UtilityFunctions.GetUrlExtension(FullPictureURL) != null)
             {
                 if(GlobalSettings.Instance.DoUseHumanReadableNames)
-                    _saveLocation = string.Format(GlobalSettings.Instance.SavePath + GetHumanFilename(UtilityFunctions.GetUrlExtension(FullPictureURL)));
+                    SaveLocation = string.Format(GlobalSettings.Instance.SavePath + GetHumanFilename(UtilityFunctions.GetUrlExtension(FullPictureURL)));
                 else
-                    _saveLocation = string.Format(GlobalSettings.Instance.SavePath + FileMD + UtilityFunctions.GetUrlExtension(FullPictureURL));
+                    SaveLocation = string.Format(GlobalSettings.Instance.SavePath + FileMD + UtilityFunctions.GetUrlExtension(FullPictureURL));
 
-                if (!File.Exists(_saveLocation) && Directory.Exists(GlobalSettings.Instance.SavePath))
+                if (!File.Exists(SaveLocation) && Directory.Exists(GlobalSettings.Instance.SavePath))
                 {
                     ProgressBarVisible = Visibility.Visible;
                     _downloadClient = new WebClient();
                     _downloadClient.DownloadProgressChanged += client_DownloadProgressChanged;
-                    _downloadClient.DownloadFileAsync(new Uri(FullPictureURL), _saveLocation);
+                    _downloadClient.DownloadFileAsync(new Uri(FullPictureURL), SaveLocation);
                     _downloadClient.DownloadFileCompleted += _downloadClient_DownloadFileCompleted;
                 }
-                else if (File.Exists(_saveLocation) && _downloadClient == null)
+                else if (File.Exists(SaveLocation) && _downloadClient == null)
                 {
                     //File already exists set the bar to visible and full
                     ProgressBarVisible = Visibility.Visible;
@@ -284,7 +296,7 @@ namespace booruReader.Model
                     if (DownloadCompleted != null)
                         DownloadCompleted(this, new EventArgs());
                 }
-                else if (File.Exists(_saveLocation) && DownloadProgress == 100)
+                else if (File.Exists(SaveLocation) && DownloadProgress == 100)
                 {
                     if (DownloadCompleted != null)
                         DownloadCompleted(this, new EventArgs());
@@ -348,16 +360,5 @@ namespace booruReader.Model
             DownloadProgress = int.Parse(Math.Truncate(percentage).ToString());
         }
         #endregion
-
-        /// <summary>
-        /// This will return empty string if file was not downloaded yet
-        /// </summary>
-        internal string GetFileLocation()
-        {
-            if (_saveLocation != null)
-                return _saveLocation;
-            else
-                return string.Empty;
-        }
     }
 }
