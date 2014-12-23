@@ -307,6 +307,8 @@ namespace booruReader.Model
                 DownloadCompleted(this, new EventArgs());
         }
 
+        const string SEPARATOR = " ";
+
         /// <summary>
         /// Returns human readable filename in format of: booru postid tag1 tag2... .extension
         /// Function will try adding as many tags as possible until we hit the 260 char limit for filename + folder path.
@@ -314,9 +316,7 @@ namespace booruReader.Model
         /// </summary>
         private string GetHumanFilename(string extension)
         {
-            string filename;
-
-            filename = GlobalSettings.Instance.CurrentBooru.Name + " " +  PostId;
+            string filename = GlobalSettings.Instance.CurrentBooru.Name + SEPARATOR + PostId;
 
             //Check if we have tags
             if (!string.IsNullOrEmpty(Tags))
@@ -326,9 +326,9 @@ namespace booruReader.Model
                 //Try to append as many tags as we can within the filename size limit
                 foreach (string tag in tags)
                 {
-                    if ((tag.Count() > 0) && (filename.Count() + tag.Count() + extension.Count() + GlobalSettings.Instance.SavePath.Count()) < 260)
+                    if ((tag.Count() > 0) && (filename.Count() + tag.Count() + extension.Count() + GlobalSettings.Instance.SavePath.Count()) < 255)
                     {
-                            filename += " " + tag;
+                        filename += SEPARATOR + tag;
                     }
                     //Otherwise we hit the limit and might as well dump out
                     else if (tag.Count() > 0)
@@ -337,7 +337,12 @@ namespace booruReader.Model
             }
 
             //Remove all illegal chars from filename
-            filename = Regex.Replace(@filename, @"[^\w\@\-_&(). ]", "", RegexOptions.None);
+//            filename = Regex.Replace(@filename, @"[^\w\@\-_&(). ]", "", RegexOptions.None);
+            string invalid = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars());
+            foreach (char c in invalid)
+            {
+                filename = filename.Replace(c.ToString(), "");
+            }
 
             //Finally add extension
             filename += extension;
