@@ -39,19 +39,13 @@ namespace booruReader
             _openSettingsCommand = new DelegateCommand
             {
                 CanExecuteDelegate = x => true,
-                ExecuteDelegate = x => OpenSettings()
+                ExecuteDelegate = x => { SettingsOpen = !SettingsOpen; }
             };
 
             _setFavoritesModeCommand = new DelegateCommand
             {
                 CanExecuteDelegate = x => true,
-                ExecuteDelegate = x =>
-                {
-                    if (IsFavoritesMode)
-                        IsFavoritesMode = false;
-                    else
-                        IsFavoritesMode = true;
-                }
+                ExecuteDelegate = x => { IsFavoritesMode = !IsFavoritesMode; }
             };
         }
 

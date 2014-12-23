@@ -17,7 +17,7 @@ namespace booruReader
     /// </summary>
     public partial class MainWindow : Window
     {
-        ObservableCollection<string> testcollection = new ObservableCollection<string>();
+//        ObservableCollection<string> testcollection = new ObservableCollection<string>();
         MainScreenVM viewModel;
         private const int WM_SYSCOMMAND = 0x112;
         private HwndSource hwndSource;

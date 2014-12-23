@@ -196,11 +196,9 @@ namespace booruReader.Model
 
         private void LateFilePath(object e, AsyncCompletedEventArgs args)
         {
-            //Yeah, I know...
-            if(_isVisible)
-                urlStore = PreviewURL = _cache.GetImage(FileMD + _extension, null, LateFilePath, false);
-            else
-                urlStore = _cache.GetImage(FileMD + _extension, null, LateFilePath, false);
+            urlStore = _cache.GetImage(FileMD + _extension, null, LateFilePath, false);
+            if (IsVisible)
+                PreviewURL = urlStore;
         }
 
         private void TagFormatter(string myString)

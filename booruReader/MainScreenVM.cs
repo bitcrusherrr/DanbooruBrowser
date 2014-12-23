@@ -155,7 +155,7 @@ namespace booruReader
                 _threadList.Add(new BasePost(post));
             }
 
-            if (_imageLoader.CancellationPending == true)
+            if (_imageLoader.CancellationPending)
             {
                 _threadList.Clear();
             }
@@ -224,10 +224,7 @@ namespace booruReader
                 _imageList.Clear();
                 _showedLastPageWarning = false;
 
-                if (GlobalSettings.Instance.CurrentBooru.ProviderType == ProviderAccessType.Gelbooru)
-                    CurrentPage = 0;
-                else
-                    CurrentPage = 1;
+                CurrentPage = GlobalSettings.Instance.CurrentBooru.ProviderType == ProviderAccessType.Gelbooru ? 0 : 1;
 
                 if (_imageLoader.IsBusy)
                 {
@@ -271,7 +268,6 @@ namespace booruReader
                 _itemsDownloadingCount--;
         }
 
-
         private void SaveImages()
         {
             if (string.IsNullOrEmpty(GlobalSettings.Instance.SavePath))
@@ -280,7 +276,7 @@ namespace booruReader
             }
             else
             {
-                var selected = MainImageList.Where(x => x.IsSelected == true);
+                var selected = MainImageList.Where(x => x.IsSelected);
 
                 if (DowloadList.Count == 0)
                     _itemsDownloadingCount = 0;
@@ -314,10 +310,7 @@ namespace booruReader
 
         private void OpenSettings()
         {
-            if (!SettingsOpen)
-                SettingsOpen = true;
-            else
-                SettingsOpen = false;
+            SettingsOpen = !SettingsOpen;
         }
 
         private void CloseAllPreviews()
@@ -373,10 +366,10 @@ namespace booruReader
         //This is a terrible hack... Untill I figure this one out...
         public event EventHandler SearchBoxChanged;
 
-        private void preview_UserTagSelection(object sender, System.EventArgs e)
+        private void preview_UserTagSelection(object sender, EventArgs e)
         {
-            if (sender != null && sender is string && (TagsBox == null || !TagsBox.Contains(sender as string)))
-                TagsBox += " " + sender as string;
+            if (sender is string && (TagsBox == null || !TagsBox.Contains(sender as string)))
+                TagsBox += " " + sender;
 
             if (SearchBoxChanged != null)
                 SearchBoxChanged(null, null);
@@ -384,14 +377,14 @@ namespace booruReader
             RaisePropertyChanged("TagsBox");
         }
 
-        void preview_RemovedImageFromFavorites(object sender, System.EventArgs e)
+        void preview_RemovedImageFromFavorites(object sender, EventArgs e)
         {
             if(IsFavoritesMode)
                 _imageList = new ObservableCollection<BasePost>(_favorites.FetchFavorites(_tagsBox));
             RaisePropertyChanged("MainImageList");
         }
 
-        void preview_AddedImageToFavorites(object sender, System.EventArgs e)
+        void preview_AddedImageToFavorites(object sender, EventArgs e)
         {
             if (IsFavoritesMode)
                 _imageList = new ObservableCollection<BasePost>(_favorites.FetchFavorites(_tagsBox));
