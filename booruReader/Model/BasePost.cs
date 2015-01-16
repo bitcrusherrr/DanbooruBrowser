@@ -307,7 +307,9 @@ namespace booruReader.Model
                 DownloadCompleted(this, new EventArgs());
         }
 
-        const string SEPARATOR = " ";
+        const string SEPARATOR = "+";
+        private const string ID_SEPARATOR = "_";
+        //const string SEPARATOR = " ";
 
         /// <summary>
         /// Returns human readable filename in format of: booru postid tag1 tag2... .extension
@@ -316,22 +318,22 @@ namespace booruReader.Model
         /// </summary>
         private string GetHumanFilename(string extension)
         {
-            string filename = GlobalSettings.Instance.CurrentBooru.Name + SEPARATOR + PostId;
+            string filename = GlobalSettings.Instance.CurrentBooru.Name + ID_SEPARATOR + PostId;
 
             //Check if we have tags
             if (!string.IsNullOrEmpty(Tags))
             {
-                string[] tags = Tags.Split(new char[] {' ','\r','\n'});
+                string[] tags = Tags.Split(new [] {' ','\r','\n'});
 
                 //Try to append as many tags as we can within the filename size limit
                 foreach (string tag in tags)
                 {
-                    if ((tag.Count() > 0) && (filename.Count() + tag.Count() + extension.Count() + GlobalSettings.Instance.SavePath.Count()) < 255)
+                    if (tag.Any() && (filename.Count() + tag.Count() + extension.Count() + GlobalSettings.Instance.SavePath.Count()) < 255)
                     {
                         filename += SEPARATOR + tag;
                     }
                     //Otherwise we hit the limit and might as well dump out
-                    else if (tag.Count() > 0)
+                    else if (tag.Any())
                         break;
                 }
             }
