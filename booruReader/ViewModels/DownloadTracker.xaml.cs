@@ -23,7 +23,7 @@ namespace booruReader.ViewModels
 
         private void BackButtonClick(object sender, RoutedEventArgs e)
         {
-            Visibility = System.Windows.Visibility.Hidden;
+            Visibility = Visibility.Hidden;
             IsEnabled = false;
         }
 

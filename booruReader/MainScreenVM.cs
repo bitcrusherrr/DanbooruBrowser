@@ -39,7 +39,7 @@ namespace booruReader
 
         #region Public variables
 
-        public ObservableCollection<BasePost> DowloadList { get; set; }
+        public ObservableCollection<BasePost> DownloadList { get; set; }
 
         //UI list for the images
         public ObservableCollection<BasePost> MainImageList { get { return _imageList; } }
@@ -117,8 +117,8 @@ namespace booruReader
             _threadList = new List<BasePost>();
             _imageLoader = new BackgroundWorker();
             _cache = new ImageCache();
-            DowloadList = new ObservableCollection<BasePost>();
-            DowloadList.CollectionChanged += DowloadList_CollectionChanged;
+            DownloadList = new ObservableCollection<BasePost>();
+            DownloadList.CollectionChanged += DowloadList_CollectionChanged;
             _imageLoader.DoWork += BackgroundLoaderWork;
             _imageLoader.RunWorkerCompleted += ServerListLoadWorkerCompleted;
             _imageLoader.WorkerSupportsCancellation = true;
@@ -243,27 +243,35 @@ namespace booruReader
 
         //NOTE: Hacky test code
         int _itemsDownloadingCount = 0;
-        void post_DownloadCompleted(object sender, System.EventArgs e)
+        void post_DownloadCompleted(object sender, EventArgs e)
         {
+            BasePost item = (sender as BasePost);
+            if (item == null)
+                return;
+
+            item.DownloadCompleted -= post_DownloadCompleted;
+
+            // KBR 20150220 Fix issue #2: if completed items aren't removed from the list, they'll be downloaded repeatedly.
+            DownloadList.Remove(item);
+
+            // KBR 20150220 NOTE: the above change probably confuses the taskbar status display. Need to fix the "hacky test code"?
+
             var taskbar = Application.Current.MainWindow.TaskbarItemInfo;
-
-            (sender as BasePost).DownloadCompleted -= post_DownloadCompleted;
-
             if (taskbar != null)
             {
                 _itemsDownloadingCount++;
 
                 taskbar.ProgressState = TaskbarItemProgressState.Normal;
-                taskbar.ProgressValue = ((double)_itemsDownloadingCount / (double)DowloadList.Count);
+                taskbar.ProgressValue = ((double)_itemsDownloadingCount / (double)DownloadList.Count);
 
-                if (_itemsDownloadingCount >= DowloadList.Count)
+                if (_itemsDownloadingCount >= DownloadList.Count)
                     taskbar.ProgressState = TaskbarItemProgressState.None;
             }
         }
 
         void DowloadList_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            //Check if item have been removed, if so it was completed and we want to decrease the counter
+            //Check if an item has been removed, if so it was completed and we want to decrease the counter
             if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove && _itemsDownloadingCount > 0)
                 _itemsDownloadingCount--;
         }
@@ -273,29 +281,28 @@ namespace booruReader
             if (string.IsNullOrEmpty(GlobalSettings.Instance.SavePath))
             {
                 new MetroMessagebox("Error", "No save directory specified. \nPlease go to settings and select a folder.").ShowDialog();
+                return;
             }
-            else
+
+            var selected = MainImageList.Where(x => x.IsSelected);
+
+            if (DownloadList.Count == 0)
+                _itemsDownloadingCount = 0;
+
+            foreach (BasePost post in selected)
             {
-                var selected = MainImageList.Where(x => x.IsSelected);
-
-                if (DowloadList.Count == 0)
-                    _itemsDownloadingCount = 0;
-
-                foreach (BasePost post in selected)
+                if (post.IsSelected && DownloadList.IndexOf(post) == -1)
                 {
-                    if (post.IsSelected && DowloadList.IndexOf(post) == -1)
-                    {
-                        post.DownloadCompleted += post_DownloadCompleted;
-                        DowloadList.Add(post);
-                    }
+                    post.DownloadCompleted += post_DownloadCompleted;
+                    DownloadList.Add(post);
                 }
+            }
 
-                //Fire the save for each file after all files have been added to the list.
-                //Otherwise the completed even could be fired ar incorrect times and cause progress bar to be off sometimes and/or jump around
-                foreach (BasePost post in DowloadList)
-                {
-                    post.SaveImage();
-                }
+            // Fire the save for each file after all files have been added to the list.
+            // Otherwise the completed event could be fired at incorrect times and cause progress bar to be off sometimes and/or jump around
+            foreach (BasePost post in DownloadList)
+            {
+                post.SaveImage();
             }
         }
 
@@ -337,7 +344,7 @@ namespace booruReader
             var post = _imageList.FirstOrDefault(x => x.PreviewURL == filepath);
             if (post != null)
             {
-                PrviewScreenView preview = new PrviewScreenView(post, DowloadList);
+                PrviewScreenView preview = new PrviewScreenView(post, DownloadList);
                 _previewList.Add(preview);
                 preview.AddedImageToFavorites += preview_AddedImageToFavorites;
                 preview.RemovedImageFromFavorites += preview_RemovedImageFromFavorites;
@@ -414,7 +421,7 @@ namespace booruReader
         {
             bool waitForDownload = false;
 
-            foreach (BasePost post in DowloadList)
+            foreach (BasePost post in DownloadList)
             {
                 if(post.DownloadProgress != 100)
                 {

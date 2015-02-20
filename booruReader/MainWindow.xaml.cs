@@ -298,7 +298,7 @@ namespace booruReader
         DownloadTracker downloadTracker;
         private void Tracker_Button_Click(object sender, RoutedEventArgs e)
         {
-            downloadTracker = new DownloadTracker(viewModel.DowloadList);
+            downloadTracker = new DownloadTracker(viewModel.DownloadList);
             downloadTracker.IsVisibleChanged += downloadTracker_IsVisibleChanged;
 
             MainGrid.Children.Add(downloadTracker);
