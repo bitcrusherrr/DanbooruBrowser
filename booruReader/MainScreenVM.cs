@@ -205,6 +205,10 @@ namespace booruReader
         {
             if (!IsFavoritesMode && GlobalSettings.Instance.ProviderChanged)
             {
+                // KBR 20150220 Fix issue #4: Using the "terrible hack", let the main window know the image list needs to be reset to the top.
+                if (ProviderChanged != null)
+                    ProviderChanged(null, null);
+
                 GlobalSettings.Instance.ProviderChanged = false;
                 _showedLastPageWarning = false;
                 FetchImages();
@@ -370,7 +374,9 @@ namespace booruReader
             }
         }
 
-        //This is a terrible hack... Untill I figure this one out...
+        // KBR 20150220 Fix issue #4: Using the "terrible hack", let the main window know the image list needs to be reset to the top.
+        public event EventHandler ProviderChanged;
+        //This is a terrible hack... Until I figure this one out...
         public event EventHandler SearchBoxChanged;
 
         private void preview_UserTagSelection(object sender, EventArgs e)
