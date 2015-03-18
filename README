@@ -4,6 +4,9 @@ A fork of earlnuclear's version: play with WPF, Danbooru, REST APIs, HTML/JSON p
 - fix buglets
 - fix spelling, code cleanup
 
+The 'Executable' folder contains a copy of the program and support DLLs. You will need
+.NET 4.5 installed to be able to run it.
+
 Things to do:
 - identify author/copyright tags; give these higher priority in file names
 - deal with Danbooru's two-tag limit
@@ -18,7 +21,7 @@ Both files will get updated whenever I feel that changes are stable enough.
 
 Note: 
 This is a WIP so occasionally some things may break and its not fully feature complete.
-Once all features are done I will provide a centralised ClickOnce installer for convinience.
+Once all features are done I will provide a centralised ClickOnce installer for convenience.
 
 You can now add login details to the boards, you will have to input salt for the board.
 For example danbooeu has password salt of choujin-steiner--!PASSWORD!--
