@@ -179,12 +179,16 @@ namespace booruReader.Model
                 _saveLocation = value;
             }
         }
+
+        public bool IsDownloaded { get; set; }
+
         #endregion
 
         /// <summary>
         /// Constructor that SHOULD be used for images
         /// </summary>
         /// <param name="post"></param>
+        /// <param name="isUIImage"></param>
         public BasePost(BasePost post, bool isUIImage = false)
         {
             _cache = new ImageCache();
@@ -245,6 +249,7 @@ namespace booruReader.Model
                 FailedProgressBarVisible = Visibility.Hidden;
 
                 DownloadProgress = 100;
+                IsDownloaded = true;
             }
             else if (File.Exists(SaveLocation) && _downloadClient == null)
             {
@@ -252,6 +257,7 @@ namespace booruReader.Model
                 ProgressBarVisible = Visibility.Visible;
                 FailedProgressBarVisible = Visibility.Hidden;
                 DownloadProgress = 100;
+                IsDownloaded = true;
             }
         }
 
@@ -283,11 +289,13 @@ namespace booruReader.Model
                     FailedProgressBarVisible = Visibility.Hidden;
                     DownloadProgress = 100;
 
+                    IsDownloaded = true;
                     if (DownloadCompleted != null)
                         DownloadCompleted(this, new EventArgs());
                 }
                 else if (File.Exists(SaveLocation) && DownloadProgress == 100)
                 {
+                    IsDownloaded = true;
                     if (DownloadCompleted != null)
                         DownloadCompleted(this, new EventArgs());
                 }

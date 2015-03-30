@@ -255,8 +255,10 @@ namespace booruReader
 
             item.DownloadCompleted -= post_DownloadCompleted;
 
+            // KBR 20150329 Crashes when try to modify DownloadList
+            item.IsDownloaded = true;
             // KBR 20150220 Fix issue #2: if completed items aren't removed from the list, they'll be downloaded repeatedly.
-            DownloadList.Remove(item);
+//            DownloadList.Remove(item);
 
             // KBR 20150220 NOTE: the above change probably confuses the taskbar status display. Need to fix the "hacky test code"?
 
@@ -306,7 +308,8 @@ namespace booruReader
             // Otherwise the completed event could be fired at incorrect times and cause progress bar to be off sometimes and/or jump around
             foreach (BasePost post in DownloadList)
             {
-                post.SaveImage();
+                if (!post.IsDownloaded)
+                    post.SaveImage();
             }
         }
 
