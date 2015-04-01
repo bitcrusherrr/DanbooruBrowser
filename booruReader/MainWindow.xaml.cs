@@ -2,7 +2,6 @@
 using booruReader.ViewModels;
 using dbz.UIComponents.Debug_utils;
 using System;
-using System.Collections.ObjectModel;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -17,7 +16,7 @@ namespace booruReader
     /// </summary>
     public partial class MainWindow : Window
     {
-        ObservableCollection<string> testcollection = new ObservableCollection<string>();
+//        ObservableCollection<string> testcollection = new ObservableCollection<string>();
         MainScreenVM viewModel;
         private const int WM_SYSCOMMAND = 0x112;
         private HwndSource hwndSource;
@@ -62,6 +61,31 @@ namespace booruReader
         void viewModel_SearchBoxChanged(object sender, EventArgs e)
         {
             SearchBox.HideLabel();
+        }
+
+        void viewModel_ProviderChanged(object sender, EventArgs e)
+        {
+            // KBR 20150220 Fix issue #4: Using the "terrible hack", let the main window know the image list needs to be reset to the top.
+            // If we don't, the background work keeps fetching pages of images to satisfy where the image list was scrolled to for the "previous" server.
+            ScrollViewer sv = GetScrollViewer(ImageList) as ScrollViewer;
+            if (sv != null)
+                sv.ScrollToTop();
+        }
+
+        public static DependencyObject GetScrollViewer(DependencyObject o)
+        {
+            // http://stackoverflow.com/questions/1077397/scroll-listviewitem-to-be-at-the-top-of-a-listview
+            if (o is ScrollViewer) { return o; }
+
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(o); i++)
+            {
+                var child = VisualTreeHelper.GetChild(o, i);
+
+                var result = GetScrollViewer(child);
+                if (result != null)
+                    return result;
+            }
+            return null;
         }
 
         //Attempt at catching all thread exceptions. As the Domain one doesnt always catch thread unhandled exceptions.
@@ -200,14 +224,14 @@ namespace booruReader
 
         private void MinimiseButtonClick(object sender, RoutedEventArgs e)
         {
-            this.WindowState = System.Windows.WindowState.Minimized;
+            WindowState = WindowState.Minimized;
         }
 
         private void MaximiseButtonClick(object sender, RoutedEventArgs e)
         {
-            if (this.WindowState != System.Windows.WindowState.Maximized)
+            if (WindowState != WindowState.Maximized)
             {
-                this.WindowState = System.Windows.WindowState.Maximized;
+                WindowState = WindowState.Maximized;
 
                 int lastItem = ImageList.Items.Count - 1;
                 //Check if last item is visible and trigger more loading
@@ -298,7 +322,7 @@ namespace booruReader
         DownloadTracker downloadTracker;
         private void Tracker_Button_Click(object sender, RoutedEventArgs e)
         {
-            downloadTracker = new DownloadTracker(viewModel.DowloadList);
+            downloadTracker = new DownloadTracker(viewModel.DownloadList);
             downloadTracker.IsVisibleChanged += downloadTracker_IsVisibleChanged;
 
             MainGrid.Children.Add(downloadTracker);
@@ -347,11 +371,6 @@ namespace booruReader
         private void Window_Loaded_1(object sender, RoutedEventArgs e)
         {
             hwndSource = PresentationSource.FromVisual((Visual)sender) as HwndSource;
-        }
-
-        private void Top_MouseEnter_1(object sender, MouseEventArgs e)
-        {
-
         }
 
     }

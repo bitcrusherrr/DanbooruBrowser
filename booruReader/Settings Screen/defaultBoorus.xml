@@ -3,7 +3,7 @@
   <BooruBoard>
     <providerType>DanbooruV2</providerType>
     <url>http://danbooru.donmai.us/</url>
-    <name>Danbooru.donmai.us</name>
+    <name>Danbooru</name>
   </BooruBoard>
   <BooruBoard>
     <providerType>XML</providerType>
@@ -13,32 +13,22 @@
   <BooruBoard>
     <providerType>XML</providerType>
     <url>http://konachan.com/</url>
-    <name>Konachan.com</name>
+    <name>Konachan</name>
+  </BooruBoard>
+  <BooruBoard>
+    <providerType>XML</providerType>
+    <url>http://konachan.net/</url>
+    <name>Konachan_SFW</name>
   </BooruBoard>
   <BooruBoard>
     <providerType>Gelbooru</providerType>
     <url>http://gelbooru.com/</url>
-    <name>Gelbooru.com</name>
+    <name>Gelbooru</name>
   </BooruBoard>
   <BooruBoard>
     <providerType>Gelbooru</providerType>
     <url>http://safebooru.org/</url>
-    <name>Safebooru.com</name>
-  </BooruBoard>
-  <BooruBoard>
-    <providerType>JSON</providerType>
-    <url>http://idol.sankakucomplex.com/</url>
-    <name>Idol.Sankakucomplex.com</name>
-  </BooruBoard>
-  <BooruBoard>
-    <providerType>JSON</providerType>
-    <url>http://chan.sankakucomplex.com/</url>
-    <name>Chan.Sankakucomplex.com</name>
-  </BooruBoard>
-  <BooruBoard>
-    <providerType>XML</providerType>
-    <url>http://nekobooru.net/</url>
-    <name>Nekobooru.net</name>
+    <name>Safebooru</name>
   </BooruBoard>
   <BooruBoard>
     <providerType>XML</providerType>
@@ -46,8 +36,38 @@
     <name>Vectorbooru(ichijou.org)</name>
   </BooruBoard>
   <BooruBoard>
+    <providerType>Gelbooru</providerType>
+    <url>http://rule34.xxx/</url>
+    <name>Rule34</name>
+  </BooruBoard>
+  <BooruBoard>
     <providerType>XML</providerType>
-    <url>http://booru.datazbytes.net/</url>
-    <name>Booru.Datazbytes.net</name>
+    <url>http://hypnohub.net/</url>
+    <name>HypnoHub</name>
+  </BooruBoard>
+  <BooruBoard>
+    <providerType>XML</providerType>
+    <url>https://e621.net/</url>
+    <name>e621</name>
+  </BooruBoard>
+  <BooruBoard>
+    <providerType>Gelbooru</providerType>
+    <url>http://xbooru.com/</url>
+    <name>Xbooru</name>
+  </BooruBoard>
+  <BooruBoard>
+    <providerType>Gelbooru</providerType>
+    <url>http://youhate.us/</url>
+    <name>YouHate</name>
+  </BooruBoard>
+  <BooruBoard>
+    <providerType>XML</providerType>
+    <url>http://rule34.paheal.net/api/danbooru/find_posts/index.xml</url>
+    <name>Rule34.paheal.net</name>
   </BooruBoard>
 </ArrayOfBooruBoard>
+<!--
+- <a href='/web/20090719065541/http://booru.nanochan.org/' class='bbc_url' title='External link' rel='nofollow'>Nanobooru</a><br />
+- <a href='/web/20090719065541/http://angelhq.net/' class='bbc_url' title='External link' rel='nofollow'>Angel HQ</a><br />
+- <a href='/web/20090719065541/http://sizebooru.com/post/list' class='bbc_url' title='External link' rel='nofollow'>Giants</a><br />
+-->

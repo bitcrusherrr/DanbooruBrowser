@@ -103,7 +103,7 @@ namespace booruReader.Model.Site_Parsers
                                 post.FullPictureURL = UtilityFunctions.NormaliseURL(fullFilepath);
 
                                 string thumbFilepath = "/data/preview/" + post.FileMD + ".jpg";
-                                post.PreviewURL = UtilityFunctions.NormaliseURL(thumbFilepath); ;
+                                post.PreviewURL = UtilityFunctions.NormaliseURL(thumbFilepath);
                             }
 
                             //Work out file extension at this point to save headaches later on

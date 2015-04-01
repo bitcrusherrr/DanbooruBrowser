@@ -25,7 +25,22 @@ namespace dbz.UIComponents
             }
             catch
             {
-                return DependencyProperty.UnsetValue;
+                try
+                {
+                    // Try to deal with some corrupt images
+                    // See: http://www.hanselman.com/blog/DealingWithImagesWithBadMetadataCorruptedColorProfilesInWPF.aspx
+                    var bi = new BitmapImage();
+                    bi.BeginInit();
+                    bi.CreateOptions = BitmapCreateOptions.IgnoreColorProfile;
+                    bi.UriSource = new Uri(value as string);
+                    bi.EndInit();
+                    return bi;
+                }
+                catch
+                {
+                    return DependencyProperty.UnsetValue;
+                }
+
             }
         }
 

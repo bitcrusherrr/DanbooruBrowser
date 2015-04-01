@@ -39,7 +39,7 @@ namespace booruReader
 
         #region Public variables
 
-        public ObservableCollection<BasePost> DowloadList { get; set; }
+        public ObservableCollection<BasePost> DownloadList { get; set; }
 
         //UI list for the images
         public ObservableCollection<BasePost> MainImageList { get { return _imageList; } }
@@ -50,7 +50,8 @@ namespace booruReader
             set
             {
                 _tagsBox = value;
-                RaisePropertyChanged("TagsBox");
+                OnPropertyChanged(() => TagsBox);
+//                RaisePropertyChanged("TagsBox");
             }
         }
 
@@ -116,8 +117,8 @@ namespace booruReader
             _threadList = new List<BasePost>();
             _imageLoader = new BackgroundWorker();
             _cache = new ImageCache();
-            DowloadList = new ObservableCollection<BasePost>();
-            DowloadList.CollectionChanged += DowloadList_CollectionChanged;
+            DownloadList = new ObservableCollection<BasePost>();
+            DownloadList.CollectionChanged += DowloadList_CollectionChanged;
             _imageLoader.DoWork += BackgroundLoaderWork;
             _imageLoader.RunWorkerCompleted += ServerListLoadWorkerCompleted;
             _imageLoader.WorkerSupportsCancellation = true;
@@ -154,7 +155,7 @@ namespace booruReader
                 _threadList.Add(new BasePost(post));
             }
 
-            if (_imageLoader.CancellationPending == true)
+            if (_imageLoader.CancellationPending)
             {
                 _threadList.Clear();
             }
@@ -204,6 +205,10 @@ namespace booruReader
         {
             if (!IsFavoritesMode && GlobalSettings.Instance.ProviderChanged)
             {
+                // KBR 20150220 Fix issue #4: Using the "terrible hack", let the main window know the image list needs to be reset to the top.
+                if (ProviderChanged != null)
+                    ProviderChanged(null, null);
+
                 GlobalSettings.Instance.ProviderChanged = false;
                 _showedLastPageWarning = false;
                 FetchImages();
@@ -223,10 +228,7 @@ namespace booruReader
                 _imageList.Clear();
                 _showedLastPageWarning = false;
 
-                if (GlobalSettings.Instance.CurrentBooru.ProviderType == ProviderAccessType.Gelbooru)
-                    CurrentPage = 0;
-                else
-                    CurrentPage = 1;
+                CurrentPage = GlobalSettings.Instance.CurrentBooru.ProviderType == ProviderAccessType.Gelbooru ? 0 : 1;
 
                 if (_imageLoader.IsBusy)
                 {
@@ -245,60 +247,69 @@ namespace booruReader
 
         //NOTE: Hacky test code
         int _itemsDownloadingCount = 0;
-        void post_DownloadCompleted(object sender, System.EventArgs e)
+        void post_DownloadCompleted(object sender, EventArgs e)
         {
+            BasePost item = (sender as BasePost);
+            if (item == null)
+                return;
+
+            item.DownloadCompleted -= post_DownloadCompleted;
+
+            // KBR 20150329 Crashes when try to modify DownloadList
+            item.IsDownloaded = true;
+            // KBR 20150220 Fix issue #2: if completed items aren't removed from the list, they'll be downloaded repeatedly.
+//            DownloadList.Remove(item);
+
+            // KBR 20150220 NOTE: the above change probably confuses the taskbar status display. Need to fix the "hacky test code"?
+
             var taskbar = Application.Current.MainWindow.TaskbarItemInfo;
-
-            (sender as BasePost).DownloadCompleted -= post_DownloadCompleted;
-
             if (taskbar != null)
             {
                 _itemsDownloadingCount++;
 
                 taskbar.ProgressState = TaskbarItemProgressState.Normal;
-                taskbar.ProgressValue = ((double)_itemsDownloadingCount / (double)DowloadList.Count);
+                taskbar.ProgressValue = ((double)_itemsDownloadingCount / (double)DownloadList.Count);
 
-                if (_itemsDownloadingCount >= DowloadList.Count)
+                if (_itemsDownloadingCount >= DownloadList.Count)
                     taskbar.ProgressState = TaskbarItemProgressState.None;
             }
         }
 
         void DowloadList_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            //Check if item have been removed, if so it was completed and we want to decrease the counter
+            //Check if an item has been removed, if so it was completed and we want to decrease the counter
             if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove && _itemsDownloadingCount > 0)
                 _itemsDownloadingCount--;
         }
-
 
         private void SaveImages()
         {
             if (string.IsNullOrEmpty(GlobalSettings.Instance.SavePath))
             {
                 new MetroMessagebox("Error", "No save directory specified. \nPlease go to settings and select a folder.").ShowDialog();
+                return;
             }
-            else
+
+            var selected = MainImageList.Where(x => x.IsSelected);
+
+            if (DownloadList.Count == 0)
+                _itemsDownloadingCount = 0;
+
+            foreach (BasePost post in selected)
             {
-                var selected = MainImageList.Where(x => x.IsSelected == true);
-
-                if (DowloadList.Count == 0)
-                    _itemsDownloadingCount = 0;
-
-                foreach (BasePost post in selected)
+                if (post.IsSelected && DownloadList.IndexOf(post) == -1)
                 {
-                    if (post.IsSelected && DowloadList.IndexOf(post) == -1)
-                    {
-                        post.DownloadCompleted += post_DownloadCompleted;
-                        DowloadList.Add(post);
-                    }
+                    post.DownloadCompleted += post_DownloadCompleted;
+                    DownloadList.Add(post);
                 }
+            }
 
-                //Fire the save for each file after all files have been added to the list.
-                //Otherwise the completed even could be fired ar incorrect times and cause progress bar to be off sometimes and/or jump around
-                foreach (BasePost post in DowloadList)
-                {
+            // Fire the save for each file after all files have been added to the list.
+            // Otherwise the completed event could be fired at incorrect times and cause progress bar to be off sometimes and/or jump around
+            foreach (BasePost post in DownloadList)
+            {
+                if (!post.IsDownloaded)
                     post.SaveImage();
-                }
             }
         }
 
@@ -313,10 +324,7 @@ namespace booruReader
 
         private void OpenSettings()
         {
-            if (!SettingsOpen)
-                SettingsOpen = true;
-            else
-                SettingsOpen = false;
+            SettingsOpen = !SettingsOpen;
         }
 
         private void CloseAllPreviews()
@@ -343,7 +351,7 @@ namespace booruReader
             var post = _imageList.FirstOrDefault(x => x.PreviewURL == filepath);
             if (post != null)
             {
-                PrviewScreenView preview = new PrviewScreenView(post, DowloadList);
+                PrviewScreenView preview = new PrviewScreenView(post, DownloadList);
                 _previewList.Add(preview);
                 preview.AddedImageToFavorites += preview_AddedImageToFavorites;
                 preview.RemovedImageFromFavorites += preview_RemovedImageFromFavorites;
@@ -369,13 +377,15 @@ namespace booruReader
             }
         }
 
-        //This is a terrible hack... Untill I figure this one out...
+        // KBR 20150220 Fix issue #4: Using the "terrible hack", let the main window know the image list needs to be reset to the top.
+        public event EventHandler ProviderChanged;
+        //This is a terrible hack... Until I figure this one out...
         public event EventHandler SearchBoxChanged;
 
-        private void preview_UserTagSelection(object sender, System.EventArgs e)
+        private void preview_UserTagSelection(object sender, EventArgs e)
         {
-            if (sender != null && sender is string && (TagsBox == null || !TagsBox.Contains(sender as string)))
-                TagsBox += " " + sender as string;
+            if (sender is string && (TagsBox == null || !TagsBox.Contains(sender as string)))
+                TagsBox += " " + sender;
 
             if (SearchBoxChanged != null)
                 SearchBoxChanged(null, null);
@@ -383,14 +393,14 @@ namespace booruReader
             RaisePropertyChanged("TagsBox");
         }
 
-        void preview_RemovedImageFromFavorites(object sender, System.EventArgs e)
+        void preview_RemovedImageFromFavorites(object sender, EventArgs e)
         {
             if(IsFavoritesMode)
                 _imageList = new ObservableCollection<BasePost>(_favorites.FetchFavorites(_tagsBox));
             RaisePropertyChanged("MainImageList");
         }
 
-        void preview_AddedImageToFavorites(object sender, System.EventArgs e)
+        void preview_AddedImageToFavorites(object sender, EventArgs e)
         {
             if (IsFavoritesMode)
                 _imageList = new ObservableCollection<BasePost>(_favorites.FetchFavorites(_tagsBox));
@@ -420,7 +430,7 @@ namespace booruReader
         {
             bool waitForDownload = false;
 
-            foreach (BasePost post in DowloadList)
+            foreach (BasePost post in DownloadList)
             {
                 if(post.DownloadProgress != 100)
                 {

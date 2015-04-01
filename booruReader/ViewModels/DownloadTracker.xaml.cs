@@ -23,7 +23,7 @@ namespace booruReader.ViewModels
 
         private void BackButtonClick(object sender, RoutedEventArgs e)
         {
-            Visibility = System.Windows.Visibility.Hidden;
+            Visibility = Visibility.Hidden;
             IsEnabled = false;
         }
 
@@ -37,7 +37,7 @@ namespace booruReader.ViewModels
                 {
                     try
                     {
-                        System.Diagnostics.Process.Start(item.GetFileLocation());
+                        System.Diagnostics.Process.Start(item.SaveLocation);
                     }
                     catch (Exception ex)
                     {
