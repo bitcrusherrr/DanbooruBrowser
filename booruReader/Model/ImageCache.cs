@@ -7,6 +7,8 @@ using System.IO;
 using System.Linq;
 using System.Net;
 
+// ReSharper disable SpecifyACultureInStringConversionExplicitly
+
 namespace booruReader.Model
 {
     public class ImageCache
@@ -33,12 +35,11 @@ namespace booruReader.Model
         /// <summary>
         /// Retrieves image from the cache or prepares image and then returns filename via action
         /// </summary>
-        public string GetImage(string imageName, string imageURL, Action<object, AsyncCompletedEventArgs> finalFilePath, bool BigImage = true)
+        public string GetImage(string imageName, string imageURL, Action<object, AsyncCompletedEventArgs> finalFilePath, DownloadProgressChangedEventHandler progChange = null, bool BigImage = true)
         {
             if (BigImage)
-                return GetBigImage(imageName, imageURL, finalFilePath);
-            else
-                return GetSmallImage(imageName, imageURL, finalFilePath);
+                return GetBigImage(imageName, imageURL, finalFilePath, progChange);
+            return GetSmallImage(imageName, imageURL, finalFilePath);
         }
 
         /// <summary>
@@ -49,18 +50,9 @@ namespace booruReader.Model
             if (BigImage)
             {
                 //Check if file is actually valid, occasionally there is a rubbish 0byte file.
-                if (!File.Exists(BigCachePath + imageName) && FileIsNotZero(BigCachePath + imageName))
-                    return false;
-                else
-                    return true;
+                return File.Exists(BigCachePath + imageName) || !FileIsNotZero(BigCachePath + imageName);
             }
-            else
-            {
-                if (!File.Exists(ThumbCachePath + imageName) && FileIsNotZero(ThumbCachePath + imageName))
-                    return false;
-                else
-                    return true;
-            }
+            return File.Exists(ThumbCachePath + imageName) || !FileIsNotZero(ThumbCachePath + imageName);
         }
 
         /// <summary>
@@ -72,33 +64,32 @@ namespace booruReader.Model
             {
                 FileInfo file = new FileInfo(path);
 
-                if (file.Length > 0)
-                    return true;
-                else
-                    return false;
+                return (file.Length > 0);
             }
-            else
-                return false;
+            return false;
         }
 
         /// <summary>
         /// Gets full-size image
         /// </summary>
         /// <returns>Path to the full image</returns>
-        private string GetBigImage(string imageName, string imageURL, Action<object, AsyncCompletedEventArgs> finalFilePath)
+        private string GetBigImage(string imageName, string imageURL, Action<object, AsyncCompletedEventArgs> finalFilePath, DownloadProgressChangedEventHandler progChange)
         {
             string imagePath = Path.Combine(BigCachePath, string.Format(imageName + UtilityFunctions.GetUrlExtension(imageURL)));
 
             if (File.Exists(imagePath) && FileIsNotZero(imagePath))
                 return imagePath;
-            else
-            {
-                WebClient client = new WebClient();
-                client.DownloadFileCompleted += new AsyncCompletedEventHandler(finalFilePath);
-                client.DownloadFileAsync(new Uri(imageURL), imagePath);
 
-                return null;
-            }
+            WebClient client = new WebClient();
+
+            // KBR 20150405 Issue #5: optional progress handler, so the preview download progress updates
+            if (progChange != null)
+                client.DownloadProgressChanged += progChange;
+
+            client.DownloadFileCompleted += new AsyncCompletedEventHandler(finalFilePath);
+            client.DownloadFileAsync(new Uri(imageURL), imagePath);
+
+            return null;
         }
 
         /// <summary>
@@ -117,29 +108,27 @@ namespace booruReader.Model
 
             if (File.Exists(imagePath) && FileIsNotZero(imagePath))
                 return imagePath;
-            else
-            {
-                try
-                {
-                    WebClient client = new WebClient();
-                    client.DownloadFileCompleted += new AsyncCompletedEventHandler(finalFilePath);
-                    client.DownloadFileAsync(new Uri(imageURL), imagePath);
-                }
-                catch (Exception e)
-                {
-                    //This occasionally dumps out, I think when downloading times out, need to handle this on the correct ways.
-                    Logger.Instance.LogEvent("GetSmallImage", e.Message.ToString());
-                }
 
-                return null;
+            try
+            {
+                WebClient client = new WebClient();
+                client.DownloadFileCompleted += new AsyncCompletedEventHandler(finalFilePath);
+                client.DownloadFileAsync(new Uri(imageURL), imagePath);
             }
+            catch (Exception e)
+            {
+                //This occasionally dumps out, I think when downloading times out, need to handle this on the correct ways.
+                Logger.Instance.LogEvent("GetSmallImage", e.Message);
+            }
+
+            return null;
         }
 
 
-        Comparison<FileInfo> FileInfoCompare = new Comparison<FileInfo>(delegate(FileInfo a, FileInfo b)
+        Comparison<FileInfo> FileInfoCompare = delegate(FileInfo a, FileInfo b)
         {
             return DateTime.Compare(a.LastWriteTimeUtc, b.LastWriteTimeUtc);
-        });
+        };
 
         /// <summary>
         /// Cleans up cache, if its above maximum size, remove files until size is half of maximum allowed

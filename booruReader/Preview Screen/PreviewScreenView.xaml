@@ -78,8 +78,11 @@
                     <ListView Name="TagList" Margin="200,0,0,39" MaxWidth="300" MinWidth="120" BorderBrush="{StaticResource DatazbytesGray}" Background="{StaticResource MetroBackground}" ItemsSource="{Binding TagList}" 
                              MouseDoubleClick="HandleDoubleClick" Visibility="{Binding ShowTagList}" Foreground="White" HorizontalAlignment="Right"/>
 
-                <ProgressBar VerticalAlignment="Top" Height="4" Template="{StaticResource DeterminedProgressBar}" 
-                                             Value="{Binding Path=PreviewPost.DownloadProgress}" Visibility="{Binding Path=PreviewPostProgressBarVisible}"></ProgressBar>
+                <ProgressBar VerticalAlignment="Top" Height="4" 
+                             Template="{StaticResource DeterminedProgressBar}" 
+                             Value="{Binding Path=PreviewPost.DownloadProgress}" 
+                             Visibility="{Binding Path=PreviewPost.ProgressBarVisible}">
+                </ProgressBar>
 
             </Grid>
         </Border>        

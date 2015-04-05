@@ -7,6 +7,8 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 
+// ReSharper disable SpecifyACultureInStringConversionExplicitly
+
 namespace booruReader.Preview_Screen
 {
     class PreviewScreenVM : BaseIObservable
@@ -67,9 +69,11 @@ namespace booruReader.Preview_Screen
             _downloadList = downloadList;
             ImageCache cache = new ImageCache();
             _favoriteshandler = new FavoriteHandler();
-            ImageSource = cache.GetImage(post.FileMD, post.FullPictureURL, LateFilePath);
 
+            // KBR 20150405 Issue #5: extend GetImage to take a progress handler, so the preview download progress is visible
             PreviewPost = post;
+            ImageSource = cache.GetImage(post.FileMD, post.FullPictureURL, LateFilePath, _post.Client_DownloadProgressChanged);
+
             //ImageSource = _post.FullPictureURL;
             ShowTagList = Visibility.Collapsed;
 
@@ -98,6 +102,9 @@ namespace booruReader.Preview_Screen
 
             if (_favoriteWhenReady)
                 _favoriteshandler.AddToFavorites(_post, ImageSource);
+
+            // KBR 20150405 Issue #5: hide preview download progress on completion
+            PreviewPost.ProgressBarVisible = Visibility.Collapsed;
         }
 
         internal void Download()
@@ -122,10 +129,7 @@ namespace booruReader.Preview_Screen
 
         internal void ShowTags()
         {
-            if(ShowTagList == Visibility.Collapsed)
-                ShowTagList = Visibility.Visible;
-            else
-                ShowTagList = Visibility.Collapsed;
+            ShowTagList = (ShowTagList == Visibility.Collapsed) ? Visibility.Visible : Visibility.Collapsed;
         }
 
         internal void AddToFavorites()

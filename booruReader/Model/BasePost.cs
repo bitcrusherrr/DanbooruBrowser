@@ -9,6 +9,8 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Collections.Generic;
 
+// ReSharper disable SpecifyACultureInStringConversionExplicitly
+
 namespace booruReader.Model
 {
     public class BasePost : BaseIObservable  
@@ -199,7 +201,7 @@ namespace booruReader.Model
             if (isUIImage)
             {
                 _extension = UtilityFunctions.GetUrlExtension(post.PreviewURL);
-                urlStore = PreviewURL = _cache.GetImage(post.FileMD, post.PreviewURL, LateFilePath, false);
+                _urlStore = PreviewURL = _cache.GetImage(post.FileMD, post.PreviewURL, LateFilePath, null, false);
             }
             else
                 urlStore = PreviewURL = post.PreviewURL;
@@ -224,7 +226,7 @@ namespace booruReader.Model
 
         private void LateFilePath(object e, AsyncCompletedEventArgs args)
         {
-            urlStore = _cache.GetImage(FileMD + _extension, null, LateFilePath, false);
+            _urlStore = _cache.GetImage(FileMD + _extension, null, LateFilePath, null, false);
             if (IsVisible)
                 PreviewURL = urlStore;
         }
