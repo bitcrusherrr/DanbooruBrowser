@@ -273,10 +273,17 @@ namespace booruReader.Settings_Screen
         private void SelectFolder()
         {
             FolderBrowserDialog folderDialog = new FolderBrowserDialog();
-            folderDialog.ShowDialog();
 
-            if (!string.IsNullOrEmpty(folderDialog.SelectedPath))
-                FolderPath = folderDialog.SelectedPath + "\\";
+            // KBR 20150405 - Issue #16: initialize to last folder
+            if (!string.IsNullOrEmpty(FolderPath) && Directory.Exists(FolderPath))
+            {
+                folderDialog.SelectedPath = FolderPath.TrimEnd(new [] {'\\'}); // TODO kludge! trimming trailing slash allows the dialog to scroll to folder
+            }
+            if (DialogResult.Cancel == folderDialog.ShowDialog())
+                return;
+
+            if (!string.IsNullOrEmpty(folderDialog.SelectedPath) && folderDialog.SelectedPath != FolderPath)
+                FolderPath = folderDialog.SelectedPath + "\\"; // TODO should be in property setter
         }
 
         public DelegateCommand AddBooruCommand { get { return _addBooruCommand; } }
