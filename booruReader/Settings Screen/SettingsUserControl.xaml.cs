@@ -37,6 +37,8 @@ namespace booruReader.Settings_Screen
             {
                 e.Handled = true;
             }
+
+            // TODO non-numeric text can be pasted 
         }
 
         private void LabelTextBox_TextChanged_1(object sender, TextChangedEventArgs e)

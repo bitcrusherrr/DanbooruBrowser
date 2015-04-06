@@ -17,18 +17,20 @@
         <CheckBox Style="{StaticResource MetroCheckbox}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="8,35,0,0" Foreground="White"
           Width="80" Content="Safe Mode" ToolTip="All images with non safe rating will be ignored."  IsChecked="{Binding SafeModeBrowsing}" />
 
-        <!--Folder select button-->
-        <Button ToolTip="Select Folder" Style="{StaticResource Metro}" Width="23" Height="23" Margin="8,56,0,0" VerticalAlignment="Top"
-            HorizontalAlignment="Left" Command="{Binding SelectFolderCommand}">
-            <Image Source="Images\folder.png"/>
-        </Button>
+        <StackPanel Orientation="Horizontal" Margin="8,56,0,0" VerticalAlignment="Top" HorizontalAlignment="Left">
+            <!--Folder select button-->
+            <Button ToolTip="Select Folder" Style="{StaticResource Metro}" Width="23" Height="23" Command="{Binding SelectFolderCommand}">
+                <Image Source="Images\folder.png"/>
+            </Button>
 
-        <!--Folder path-->
-        <Border Height="23" Margin="40,56,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="184" BorderThickness="1" 
-            BorderBrush="{StaticResource DatazbytesGreen}">
-            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center"  
-            Foreground="White" ToolTip="Directory to save files." Text="{Binding FolderPath}"></TextBlock>
-        </Border>
+            <!--Folder path-->
+            <Border Height="23" BorderThickness="1" BorderBrush="{StaticResource DatazbytesGreen}" Margin="5,0,3,0">
+                <TextBlock Width="250"
+                           Foreground="White" ToolTip="Directory to save files." 
+                           Text="{Binding FolderPath}">
+                </TextBlock>
+            </Border>
+        </StackPanel>
 
         <!--booru selector-->
         <StackPanel Height="23" Margin="8,87,8,0" VerticalAlignment="Top" Orientation="Horizontal">
@@ -63,7 +65,7 @@
         
         <StackPanel Orientation="Horizontal" Margin="10,136,0,0" Height="28" VerticalAlignment="Top" HorizontalAlignment="Left" Width="286">
             <TextBlock Margin="0,5,3,2" Foreground="White">Cache:</TextBlock>
-            <TextBox Name="CacheSizeTextBox" ToolTip="Maximum size for the thumbnail image cache." Margin="0,2,0,2" Height="23" Width="175" Text="{Binding SizeString, Mode=TwoWay}"
+            <TextBox Name="CacheSizeTextBox" ToolTip="Maximum size of each image cache, in megabytes." Margin="0,2,0,2" Height="23" Width="175" Text="{Binding SizeString, Mode=TwoWay}"
                 TextChanged="TextBox_TextChanged_1" PreviewTextInput="CacheSizeTextBox_PreviewTextInput_1"
                 Foreground="White" Background="{StaticResource MetroBackground}" BorderBrush="{StaticResource DatazbytesGreen}">
             </TextBox>

@@ -61,15 +61,17 @@ namespace booruReader.Settings_Screen
             }
         }
 
+        private static readonly char[] TrimSlash = {'\\'};
+
         public string FolderPath
         {
-            get { return _folderPath; }
+            get { return _folderPath.TrimEnd(TrimSlash); }
             set
             {
                 if (ValidatePath(value))
                 {
                     _folderPath = value;
-                    GlobalSettings.Instance.SavePath = value;
+                    GlobalSettings.Instance.SavePath = value + "\\"; // TODO Code elsewhere depends on trailing slash; replace with Path.Combine()
                 }
 
                 RaisePropertyChanged("FolderPath");
@@ -273,17 +275,19 @@ namespace booruReader.Settings_Screen
         private void SelectFolder()
         {
             FolderBrowserDialog folderDialog = new FolderBrowserDialog();
+            folderDialog.Description = "Select the folder to save downloaded image files.";
 
             // KBR 20150405 - Issue #16: initialize to last folder
             if (!string.IsNullOrEmpty(FolderPath) && Directory.Exists(FolderPath))
             {
-                folderDialog.SelectedPath = FolderPath.TrimEnd(new [] {'\\'}); // TODO kludge! trimming trailing slash allows the dialog to scroll to folder
+                folderDialog.SelectedPath = FolderPath;
             }
             if (DialogResult.Cancel == folderDialog.ShowDialog())
                 return;
 
-            if (!string.IsNullOrEmpty(folderDialog.SelectedPath) && folderDialog.SelectedPath != FolderPath)
-                FolderPath = folderDialog.SelectedPath + "\\"; // TODO should be in property setter
+            if (!string.IsNullOrEmpty(folderDialog.SelectedPath) &&
+                folderDialog.SelectedPath != FolderPath)
+                FolderPath = folderDialog.SelectedPath;
         }
 
         public DelegateCommand AddBooruCommand { get { return _addBooruCommand; } }
