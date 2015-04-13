@@ -65,6 +65,16 @@
     <url>http://rule34.paheal.net/api/danbooru/find_posts/index.xml</url>
     <name>Rule34.paheal.net</name>
   </BooruBoard>
+  <BooruBoard>
+    <providerType>Sankaku</providerType>
+    <url>http://chan.sankakucomplex.com/</url>
+    <name>Sankaku Complex</name>
+  </BooruBoard>
+  <BooruBoard>
+    <providerType>Sankaku</providerType>
+    <url>http://idol.sankakucomplex.com/</url>
+    <name>Sankaku Idol Complex</name>
+  </BooruBoard>
 </ArrayOfBooruBoard>
 <!--
 - <a href='/web/20090719065541/http://booru.nanochan.org/' class='bbc_url' title='External link' rel='nofollow'>Nanobooru</a><br />

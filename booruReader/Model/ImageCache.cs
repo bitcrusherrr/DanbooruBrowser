@@ -109,10 +109,16 @@ namespace booruReader.Model
             if (File.Exists(imagePath) && FileIsNotZero(imagePath))
                 return imagePath;
 
+            if (imageURL == null) // KBR 20150413 hacky assumption above fails
+                return null;
+
             try
             {
                 WebClient client = new WebClient();
                 client.DownloadFileCompleted += new AsyncCompletedEventHandler(finalFilePath);
+
+                // KBR 20150413 This seems to be what gets Sankaku working again [and no apparent negative impact on other servers]
+                client.Headers.Add("user-agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.116 Safari/537.36");
                 client.DownloadFileAsync(new Uri(imageURL), imagePath);
             }
             catch (Exception e)

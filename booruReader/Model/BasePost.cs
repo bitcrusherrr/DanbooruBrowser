@@ -323,7 +323,7 @@ namespace booruReader.Model
 
         /// <summary>
         /// Returns human readable filename in format of: booru postid tag1 tag2... .extension
-        /// Function will try adding as many tags as possible until we hit the 260 char limit for filename + folder path.
+        /// Function will try adding as many tags as possible until we hit the 256 char limit for filename + folder path.
         /// Refer to http://msdn.microsoft.com/en-us/library/ee681827(VS.85).aspx#limits for the filename size limit.
         /// </summary>
         private string GetHumanFilename(string extension)
