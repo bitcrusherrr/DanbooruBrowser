@@ -72,7 +72,7 @@ namespace booruReader.Preview_Screen
 
             // KBR 20150405 Issue #5: extend GetImage to take a progress handler, so the preview download progress is visible
             PreviewPost = post;
-            ImageSource = cache.GetImage(post.FileMD, post.FullPictureURL, LateFilePath, _post.Client_DownloadProgressChanged);
+            ImageSource = cache.GetImage(post.FileMD, post.FullPictureURL, LateFilePath, _post.client_DownloadProgressChanged);
 
             //ImageSource = _post.FullPictureURL;
             ShowTagList = Visibility.Collapsed;

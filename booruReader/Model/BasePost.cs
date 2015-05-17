@@ -201,7 +201,7 @@ namespace booruReader.Model
             if (isUIImage)
             {
                 _extension = UtilityFunctions.GetUrlExtension(post.PreviewURL);
-                _urlStore = PreviewURL = _cache.GetImage(post.FileMD, post.PreviewURL, LateFilePath, null, false);
+                urlStore = PreviewURL = _cache.GetImage(post.FileMD, post.PreviewURL, LateFilePath, null, false);
             }
             else
                 urlStore = PreviewURL = post.PreviewURL;
@@ -226,7 +226,7 @@ namespace booruReader.Model
 
         private void LateFilePath(object e, AsyncCompletedEventArgs args)
         {
-            _urlStore = _cache.GetImage(FileMD + _extension, null, LateFilePath, null, false);
+            urlStore = _cache.GetImage(FileMD + _extension, null, LateFilePath, null, false);
             if (IsVisible)
                 PreviewURL = urlStore;
         }
@@ -365,7 +365,7 @@ namespace booruReader.Model
         /// <summary>
         /// Progress callback for updating the image download progressbar
         /// </summary>
-        void client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
+        internal void client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
             double bytesIn = double.Parse(e.BytesReceived.ToString());
             double totalBytes = double.Parse(e.TotalBytesToReceive.ToString());
