@@ -48,6 +48,7 @@ namespace booruReader
             viewModel = new MainScreenVM();
             DataContext = viewModel;
             viewModel.SearchBoxChanged += viewModel_SearchBoxChanged;
+            viewModel.ProviderChanged  += viewModel_ProviderChanged;
             ImageList.SelectedItem = null;
 
             if (GlobalSettings.Instance.MainScreenWidth > 0)
